@@ -55,11 +55,26 @@ def bootstrap_mean_ci(
     samples: int,
     seed: int,
 ) -> list[float]:
-    generator = random.Random(seed)
-    means = [
-        sum(generator.choice(values) for _ in values) / len(values)
-        for _ in range(samples)
-    ]
+    try:
+        import numpy as np
+
+        source = np.asarray(values, dtype=np.float64)
+        generator = np.random.default_rng(seed)
+        means: list[float] = []
+        for start in range(0, samples, 1000):
+            count = min(1000, samples - start)
+            indices = generator.integers(
+                0,
+                len(values),
+                size=(count, len(values)),
+            )
+            means.extend(source[indices].mean(axis=1).tolist())
+    except ImportError:
+        generator = random.Random(seed)
+        means = [
+            sum(generator.choice(values) for _ in values) / len(values)
+            for _ in range(samples)
+        ]
     return [percentile(means, 0.025), percentile(means, 0.975)]
 
 
