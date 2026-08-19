@@ -15,6 +15,7 @@ from contiguous_fuxian.flexgen_qwen_reprefill import (
     layer_selection_agreement,
     parse_head_ids,
     prepare_impress_contiguous_block_scores,
+    prepare_impress_block_scores,
     resolve_store_tasks,
     runtime_variant,
     select_prepared_impress_blocks,
@@ -331,6 +332,16 @@ class FlexGenQwenReprefillTest(unittest.TestCase):
             scores,
             block_size=2,
         )
+
+        gpu_reduced_equivalent = prepare_impress_block_scores(
+            [
+                [sum(row[start : start + 2]) for start in range(0, 8, 2)]
+                for row in scores
+            ],
+            block_size=2,
+            prefix_tokens=8,
+        )
+        self.assertEqual(gpu_reduced_equivalent, prepared)
 
         for keep_blocks in (1, 2, 3, 4):
             with self.subTest(keep_blocks=keep_blocks):

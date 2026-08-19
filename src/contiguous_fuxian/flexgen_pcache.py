@@ -20,9 +20,10 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 from .impress_reorder import load_task_reorder, reorder_manifest_sha256
+from .quantized_key_index import QuantizedKeyIndex
 from .sparse_qwen_reprefill import (
     PrefixStoreInfo,
     _read_layer_chunks,
@@ -44,6 +45,7 @@ class FlexGenPcacheConfig:
     cache_type: str = "LRU"
     prefetch_time_budget: float = 10_000.0
     selector_kv_head_ids: tuple[int, ...] = (0, 1, 2)
+    selector_index_dir: Path | None = None
     impress_reorder_path: Path | None = None
     reuse_existing: bool = False
     resume_existing: bool = False
@@ -59,6 +61,14 @@ class FlexGenPcacheConfig:
             raise ValueError("cache_type must be one of LRU, LFU, or CKLFU")
         if not self.selector_kv_head_ids or any(head < 0 for head in self.selector_kv_head_ids):
             raise ValueError("selector_kv_head_ids must contain non-negative head indices")
+        if self.selector_index_dir is not None and not (
+            self.selector_index_dir / "manifest.json"
+        ).is_file():
+            raise FileNotFoundError(
+                f"selector index manifest was not found: {self.selector_index_dir}"
+            )
+        if self.selector_index_dir is not None and self.impress_reorder_path is not None:
+            raise ValueError("a selector index cannot be combined with physical token reorder")
         if self.impress_reorder_path is not None and not self.impress_reorder_path.is_file():
             raise FileNotFoundError(
                 f"IMPRESS reorder manifest was not found: {self.impress_reorder_path}"
@@ -384,6 +394,15 @@ class FlexGenPcacheStore:
         pcache_module = _load_pcache_module(config.flexgen_root)
         pcache_type = pcache_module.Pcache
         self.config = config
+        self._selector_index = (
+            QuantizedKeyIndex(config.selector_index_dir)
+            if config.selector_index_dir is not None
+            else None
+        )
+        if self._selector_index is not None and (
+            self._selector_index.selector_kv_head_ids != config.selector_kv_head_ids
+        ):
+            raise ValueError("selector index head IDs do not match the Pcache configuration")
         self._pcache_module = pcache_module
         original_clear_folder = pcache_module.clear_folder
         if config.reuse_existing or config.resume_existing:
@@ -415,6 +434,15 @@ class FlexGenPcacheStore:
         if task in self._task_prefix_ids:
             return self._task_infos[task]
         info = read_store_info(store_root, task)
+        if self._selector_index is not None:
+            self._selector_index.validate_task(
+                task,
+                prefix_tokens=info.prefix_tokens,
+                layers=info.layers,
+                kv_heads=info.kv_heads,
+                head_dim=info.head_dim,
+            )
+            self._selector_index.preload_task(task)
         physical_to_logical = logical_to_physical = None
         if self.config.impress_reorder_path is not None:
             physical_to_logical, logical_to_physical = load_task_reorder(
@@ -467,6 +495,8 @@ class FlexGenPcacheStore:
         impress_rolling_period_prefetch: bool = False,
         impress_value_ordered_prefetch: bool = False,
         impress_value_prefetch_budget_scale: float = 1.0,
+        promixed_policy: Mapping[str, float] | None = None,
+        defer_cache_score_updates: bool = False,
     ) -> "FlexGenLayerLoader":
         if task not in self._task_prefix_ids:
             raise KeyError(f"task {task!r} was not inserted into this Pcache")
@@ -526,6 +556,10 @@ class FlexGenPcacheStore:
             impress_value_prefetch_budget_scale=(
                 impress_value_prefetch_budget_scale
             ),
+            promixed_policy=promixed_policy,
+            defer_cache_score_updates=defer_cache_score_updates,
+            selector_index=self._selector_index,
+            selector_index_task=task if self._selector_index is not None else None,
             physical_to_logical=self._physical_to_logical.get(task),
             logical_to_physical=self._logical_to_physical.get(task),
             cache_score_updater=cache_score_updater,
@@ -733,6 +767,10 @@ class FlexGenLayerLoader:
         impress_rolling_period_prefetch: bool = False,
         impress_value_ordered_prefetch: bool = False,
         impress_value_prefetch_budget_scale: float = 1.0,
+        promixed_policy: Mapping[str, float] | None = None,
+        defer_cache_score_updates: bool = False,
+        selector_index: QuantizedKeyIndex | None = None,
+        selector_index_task: str | None = None,
         physical_to_logical: Sequence[Sequence[int]] | None = None,
         logical_to_physical: Sequence[Sequence[int]] | None = None,
         cache_score_updater: Callable[
@@ -893,6 +931,35 @@ class FlexGenLayerLoader:
                 ):
                     raise ValueError(f"IMPRESS reorder layer {layer} directions are not inverse")
 
+        if promixed_policy is not None:
+            if method != "impress" or not online_selection:
+                raise ValueError(
+                    "ProMixed policies require online IMPRESS/HyperInfer selection"
+                )
+            normalized_promixed_policy = {
+                str(key): float(value)
+                for key, value in promixed_policy.items()
+            }
+        else:
+            normalized_promixed_policy = None
+        if selector_index is not None:
+            if (
+                method != "impress"
+                or not online_selection
+                or normalized_promixed_policy is None
+            ):
+                raise ValueError("a selector index requires online ProMixed IMPRESS")
+            if selector_index_task is None:
+                raise ValueError("a selector index requires a task name")
+            if selector_index.selector_kv_head_ids != config.selector_kv_head_ids:
+                raise ValueError("selector index head IDs do not match the loader")
+            if physical_to_logical is not None:
+                raise ValueError("a selector index cannot be physically reordered")
+        if defer_cache_score_updates and cache_score_updater is None:
+            raise ValueError(
+                "deferred cache-score updates require an active cache-score policy"
+            )
+
         self.method = method
         self.online_selection = online_selection
         self.keep_ratio = float(keep_ratio) if keep_ratio is not None else None
@@ -921,10 +988,22 @@ class FlexGenLayerLoader:
             impress_value_ordered_prefetch
         )
         self.impress_value_prefetch_budget_scale = value_budget_scale
+        self.promixed_policy = normalized_promixed_policy
+        self.defer_cache_score_updates = bool(defer_cache_score_updates)
+        self._selector_index = selector_index
+        self._selector_index_task = selector_index_task
+        self._selector_index_group_size = (
+            selector_index.tasks[selector_index_task].group_size
+            if selector_index is not None and selector_index_task is not None
+            else 0
+        )
         self._cache_score_updater = cache_score_updater
         self._cache_score_updated_layers: set[int] = set()
+        self._deferred_cache_score_layers: list[int] = []
+        self._deferred_cache_score_layer_set: set[int] = set()
         self._cache_score_updates = 0
         self._cache_update_ms = 0.0
+        self._cache_update_deferred_ms = 0.0
         self._physical_to_logical = (
             [[int(token) for token in row] for row in physical_to_logical]
             if physical_to_logical is not None
@@ -991,6 +1070,7 @@ class FlexGenLayerLoader:
             for kind in ("next", "period")
         }
         self._selector_key_bytes = 0
+        self._selector_dequantized_key_bytes = 0
         self._selector_source_bytes = {"gpu": 0, "cpu": 0, "disk": 0}
         self._selector_load_ms = 0.0
         self._selector_compute_ms = 0.0
@@ -998,6 +1078,10 @@ class FlexGenLayerLoader:
         self._selector_fallbacks = 0
         self._selector_similarities: list[float] = []
         self._selector_wait_ms = 0.0
+        self._promixed_agreements: list[float] = []
+        self._promixed_boundary_margins: list[float] = []
+        self._promixed_uncertainties: list[float] = []
+        self._promixed_periods: list[int] = []
         self._selector_executor = ThreadPoolExecutor(
             max_workers=1,
             thread_name_prefix="contiguous-fuxian-selector",
@@ -1281,40 +1365,73 @@ class FlexGenLayerLoader:
             raise ValueError(f"selector layer {layer} is outside the model")
         import torch
 
-        cache_layer = self._pcache.cache[self._prefix_id].layers[layer]
-        source_device = str(cache_layer.head_token.device)
-        if source_device.startswith("cuda"):
-            source = "gpu"
-        elif source_device in {"cpu", "disk"}:
-            source = source_device
-        else:
-            raise RuntimeError(f"unsupported selector key source {source_device!r}")
         started = time.perf_counter()
-        if torch.cuda.is_available():
-            if self._selector_stream is None:
-                self._selector_stream = torch.cuda.Stream()
-            with torch.cuda.stream(self._selector_stream):
-                keys = self._pcache.get_head(prefix_id=self._prefix_id, layer=layer)
+        if self._selector_index is not None:
+            if self._selector_index_task is None:
+                raise RuntimeError("selector index task was not configured")
+            if torch.cuda.is_available():
+                if self._selector_stream is None:
+                    self._selector_stream = torch.cuda.Stream()
+                target = torch.device("cuda", torch.cuda.current_device())
+                with torch.cuda.stream(self._selector_stream):
+                    keys, key_bytes, source = self._selector_index.load_layer(
+                        self._selector_index_task,
+                        layer,
+                        device=target,
+                    )
+                    completed = torch.cuda.Event()
+                    completed.record(self._selector_stream)
+                completed.synchronize()
+            else:
+                keys, key_bytes, source = self._selector_index.load_layer(
+                    self._selector_index_task,
+                    layer,
+                    device=torch.device("cpu"),
+                )
+        else:
+            cache_layer = self._pcache.cache[self._prefix_id].layers[layer]
+            source_device = str(cache_layer.head_token.device)
+            if source_device.startswith("cuda"):
+                source = "gpu"
+            elif source_device in {"cpu", "disk"}:
+                source = source_device
+            else:
+                raise RuntimeError(
+                    f"unsupported selector key source {source_device!r}"
+                )
+            if torch.cuda.is_available():
+                if self._selector_stream is None:
+                    self._selector_stream = torch.cuda.Stream()
+                with torch.cuda.stream(self._selector_stream):
+                    keys = self._pcache.get_head(
+                        prefix_id=self._prefix_id, layer=layer
+                    )
+                    if self._logical_to_physical is not None:
+                        order = torch.tensor(
+                            self._logical_to_physical[layer],
+                            dtype=torch.long,
+                            device=keys.device,
+                        )
+                        keys = keys.index_select(0, order)
+                    completed = torch.cuda.Event()
+                    completed.record(self._selector_stream)
+                completed.synchronize()
+            else:
+                keys = self._pcache.get_head(
+                    prefix_id=self._prefix_id, layer=layer
+                )
                 if self._logical_to_physical is not None:
                     order = torch.tensor(
                         self._logical_to_physical[layer],
                         dtype=torch.long,
-                        device=keys.device,
                     )
                     keys = keys.index_select(0, order)
-                completed = torch.cuda.Event()
-                completed.record(self._selector_stream)
-            completed.synchronize()
-        else:
-            keys = self._pcache.get_head(prefix_id=self._prefix_id, layer=layer)
-            if self._logical_to_physical is not None:
-                order = torch.tensor(
-                    self._logical_to_physical[layer], dtype=torch.long
-                )
-                keys = keys.index_select(0, order)
+            key_bytes = int(keys.numel()) * int(keys.element_size())
         self._selector_load_ms += (time.perf_counter() - started) * 1000
-        key_bytes = int(keys.numel()) * int(keys.element_size())
         self._selector_key_bytes += key_bytes
+        self._selector_dequantized_key_bytes += (
+            int(keys.numel()) * int(keys.element_size())
+        )
         self._selector_source_bytes[source] += key_bytes
         self._selector_calls += 1
         return keys
@@ -1361,6 +1478,32 @@ class FlexGenLayerLoader:
             self._selector_similarities.append(normalized_similarity)
         if fallback:
             self._selector_fallbacks += 1
+
+    def record_promixed_decision(
+        self,
+        *,
+        agreement: float,
+        boundary_margin: float,
+        uncertainty: float,
+        period: int,
+    ) -> None:
+        values = {
+            "agreement": float(agreement),
+            "boundary_margin": float(boundary_margin),
+            "uncertainty": float(uncertainty),
+        }
+        if any(
+            not math.isfinite(value) or not 0 <= value <= 1
+            for value in values.values()
+        ):
+            raise ValueError("ProMixed decision metrics must be finite and in [0, 1]")
+        normalized_period = int(period)
+        if normalized_period not in {1, 2, 4, 8}:
+            raise ValueError("ProMixed decision period must be 1, 2, 4, or 8")
+        self._promixed_agreements.append(values["agreement"])
+        self._promixed_boundary_margins.append(values["boundary_margin"])
+        self._promixed_uncertainties.append(values["uncertainty"])
+        self._promixed_periods.append(normalized_period)
 
     def online_cache_plan_and_scores(self) -> tuple[list[list[str]], list[list[float]]]:
         if self.method != "contigkv" or not self.online_selection:
@@ -1704,12 +1847,19 @@ class FlexGenLayerLoader:
             resolved += 1
         return resolved
 
-    def _update_loaded_layer_score(self, layer: int) -> None:
-        """Update cache residency immediately after this layer's KV is loaded."""
+    def _update_loaded_layer_score(
+        self, layer: int, *, force: bool = False
+    ) -> None:
+        """Update residency now or queue it beyond the TTFT boundary."""
 
         updater = getattr(self, "_cache_score_updater", None)
         updated_layers = getattr(self, "_cache_score_updated_layers", set())
         if updater is None or layer in updated_layers:
+            return
+        if getattr(self, "defer_cache_score_updates", False) and not force:
+            if layer not in self._deferred_cache_score_layer_set:
+                self._deferred_cache_score_layers.append(layer)
+                self._deferred_cache_score_layer_set.add(layer)
             return
         if self.method == "contigkv":
             scores = self._online_chunk_scores[layer]
@@ -1728,6 +1878,22 @@ class FlexGenLayerLoader:
         self._cache_score_updated_layers.add(layer)
         self._cache_score_updates += int(updates)
         self._cache_update_ms += elapsed_ms
+
+    def flush_deferred_cache_score_updates(self) -> int:
+        """Apply metadata-only CKLFU updates after first-token production."""
+
+        if not self.defer_cache_score_updates:
+            return 0
+        layers = list(self._deferred_cache_score_layers)
+        self._deferred_cache_score_layers.clear()
+        self._deferred_cache_score_layer_set.clear()
+        started = time.perf_counter()
+        for layer in layers:
+            self._update_loaded_layer_score(layer, force=True)
+        self._cache_update_deferred_ms += (
+            time.perf_counter() - started
+        ) * 1000
+        return len(layers)
 
     def resolve(self, layer: int) -> tuple[Any, Any]:
         """Wait for a layer's physical prefetch and gather the sparse plan."""
@@ -1971,6 +2137,22 @@ class FlexGenLayerLoader:
             "prefetch_disk_source_fraction": self._source_tensor_tokens["disk"] / max(1, source_total),
             "critical_ssd_read_bytes": critical_ssd_bytes,
             "selector_key_bytes": self._selector_key_bytes,
+            "selector_dequantized_key_bytes": self._selector_dequantized_key_bytes,
+            "selector_index_enabled": int(self._selector_index is not None),
+            "selector_index_bits": self._selector_index.bits if self._selector_index is not None else 0,
+            "selector_index_group_size": self._selector_index_group_size,
+            "selector_index_preloaded": int(
+                self._selector_index is not None
+                and self._selector_index_task is not None
+                and self._selector_index.task_is_preloaded(
+                    self._selector_index_task
+                )
+            ),
+            "selector_index_preloaded_bytes": (
+                self._selector_index.preloaded_compressed_bytes
+                if self._selector_index is not None
+                else 0
+            ),
             "selector_gpu_source_bytes": self._selector_source_bytes["gpu"],
             "selector_cpu_source_bytes": self._selector_source_bytes["cpu"],
             "selector_disk_source_bytes": self._selector_source_bytes["disk"],
@@ -1987,6 +2169,21 @@ class FlexGenLayerLoader:
             "selector_fallbacks": self._selector_fallbacks,
             "selector_mean_jaccard": sum(self._selector_similarities)
             / max(1, len(self._selector_similarities)),
+            "promixed_decisions": len(self._promixed_periods),
+            "promixed_mean_gqa_agreement": sum(self._promixed_agreements)
+            / max(1, len(self._promixed_agreements)),
+            "promixed_mean_boundary_margin": sum(
+                self._promixed_boundary_margins
+            )
+            / max(1, len(self._promixed_boundary_margins)),
+            "promixed_mean_uncertainty": sum(self._promixed_uncertainties)
+            / max(1, len(self._promixed_uncertainties)),
+            "promixed_mean_period": sum(self._promixed_periods)
+            / max(1, len(self._promixed_periods)),
+            "promixed_p1_decisions": self._promixed_periods.count(1),
+            "promixed_p2_decisions": self._promixed_periods.count(2),
+            "promixed_p4_decisions": self._promixed_periods.count(4),
+            "promixed_p8_decisions": self._promixed_periods.count(8),
             "impress_mean_prefetch_budget_seconds": sum(self._impress_prefetch_budgets)
             / max(1, len(self._impress_prefetch_budgets)),
             "impress_period_prefetch_size": self.impress_period_prefetch_size,
@@ -2031,7 +2228,12 @@ class FlexGenLayerLoader:
             "prefetch_elapsed_ms": self._prefetch_elapsed_ms,
             "cache_score_updates": self._cache_score_updates,
             "cache_update_ms": self._cache_update_ms,
-            "cache_update_in_ttft": int(self._cache_score_updater is not None),
+            "cache_update_deferred_ms": self._cache_update_deferred_ms,
+            "cache_update_in_ttft": int(
+                self._cache_score_updater is not None
+                and not self.defer_cache_score_updates
+            ),
+            "cache_update_deferred": int(self.defer_cache_score_updates),
             **prediction_metrics,
             **self._prefetch_scheduler_metrics_delta(),
         }
@@ -2039,6 +2241,8 @@ class FlexGenLayerLoader:
     def close(self) -> None:
         """Join per-request selector work and release its worker thread."""
 
+        if self._deferred_cache_score_layers:
+            self.flush_deferred_cache_score_updates()
         if self.impress_deferred_compute_timing:
             self.resolve_deferred_impress_compute(wait=True)
         self._selector_executor.shutdown(wait=True)

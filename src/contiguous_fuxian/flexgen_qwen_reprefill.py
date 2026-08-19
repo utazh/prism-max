@@ -39,6 +39,7 @@ from .paper_plan_generator import (
     impress_probe_token_selection_with_ranking,
     mean_pairwise_jaccard,
 )
+from .promixed import select_promixed_gqa_blocks
 from .sparse_qwen_reprefill import (
     _layer_causal_mask,
     _load_bundle_records,
@@ -65,6 +66,9 @@ def runtime_variant(
     impress_value_prefetch_budget_scale: float = 1.0,
     impress_selection_period_size: int = 1,
     impress_known_period_prefetch: bool = False,
+    promixed_gqa_selection: bool = False,
+    defer_cache_score_updates: bool = False,
+    selector_index_bits: int = 0,
 ) -> str:
     if not online_selection:
         return "offline-plan"
@@ -116,10 +120,16 @@ def runtime_variant(
             variant += (
                 f"+value-budget-s{impress_value_prefetch_budget_scale:g}"
             )
-    if impress_selection_period_size > 1:
+    if promixed_gqa_selection:
+        variant += f"+promixed-gqa-adaptive-p{impress_selection_period_size}"
+    elif impress_selection_period_size > 1:
         variant += f"+periodic-selection-p{impress_selection_period_size}"
+    if selector_index_bits:
+        variant += f"+k{selector_index_bits}-selector-index"
     if impress_known_period_prefetch:
         variant += "+known-period-prefetch"
+    if defer_cache_score_updates:
+        variant += "+post-ttft-cache-score"
     return variant
 
 
@@ -451,12 +461,56 @@ class PreparedImpressBlockScores:
     prefix_tokens: int
 
 
+def prepare_impress_block_scores(
+    block_scores: Sequence[Sequence[float]],
+    *,
+    block_size: int,
+    prefix_tokens: int,
+) -> PreparedImpressBlockScores:
+    """Validate already-aggregated block scores and rank them once."""
+
+    if not block_scores or not block_scores[0]:
+        raise ValueError("IMPRESS block selection requires non-empty block scores")
+    if block_size <= 0:
+        raise ValueError("IMPRESS selection block size must be positive")
+    if prefix_tokens <= 0:
+        raise ValueError("IMPRESS prefix token count must be positive")
+    normalized = tuple(
+        tuple(float(value) for value in row) for row in block_scores
+    )
+    block_count = math.ceil(prefix_tokens / block_size)
+    if any(len(row) != block_count for row in normalized):
+        raise ValueError(
+            "IMPRESS block score rows do not match the prefix geometry"
+        )
+    ranked_blocks = tuple(
+        tuple(
+            sorted(
+                range(block_count),
+                key=lambda block: (-float(row[block]), block),
+            )
+        )
+        for row in normalized
+    )
+    mean_scores = tuple(
+        sum(float(row[block]) for row in normalized) / len(normalized)
+        for block in range(block_count)
+    )
+    return PreparedImpressBlockScores(
+        block_scores=normalized,
+        ranked_blocks=ranked_blocks,
+        mean_scores=mean_scores,
+        block_size=block_size,
+        prefix_tokens=prefix_tokens,
+    )
+
+
 def prepare_impress_contiguous_block_scores(
     head_scores: Sequence[Sequence[float]],
     *,
     block_size: int,
 ) -> PreparedImpressBlockScores:
-    """Aggregate and rank one Period leader's blocks exactly once."""
+    """Aggregate and rank one Period leader's token scores exactly once."""
 
     if not head_scores or not head_scores[0]:
         raise ValueError("IMPRESS block selection requires non-empty head scores")
@@ -469,24 +523,8 @@ def prepare_impress_contiguous_block_scores(
         tuple(contiguous_chunk_scores(row, block_size, prefix_tokens))
         for row in head_scores
     )
-    block_count = len(block_scores[0])
-    ranked_blocks = tuple(
-        tuple(
-            sorted(
-                range(block_count),
-                key=lambda block: (-float(row[block]), block),
-            )
-        )
-        for row in block_scores
-    )
-    mean_scores = tuple(
-        sum(float(row[block]) for row in block_scores) / len(block_scores)
-        for block in range(block_count)
-    )
-    return PreparedImpressBlockScores(
-        block_scores=block_scores,
-        ranked_blocks=ranked_blocks,
-        mean_scores=mean_scores,
+    return prepare_impress_block_scores(
+        block_scores,
         block_size=block_size,
         prefix_tokens=prefix_tokens,
     )
@@ -661,11 +699,17 @@ def qwen_online_prefix_head_scores(
     hidden_states: Any,
     position_embeddings: tuple[Any, Any],
     selector_keys: Any,
+    score_block_size: int = 1,
     query_heads: Sequence[int] | None,
     selector_kv_head_ids: Sequence[int] | None = None,
 ) -> Any:
-    """Compute RoPE/GQA-correct query-to-prefix attention for online selection."""
+    """Compute RoPE/GQA-correct prefix attention for online selection.
 
+    Block mode reduces scores on GPU before the device-to-host transfer.
+    """
+
+    if score_block_size <= 0:
+        raise ValueError("online selector score block size must be positive")
     import torch
     from transformers.models.qwen2.modeling_qwen2 import apply_rotary_pos_emb, repeat_kv
 
@@ -727,6 +771,13 @@ def qwen_online_prefix_head_scores(
     )
     probabilities = torch.softmax(logits.float(), dim=-1)
     scores = probabilities[..., :prefix_tokens].sum(dim=2)[0]
+    if score_block_size > 1:
+        padding = (-prefix_tokens) % score_block_size
+        if padding:
+            scores = torch.nn.functional.pad(scores, (0, padding))
+        scores = scores.reshape(
+            scores.shape[0], -1, score_block_size
+        ).sum(dim=-1)
     if not bool(torch.isfinite(scores).all()):
         raise RuntimeError("online Qwen selector produced non-finite prefix attention")
     return scores.detach().cpu()
@@ -742,11 +793,12 @@ def configure_online_layer_selection(
     period_size: int,
     impress_selection_block_size: int = 1,
     impress_selection_period_size: int = 1,
-) -> None:
+) -> int:
     """Load selector keys, calculate critical indices, and update the loader."""
 
     import torch
 
+    configured_period = period_size
     selector_keys = loader.load_selector_keys(layer_index)
     torch.cuda.synchronize()
     started = time.perf_counter()
@@ -782,19 +834,59 @@ def configure_online_layer_selection(
             selector_keys=selector_keys,
             query_heads=loader.probe_query_heads,
             selector_kv_head_ids=loader.selector_kv_head_ids,
+            score_block_size=impress_selection_block_size,
         )
         score_rows = head_scores.tolist()
         prepared_block_scores = (
-            prepare_impress_contiguous_block_scores(
+            prepare_impress_block_scores(
                 score_rows,
                 block_size=impress_selection_block_size,
+                prefix_tokens=loader.prefix_tokens,
             )
             if impress_selection_block_size > 1
             else None
         )
+        promixed_policy = loader.promixed_policy
+        if promixed_policy is not None:
+            if prepared_block_scores is None:
+                raise RuntimeError(
+                    "ProMixed GQA selection requires contiguous block scores"
+                )
+            base_ratio = max(float(loader.keep_ratio), 1e-12)
+            window_end = min(
+                loader.layers,
+                layer_index + impress_selection_period_size,
+            )
+            window_risk = max(
+                min(
+                    1.0,
+                    max(
+                        0.0,
+                        float(loader.keep_ratio_for_layer(target)) / base_ratio
+                        - 1.0,
+                    ),
+                )
+                for target in range(layer_index, window_end)
+            )
+            leader_decision = select_promixed_gqa_blocks(
+                prepared_block_scores.block_scores,
+                keep_blocks=loader.keep_blocks_for_layer(layer_index),
+                max_period=impress_selection_period_size,
+                sensitivity_risk=window_risk,
+                **promixed_policy,
+            )
+            configured_period = leader_decision.period
+            loader.record_promixed_decision(
+                agreement=leader_decision.agreement,
+                boundary_margin=leader_decision.boundary_margin,
+                uncertainty=leader_decision.uncertainty,
+                period=leader_decision.period,
+            )
+        else:
+            configured_period = impress_selection_period_size
         target_layers = range(
             layer_index,
-            min(loader.layers, layer_index + impress_selection_period_size),
+            min(loader.layers, layer_index + configured_period),
         )
         similarities = []
         used_probe_for_all = True
@@ -804,18 +896,59 @@ def configure_online_layer_selection(
                 if prepared_block_scores is None:
                     raise RuntimeError("IMPRESS block scores were not prepared")
                 keep_blocks = loader.keep_blocks_for_layer(target_layer)
-                fallback_keep_blocks_limit = loader.max_blocks_for_layer(
-                    target_layer
-                )
-                selected, priority, used_probe, similarity = (
-                    select_prepared_impress_blocks(
-                        prepared_block_scores,
-                        keep_ratio=keep_ratio,
-                        similarity_alpha=loader.similarity_alpha,
-                        keep_blocks=keep_blocks,
-                        fallback_keep_blocks_limit=fallback_keep_blocks_limit,
+                if promixed_policy is not None:
+                    target_risk = min(
+                        1.0,
+                        max(0.0, keep_ratio / base_ratio - 1.0),
                     )
-                )
+                    decision = select_promixed_gqa_blocks(
+                        prepared_block_scores.block_scores,
+                        keep_blocks=keep_blocks,
+                        max_period=configured_period,
+                        sensitivity_risk=target_risk,
+                        **promixed_policy,
+                    )
+                    selected = [
+                        token
+                        for block in decision.selected_blocks
+                        for token in range(
+                            block * prepared_block_scores.block_size,
+                            min(
+                                prepared_block_scores.prefix_tokens,
+                                (block + 1)
+                                * prepared_block_scores.block_size,
+                            ),
+                        )
+                    ]
+                    priority = [
+                        token
+                        for block in decision.priority_blocks
+                        for token in range(
+                            block * prepared_block_scores.block_size,
+                            min(
+                                prepared_block_scores.prefix_tokens,
+                                (block + 1)
+                                * prepared_block_scores.block_size,
+                            ),
+                        )
+                    ]
+                    used_probe = True
+                    similarity = decision.agreement
+                else:
+                    fallback_keep_blocks_limit = loader.max_blocks_for_layer(
+                        target_layer
+                    )
+                    selected, priority, used_probe, similarity = (
+                        select_prepared_impress_blocks(
+                            prepared_block_scores,
+                            keep_ratio=keep_ratio,
+                            similarity_alpha=loader.similarity_alpha,
+                            keep_blocks=keep_blocks,
+                            fallback_keep_blocks_limit=(
+                                fallback_keep_blocks_limit
+                            ),
+                        )
+                    )
             else:
                 keep_tokens = max(
                     1, math.ceil(loader.prefix_tokens * keep_ratio)
@@ -843,6 +976,7 @@ def configure_online_layer_selection(
             fallback=not used_probe_for_all,
         )
     del selector_keys
+    return configured_period
 
 
 def flexgen_sparse_decoder_logits(
@@ -879,6 +1013,7 @@ def flexgen_sparse_decoder_logits(
     position_ids = cache_position.unsqueeze(0)
     position_embeddings = core.rotary_emb(hidden_states, position_ids)
     first_prefill = cache.get_seq_length(0) == 0
+    next_impress_selection_layer = 0
 
     for layer_index, decoder_layer in enumerate(core.layers[: core.config.num_hidden_layers]):
         if first_prefill:
@@ -889,15 +1024,24 @@ def flexgen_sparse_decoder_logits(
                 and loader.impress_async_prefetch
             ):
                 loader.resolve_impress_speculation(layer_index)
+            promixed_selection = (
+                loader.method == "impress"
+                and getattr(loader, "promixed_policy", None) is not None
+            )
             impress_selection_leader = (
                 loader.method == "impress"
-                and layer_index % impress_selection_period_size == 0
+                and (
+                    layer_index == next_impress_selection_layer
+                    if promixed_selection
+                    else layer_index % impress_selection_period_size == 0
+                )
             )
+            configured_impress_period = impress_selection_period_size
             if loader.online_selection and (
                 impress_selection_leader
                 or (loader.method == "contigkv" and within_period == 0)
             ):
-                configure_online_layer_selection(
+                configured_impress_period = configure_online_layer_selection(
                     decoder_layer=decoder_layer,
                     hidden_states=hidden_states,
                     position_embeddings=position_embeddings,
@@ -907,16 +1051,20 @@ def flexgen_sparse_decoder_logits(
                     impress_selection_block_size=impress_selection_block_size,
                     impress_selection_period_size=impress_selection_period_size,
                 )
+                if promixed_selection:
+                    next_impress_selection_layer = (
+                        layer_index + configured_impress_period
+                    )
                 if (
                     loader.method == "impress"
                     and impress_known_period_prefetch
-                    and impress_selection_period_size > 1
+                    and configured_impress_period > 1
                 ):
                     loader.schedule_range(
                         layer_index,
                         min(
                             loader.layers,
-                            layer_index + impress_selection_period_size,
+                            layer_index + configured_impress_period,
                         ),
                     )
             elif (
@@ -957,7 +1105,11 @@ def flexgen_sparse_decoder_logits(
                 and loader.impress_async_prefetch
             ):
                 loader.schedule_impress_next(layer_index)
-                if impress_selection_period_size == 1:
+                if promixed_selection and impress_selection_leader:
+                    loader.prefetch_selector_keys(
+                        next_impress_selection_layer
+                    )
+                elif impress_selection_period_size == 1:
                     loader.prefetch_selector_keys(layer_index + 1)
                 elif layer_index % impress_selection_period_size == 0:
                     loader.prefetch_selector_keys(
@@ -1068,6 +1220,9 @@ def greedy_flexgen_completion(
         )
     torch.cuda.synchronize()
     first_token_time = time.perf_counter()
+    flush_cache_scores = getattr(loader, "flush_deferred_cache_score_updates", None)
+    if flush_cache_scores is not None:
+        flush_cache_scores()
     if loader.impress_deferred_compute_timing:
         loader.resolve_deferred_impress_compute()
     query_last_logits = logits[0, -1].float()
@@ -1225,6 +1380,15 @@ def run_flexgen_reprefill(
     impress_value_prefetch_budget_scale: float = 1.0,
     impress_selection_period_size: int = 1,
     impress_known_period_prefetch: bool = False,
+    promixed_gqa_selection: bool = False,
+    promixed_coverage_fraction: float = 0.5,
+    promixed_margin_reference: float = 0.05,
+    promixed_agreement_weight: float = 0.75,
+    promixed_sensitivity_weight: float = 0.1,
+    promixed_p1_threshold: float = 0.90,
+    promixed_p2_threshold: float = 0.82,
+    promixed_p4_threshold: float = 0.68,
+    defer_cache_score_updates: bool = False,
 ) -> dict[str, Any]:
     """Run a matched method plan on Qwen through the shared FlexGen cache path."""
 
@@ -1346,6 +1510,57 @@ def run_flexgen_reprefill(
             "periodic importance selection requires online IMPRESS/HyperInfer "
             "with contiguous block selection"
         )
+    promixed_policy: dict[str, float] | None = None
+    if promixed_gqa_selection:
+        if (
+            not online_selection
+            or method != "impress"
+            or impress_selection_block_size <= 1
+        ):
+            raise ValueError(
+                "ProMixed GQA selection requires online IMPRESS with "
+                "contiguous block selection"
+            )
+        if impress_selection_period_size not in {1, 2, 4, 8}:
+            raise ValueError("ProMixed max Period must be one of 1, 2, 4, or 8")
+        policy_values = (
+            promixed_coverage_fraction,
+            promixed_margin_reference,
+            promixed_agreement_weight,
+            promixed_sensitivity_weight,
+            promixed_p1_threshold,
+            promixed_p2_threshold,
+            promixed_p4_threshold,
+        )
+        if any(not math.isfinite(float(value)) for value in policy_values):
+            raise ValueError("ProMixed policy values must be finite")
+        if not 0 <= promixed_coverage_fraction <= 1:
+            raise ValueError("ProMixed coverage fraction must be in [0, 1]")
+        if promixed_margin_reference <= 0:
+            raise ValueError("ProMixed margin reference must be positive")
+        if not 0 <= promixed_agreement_weight <= 1:
+            raise ValueError("ProMixed agreement weight must be in [0, 1]")
+        if not 0 <= promixed_sensitivity_weight <= 1:
+            raise ValueError("ProMixed sensitivity weight must be in [0, 1]")
+        if not 0 <= promixed_p4_threshold <= promixed_p2_threshold <= promixed_p1_threshold <= 1:
+            raise ValueError("ProMixed thresholds must satisfy 0 <= P4 <= P2 <= P1 <= 1")
+        promixed_policy = {
+            "coverage_fraction": float(promixed_coverage_fraction),
+            "margin_reference": float(promixed_margin_reference),
+            "agreement_weight": float(promixed_agreement_weight),
+            "sensitivity_weight": float(promixed_sensitivity_weight),
+            "p1_threshold": float(promixed_p1_threshold),
+            "p2_threshold": float(promixed_p2_threshold),
+            "p4_threshold": float(promixed_p4_threshold),
+        }
+    if defer_cache_score_updates and (
+        not online_selection or flexgen_config.cache_type != "CKLFU"
+    ):
+        raise ValueError("deferred cache-score updates require online CKLFU")
+    if flexgen_config.selector_index_dir is not None and not promixed_gqa_selection:
+        raise ValueError(
+            "a quantized selector index requires ProMixed GQA selection"
+        )
     if impress_known_period_prefetch and (
         impress_selection_period_size <= 1
         or not online_selection
@@ -1410,6 +1625,19 @@ def run_flexgen_reprefill(
             selector_kv_head_ids=flexgen_config.selector_kv_head_ids,
             probe_query_heads=probe_query_heads,
         )
+    if promixed_gqa_selection:
+        query_heads = int(model.config.num_attention_heads)
+        kv_heads = int(model.config.num_key_value_heads)
+        groups = query_heads // kv_heads
+        mapped_groups = tuple(int(head) // groups for head in probe_query_heads)
+        expected_groups = tuple(range(kv_heads))
+        if (
+            len(mapped_groups) != kv_heads
+            or tuple(sorted(mapped_groups)) != expected_groups
+        ):
+            raise ValueError(
+                "ProMixed requires exactly one probe query head per physical GQA group"
+            )
     store = FlexGenPcacheStore(flexgen_config)
     for task in registered_store_tasks:
         store.add_task(store_root=store_root, task=task)
@@ -1484,6 +1712,8 @@ def run_flexgen_reprefill(
             impress_rolling_period_prefetch=impress_rolling_period_prefetch,
             impress_value_ordered_prefetch=impress_value_ordered_prefetch,
             impress_value_prefetch_budget_scale=value_budget_scale,
+            promixed_policy=promixed_policy,
+            defer_cache_score_updates=defer_cache_score_updates,
         )
         query_ids = tokenizer(str(row["query_text"]), add_special_tokens=False).input_ids
         labels = tuple(str(label) for label in row["labels"])
@@ -1685,6 +1915,16 @@ def run_flexgen_reprefill(
             "mean_ssd_prefetch_kv_bytes": mean_metric("critical_ssd_read_bytes"),
             "mean_total_ssd_read_bytes": mean_metric("total_ssd_read_bytes"),
             "mean_selector_key_bytes": mean_metric("selector_key_bytes"),
+            "mean_selector_dequantized_key_bytes": mean_metric("selector_dequantized_key_bytes"),
+            "mean_selector_index_enabled": mean_metric("selector_index_enabled"),
+            "mean_selector_index_bits": mean_metric("selector_index_bits"),
+            "mean_selector_index_group_size": mean_metric("selector_index_group_size"),
+            "mean_selector_index_preloaded": mean_metric(
+                "selector_index_preloaded"
+            ),
+            "mean_selector_index_preloaded_bytes": mean_metric(
+                "selector_index_preloaded_bytes"
+            ),
             "mean_selector_gpu_source_bytes": mean_metric("selector_gpu_source_bytes"),
             "mean_selector_cpu_source_bytes": mean_metric("selector_cpu_source_bytes"),
             "mean_selector_disk_source_bytes": mean_metric("selector_disk_source_bytes"),
@@ -1694,6 +1934,15 @@ def run_flexgen_reprefill(
             "mean_selector_calls": mean_metric("selector_calls"),
             "mean_selector_fallbacks": mean_metric("selector_fallbacks"),
             "mean_selector_jaccard": mean_metric("selector_mean_jaccard"),
+            "mean_promixed_decisions": mean_metric("promixed_decisions"),
+            "mean_promixed_gqa_agreement": mean_metric("promixed_mean_gqa_agreement"),
+            "mean_promixed_boundary_margin": mean_metric("promixed_mean_boundary_margin"),
+            "mean_promixed_uncertainty": mean_metric("promixed_mean_uncertainty"),
+            "mean_promixed_period": mean_metric("promixed_mean_period"),
+            "mean_promixed_p1_decisions": mean_metric("promixed_p1_decisions"),
+            "mean_promixed_p2_decisions": mean_metric("promixed_p2_decisions"),
+            "mean_promixed_p4_decisions": mean_metric("promixed_p4_decisions"),
+            "mean_promixed_p8_decisions": mean_metric("promixed_p8_decisions"),
             "mean_speculative_hit_tokens": mean_metric("inter_period_hit_tokens"),
             "mean_speculative_missing_tokens": mean_metric("inter_period_missing_tokens"),
             "mean_speculative_unused_tokens": mean_metric("inter_period_unused_tokens"),
@@ -1763,6 +2012,9 @@ def run_flexgen_reprefill(
                 "impress_value_prefetch_budget_scale"
             ),
             "mean_cache_update_ms": mean_metric("cache_update_ms"),
+            "mean_cache_update_deferred_ms": mean_metric("cache_update_deferred_ms"),
+            "mean_cache_update_in_ttft": mean_metric("cache_update_in_ttft"),
+            "mean_cache_update_deferred": mean_metric("cache_update_deferred"),
         }
         reference_rows = [
             row for row in task_rows if "selection_reference_mean_jaccard" in row
@@ -1823,6 +2075,9 @@ def run_flexgen_reprefill(
                 impress_value_prefetch_budget_scale=value_budget_scale,
                 impress_selection_period_size=impress_selection_period_size,
                 impress_known_period_prefetch=impress_known_period_prefetch,
+                promixed_gqa_selection=promixed_gqa_selection,
+                defer_cache_score_updates=defer_cache_score_updates,
+                selector_index_bits=4 if flexgen_config.selector_index_dir is not None else 0,
             ),
             "model_compute_dtype": dtype,
             "accuracy_scoring": accuracy_scoring,
@@ -1868,8 +2123,11 @@ def run_flexgen_reprefill(
             "resumed_partial_kv_chunks": flexgen_config.resume_existing,
             "cache_score_updates": store.cache_score_updates,
             "cache_update_in_ttft": bool(
-                online_selection and flexgen_config.cache_type == "CKLFU"
+                online_selection
+                and flexgen_config.cache_type == "CKLFU"
+                and not defer_cache_score_updates
             ),
+            "defer_cache_score_updates": defer_cache_score_updates,
             "cache_score_policy": (
                 "cumulative-attention-times-frequency"
                 if method == "contigkv"
@@ -1879,9 +2137,30 @@ def run_flexgen_reprefill(
             "registered_store_tasks": list(registered_store_tasks),
             "probe_query_heads": list(probe_query_heads),
             "selector_kv_head_ids": list(flexgen_config.selector_kv_head_ids),
+            "selector_index_dir": (
+                str(flexgen_config.selector_index_dir)
+                if flexgen_config.selector_index_dir is not None
+                else None
+            ),
+            "selector_index_bits": 4 if flexgen_config.selector_index_dir is not None else None,
+            "selector_index_group_size": (
+                json.loads((flexgen_config.selector_index_dir / "manifest.json").read_text(encoding="utf-8")).get("group_size")
+                if flexgen_config.selector_index_dir is not None else None
+            ),
+            "selector_index_manifest_sha256": (
+                hashlib.sha256((flexgen_config.selector_index_dir / "manifest.json").read_bytes()).hexdigest()
+                if flexgen_config.selector_index_dir is not None else None
+            ),
             "similarity_alpha": similarity_alpha,
             "impress_selection_block_size": impress_selection_block_size,
             "impress_selection_period_size": impress_selection_period_size,
+            "promixed_gqa_selection": promixed_gqa_selection,
+            "selector_score_reduction": (
+                "gpu-contiguous-block-sum"
+                if method == "impress" and impress_selection_block_size > 1
+                else "token-scores"
+            ),
+            "promixed_policy": promixed_policy,
             "impress_known_period_prefetch": impress_known_period_prefetch,
             "impress_period_prefetch_size": impress_period_prefetch_size,
             "impress_period_prefetch_budget_scale": (
@@ -2010,6 +2289,7 @@ def main() -> int:
     )
     parser.add_argument("--probe-query-heads", default="0,1,2")
     parser.add_argument("--selector-kv-head-ids", default="0,1,2")
+    parser.add_argument("--selector-index-dir")
     parser.add_argument("--similarity-alpha", type=float, default=0.6)
     parser.add_argument(
         "--impress-selection-block-size",
@@ -2027,6 +2307,31 @@ def main() -> int:
         help=(
             "Reuse one online importance ranking across this many adjacent "
             "layers while retaining each layer's own sensitivity budget."
+        ),
+    )
+    parser.add_argument(
+        "--promixed-gqa-selection",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Use one representative query head per physical GQA group and "
+            "adaptively reuse selections over P1/P2/P4/P8."
+        ),
+    )
+    parser.add_argument("--promixed-coverage-fraction", type=float, default=0.5)
+    parser.add_argument("--promixed-margin-reference", type=float, default=0.05)
+    parser.add_argument("--promixed-agreement-weight", type=float, default=0.75)
+    parser.add_argument("--promixed-sensitivity-weight", type=float, default=0.1)
+    parser.add_argument("--promixed-p1-threshold", type=float, default=0.90)
+    parser.add_argument("--promixed-p2-threshold", type=float, default=0.82)
+    parser.add_argument("--promixed-p4-threshold", type=float, default=0.68)
+    parser.add_argument(
+        "--defer-cache-score-updates",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Apply CKLFU residency-score bookkeeping immediately after the "
+            "measured TTFT boundary."
         ),
     )
     parser.add_argument(
@@ -2187,6 +2492,11 @@ def main() -> int:
         cache_type=args.cache_type,
         prefetch_time_budget=args.prefetch_time_budget,
         selector_kv_head_ids=selector_kv_head_ids,
+        selector_index_dir=(
+            Path(args.selector_index_dir)
+            if args.selector_index_dir
+            else None
+        ),
         impress_reorder_path=(
             Path(args.impress_reorder_manifest)
             if args.impress_reorder_manifest
@@ -2234,6 +2544,15 @@ def main() -> int:
         ),
         impress_selection_period_size=args.impress_selection_period_size,
         impress_known_period_prefetch=args.impress_known_period_prefetch,
+        promixed_gqa_selection=args.promixed_gqa_selection,
+        promixed_coverage_fraction=args.promixed_coverage_fraction,
+        promixed_margin_reference=args.promixed_margin_reference,
+        promixed_agreement_weight=args.promixed_agreement_weight,
+        promixed_sensitivity_weight=args.promixed_sensitivity_weight,
+        promixed_p1_threshold=args.promixed_p1_threshold,
+        promixed_p2_threshold=args.promixed_p2_threshold,
+        promixed_p4_threshold=args.promixed_p4_threshold,
+        defer_cache_score_updates=args.defer_cache_score_updates,
     )
     print(json.dumps(summary, indent=2))
     return 0

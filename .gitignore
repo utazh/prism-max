@@ -1,6 +1,7 @@
 results/
 data/
 vendor/
+assets/selector_index_k4*/
 __pycache__/
 *.py[cod]
 *.log
