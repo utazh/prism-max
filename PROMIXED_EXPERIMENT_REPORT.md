@@ -129,8 +129,76 @@ Two attempted longer-reuse launches produced zero samples after unrelated
 processes occupied their GPUs during model loading. Their OOM logs are retained
 for audit and excluded from all statistics.
 
-## Pending final run
+## Final TREC k=0.10 result (496 records)
 
-Run the selected default policy on all 496 TREC records, then compare paired
-accuracy and TTFT against the saved old Ours and ContiguousKV results. Add
-cross-task checks only after the full TREC acceptance test.
+Result:
+`results/promixed_full_default_20260819/trec/k010_promixed_k4`
+
+| Method | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) |
+|---|---:|---:|---:|
+| Old Ours | 43.9516% | 266.485 | 291.294 |
+| ContiguousKV | 55.0403% | 454.546 | 514.606 |
+| **ProMixed default** | **63.9113%** | **290.363** | **355.905** |
+
+At the same exact 9.925% effective keep ratio, ProMixed:
+
+- improves accuracy over old Ours by **19.9597 percentage points**;
+- improves accuracy over ContiguousKV by **8.8710 percentage points**;
+- reduces mean TTFT versus ContiguousKV by **36.1202%**;
+- reduces P95 TTFT versus ContiguousKV by **30.8393%**;
+- costs 8.9605% mean TTFT versus the much less accurate old Ours.
+
+Paired correctness:
+
+| Comparison | ProMixed fixes | ProMixed regressions | Exact McNemar p |
+|---|---:|---:|---:|
+| vs. old Ours | 122 | 23 | 1.73e-17 |
+| vs. ContiguousKV | 93 | 49 | 2.78e-4 |
+
+The improvement directly addresses the old class collapse:
+
+| Label | Old Ours | ContiguousKV | ProMixed |
+|---|---:|---:|---:|
+| ABBR | 87.50% | 100.00% | 100.00% |
+| DESC | 6.62% | 2.94% | 52.94% |
+| ENTY | 88.17% | 91.40% | 67.74% |
+| HUM | 90.77% | 90.77% | 86.15% |
+| LOC | 55.56% | 60.49% | 70.37% |
+| NUM | 14.16% | 60.18% | 53.98% |
+
+The all-group policy trades some ENTY/HUM accuracy for large DESC/NUM gains,
+while also improving LOC. Aggregate paired gains remain statistically
+significant against both saved baselines.
+
+Runtime audit for the final run:
+
+- 7.792 selector calls/request and mean adaptive period 5.116;
+- 11.65 ms selector load, 87.72 ms selector compute, 1.21 ms selector wait;
+- 37.90 ms critical prefetch wait;
+- 19.00 ms cache-score update, entirely after the TTFT timestamp;
+- zero request-time selector disk bytes;
+- 1.590% of payload-prefetch tensor tokens from disk (fraction `0.015897`).
+
+## Cross-task safety screen
+
+SST-2, SUBJ, and RTE were run in one process for 64 requests/task. The table
+uses the strict 60-UID intersection with each saved baseline:
+
+| Task | Old Ours | ContiguousKV | ProMixed |
+|---|---:|---:|---:|
+| SST-2 | 93.33% | 91.67% | 91.67% |
+| SUBJ | 53.33% | 46.67% | 65.00% |
+| RTE | 91.67% | 90.00% | 91.67% |
+
+No catastrophic cross-task accuracy regression is observed. The combined
+screen is not used for formal latency comparison because task ordering changes
+the shared Pcache residency state; the final TREC run is the matched primary
+performance result.
+
+## Conclusion
+
+The proposal succeeds on its motivating failure case. GQA-aware fair selection
+does more than restore the 10.91-point old Ours-to-ContiguousKV accuracy gap:
+it exceeds ContiguousKV by 8.87 points while retaining a 36.12% mean TTFT
+advantage. The cost relative to the previous fast-but-inaccurate Ours is
+23.88 ms mean TTFT.
