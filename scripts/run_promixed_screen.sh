@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="${PYTHON:-/home/panzihang/venvs/vllm-stable/bin/python}"
 GPU="${GPU:-2}"
 RESERVE_GPU="${RESERVE_GPU:-3}"
+REQUIRE_IDLE_RESERVE="${REQUIRE_IDLE_RESERVE:-true}"
 TASK="${TASK:-trec}"
 BUDGET_TAG="${BUDGET_TAG:-010}"
 VARIANT="${VARIANT:-k4}"
@@ -34,7 +35,13 @@ gpu_has_compute_process() {
 }
 
 guard_gpus() {
-  if [[ "$GPU" == "$RESERVE_GPU" ]]; then
+  if [[ "$REQUIRE_IDLE_RESERVE" != "true" &&
+        "$REQUIRE_IDLE_RESERVE" != "false" ]]; then
+    echo "REQUIRE_IDLE_RESERVE must be true or false" >&2
+    exit 2
+  fi
+  if [[ "$REQUIRE_IDLE_RESERVE" == "true" &&
+        "$GPU" == "$RESERVE_GPU" ]]; then
     echo "GPU and RESERVE_GPU must differ" >&2
     exit 2
   fi
@@ -42,9 +49,11 @@ guard_gpus() {
     echo "Refusing to start: experiment GPU $GPU is occupied" >&2
     exit 3
   fi
-  if gpu_has_compute_process "$RESERVE_GPU"; then
-    echo "Refusing to start: reserve GPU $RESERVE_GPU is occupied" >&2
-    exit 3
+  if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
+    if gpu_has_compute_process "$RESERVE_GPU"; then
+      echo "Refusing to start: reserve GPU $RESERVE_GPU is occupied" >&2
+      exit 3
+    fi
   fi
 }
 
@@ -95,7 +104,12 @@ fi
 
 guard_gpus
 mkdir -p "$(dirname "$OUTPUT")"
-echo "[$(date -Is)] ProMixed $TASK k$BUDGET_TAG $VARIANT on GPU $GPU; GPU $RESERVE_GPU reserved" | tee "$LOG"
+if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
+  resource_note="GPU $RESERVE_GPU reserved"
+else
+  resource_note="dual-GPU mode explicitly enabled"
+fi
+echo "[$(date -Is)] ProMixed $TASK k$BUDGET_TAG $VARIANT on GPU $GPU; $resource_note" | tee "$LOG"
 guard_gpus
 CUDA_VISIBLE_DEVICES="$GPU" \
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \

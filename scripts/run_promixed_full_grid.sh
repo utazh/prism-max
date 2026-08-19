@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 GPU="${GPU:-0}"
 RESERVE_GPU="${RESERVE_GPU:-1}"
+REQUIRE_IDLE_RESERVE="${REQUIRE_IDLE_RESERVE:-true}"
 TASKS="${TASKS:-sst2 subj trec rte}"
 BUDGETS="${BUDGETS:-005 010 025 050}"
 SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-1000000}"
@@ -17,7 +18,12 @@ RUN_TIMEOUT_SECONDS="${RUN_TIMEOUT_SECONDS:-86400}"
 VARIANT="${VARIANT:-k4}"
 DRIVER_LOG="$RUN_ROOT/grid_driver.log"
 
-if [[ "$GPU" == "$RESERVE_GPU" ]]; then
+if [[ "$REQUIRE_IDLE_RESERVE" != "true" &&
+      "$REQUIRE_IDLE_RESERVE" != "false" ]]; then
+  echo "REQUIRE_IDLE_RESERVE must be true or false" >&2
+  exit 2
+fi
+if [[ "$REQUIRE_IDLE_RESERVE" == "true" && "$GPU" == "$RESERVE_GPU" ]]; then
   echo "GPU and RESERVE_GPU must differ" >&2
   exit 2
 fi
@@ -32,34 +38,50 @@ flock -n 9 || {
   echo "Another ProMixed run owns GPU lock $GPU" >&2
   exit 3
 }
-exec 8>"/tmp/prism_promixed_gpu${RESERVE_GPU}.reserve.lock"
-flock -n 8 || {
-  echo "Another ProMixed run owns reserve lock $RESERVE_GPU" >&2
-  exit 3
-}
+if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
+  exec 8>"/tmp/prism_promixed_gpu${RESERVE_GPU}.reserve.lock"
+  flock -n 8 || {
+    echo "Another ProMixed run owns reserve lock $RESERVE_GPU" >&2
+    exit 3
+  }
+fi
 
 gpu_has_compute_process() {
   nvidia-smi -i "$1" --query-compute-apps=pid --format=csv,noheader 2>/dev/null |
     grep -Eq '[0-9]'
 }
 
+gpu_constraints_clear() {
+  if gpu_has_compute_process "$GPU"; then
+    return 1
+  fi
+  if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]] &&
+     gpu_has_compute_process "$RESERVE_GPU"; then
+    return 1
+  fi
+  return 0
+}
+
 wait_for_gpu_pair() {
   local announced=0
   while true; do
-    if ! gpu_has_compute_process "$GPU" &&
-       ! gpu_has_compute_process "$RESERVE_GPU"; then
+    if gpu_constraints_clear; then
       sleep "$STABLE_SECONDS"
-      if ! gpu_has_compute_process "$GPU" &&
-         ! gpu_has_compute_process "$RESERVE_GPU"; then
+      if gpu_constraints_clear; then
         if (( announced )); then
-          echo "[$(date -Is)] GPU $GPU and reserve GPU $RESERVE_GPU are stably idle" |
+          echo "[$(date -Is)] GPU constraints are stably clear for GPU $GPU" |
             tee -a "$DRIVER_LOG"
         fi
         return
       fi
     fi
     if (( ! announced )); then
-      echo "[$(date -Is)] waiting for idle GPU $GPU plus idle reserve GPU $RESERVE_GPU" |
+      if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
+        wait_note="idle GPU $GPU plus idle reserve GPU $RESERVE_GPU"
+      else
+        wait_note="idle GPU $GPU"
+      fi
+      echo "[$(date -Is)] waiting for $wait_note" |
         tee -a "$DRIVER_LOG"
       announced=1
     fi
@@ -95,6 +117,7 @@ run_one() {
     set +e
     GPU="$GPU" \
     RESERVE_GPU="$RESERVE_GPU" \
+    REQUIRE_IDLE_RESERVE="$REQUIRE_IDLE_RESERVE" \
     TASK="$task" \
     BUDGET_TAG="$budget" \
     VARIANT="$VARIANT" \
@@ -121,7 +144,12 @@ run_one() {
   sleep "$SETTLE_SECONDS"
 }
 
-echo "[$(date -Is)] ProMixed independent full grid starts; experiment GPU $GPU, reserve GPU $RESERVE_GPU" |
+if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
+  resource_note="reserve GPU $RESERVE_GPU"
+else
+  resource_note="dual-GPU partition mode"
+fi
+echo "[$(date -Is)] ProMixed independent full grid starts; experiment GPU $GPU, $resource_note" |
   tee -a "$DRIVER_LOG"
 for task in $TASKS; do
   for budget in $BUDGETS; do
