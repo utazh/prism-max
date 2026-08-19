@@ -1,6 +1,6 @@
 # ProMixed isolated experiment report
 
-Date: 2026-08-19
+Date: 2026-08-19 to 2026-08-20
 
 ## Scope and isolation
 
@@ -10,8 +10,9 @@ Date: 2026-08-19
 - ProMixed implementation commit: `5caaeef`
 - The source experiment directory was not edited. Code, generated indexes,
   logs, and results remain on the server.
-- GPU runs use one experiment GPU and designate a different GPU as the
-  reserve. Runs are refused when either is occupied at launch.
+- The formal full grid, precision ablation, and repeat run were executed
+  sequentially on GPU0. GPU1 was not used after the user selected single-GPU
+  timing. Earlier concurrent trials are archived and excluded.
 
 ## Root-cause diagnosis
 
@@ -202,3 +203,95 @@ does more than restore the 10.91-point old Ours-to-ContiguousKV accuracy gap:
 it exceeds ContiguousKV by 8.87 points while retaining a 36.12% mean TTFT
 advantage. The cost relative to the previous fast-but-inaccurate Ours is
 23.88 ms mean TTFT.
+
+## Full independent grid follow-up (2026-08-20)
+
+### Protocol and headline
+
+- Independent process per dataset/configuration; no pooled latency metric.
+- Full samples: SST-2 868, SUBJ 999, TREC 496, and RTE 273.
+- Exact 5%, 10%, 25%, and 50% layer-block budgets.
+- One pass over 32 warmup samples, then complete label-continuation scoring.
+- All formal runs serialized on GPU0. Each output was checked for the exact
+  sample count, paired UIDs, zero selector fallbacks, and intended budget.
+
+Against ContiguousKV, ProMixed reduces mean TTFT in 16/16 settings and P95 in
+15/16. Accuracy improves in 14/16. The two decreases (SST-2 25%: -0.46 pp;
+RTE 50%: -0.73 pp) are small and non-significant. SUBJ and TREC accuracy gains
+are significant at every budget.
+
+Entries below follow budgets 5% / 10% / 25% / 50%:
+
+| Dataset | Accuracy delta (pp) | Mean TTFT reduction | P95 reduction |
+|---|---|---|---|
+| SST-2 | +2.76 / +1.38 / -0.46 / +0.23 | 8.92% / 17.57% / 12.36% / 17.22% | 2.48% / 12.16% / 10.48% / 19.26% |
+| SUBJ | +11.41 / +23.62 / +36.24 / +23.12 | 11.21% / 19.96% / 15.54% / 25.54% | 4.19% / 12.69% / 9.33% / 18.26% |
+| TREC | +7.46 / +8.87 / +10.89 / +10.69 | 42.99% / 43.79% / 35.63% / 28.55% | 36.57% / 37.85% / 30.44% / 40.13% |
+| RTE | +3.30 / +2.93 / +1.83 / -0.73 | 5.91% / 14.50% / 19.42% / 35.14% | -25.39% / 8.26% / 15.66% / 33.77% |
+
+The generated paired report contains all 16 absolute accuracies, mean/P95
+latencies, exact McNemar p-values, per-request faster counts, SSD reductions,
+and paired bootstrap intervals.
+
+### Is the double win caused by mixed precision?
+
+No. ContiguousKV and ProMixed both use BF16 model compute and FP16 final KV
+storage/attention. INT4 is used only for the selector-key index; it affects
+block ranking but never replaces final FP16 K/V values.
+
+The controlled TREC 10% run keeps the GQA policy and other settings fixed while
+removing the INT4 selector index:
+
+| Method | Selector | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) |
+|---|---|---:|---:|---:|
+| ContiguousKV | original FP16 path | 55.04% | 454.55 | 514.61 |
+| ProMixed | FP16 selector | 67.74% | 381.95 | 437.76 |
+| ProMixed | INT4 selector index | 63.91% | 255.51 | 319.84 |
+
+FP16 ProMixed already beats ContiguousKV by 12.70 accuracy points (109
+wrong-to-correct versus 46 correct-to-wrong, p=4.47e-7) and reduces mean TTFT
+by 15.97%. INT4 then reduces mean TTFT another 33.10% relative to FP16, but
+loses 3.83 accuracy points (26/45 paired flips, p=0.0319). INT4 is therefore a
+speed/accuracy tradeoff, not the source of the accuracy gain.
+
+Accuracy improves because the old query heads 0/1/2 all map to physical KV
+head 0, while ProMixed representatives 0/7/14/21 cover all four Qwen GQA
+groups. Fair group coverage, normalized fusion, and uncertainty-triggered
+reselection preserve evidence omitted by the old selector.
+
+TTFT falls mainly through the compact preloaded selector index and critical
+path changes. On SST-2 5%, ContiguousKV averages 12.46 MB SSD reads/request,
+including 11.71 MB selector keys, and 60.81 ms selector loading. ProMixed has
+zero request-time selector disk bytes, 0.086 MB total SSD reads, and 8.45 ms
+selector loading. GPU-side 16-token block reduction, known-period/value-ordered
+prefetch, and post-TTFT cache-score maintenance provide additional reductions.
+ProMixed actually spends more selector compute here, so cheaper INT4 arithmetic
+alone cannot explain its lower TTFT.
+
+### RTE 5% repeat and concurrency audit
+
+The RTE 5% formal run improves mean TTFT but regresses P95. A separately stored
+repeat has identical predictions/correctness for all 273 UIDs:
+
+| Run | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) |
+|---|---:|---:|---:|
+| ContiguousKV | 86.45% | 295.05 | 337.89 |
+| ProMixed formal | 89.74% | 277.60 | 423.68 |
+| ProMixed repeat | 89.74% | 288.33 | 386.94 |
+
+Thus the RTE 5% P95 regression is a reproducible selector/prefetch long-tail
+issue and the clearest remaining optimization target.
+
+Three archived dual-GPU trials have predictions identical to their single-GPU
+reruns, but mean TTFT inflation of 43.15% (SST-2 50%), 61.15% (SUBJ 5%), and
+81.56% (SUBJ 10%). They carry `dual_gpu`/`dual_gpu_incomplete` suffixes and are
+excluded. The canonical analyzer reads only GPU0-only directories.
+
+### Full-grid artifacts
+
+- Canonical data: `results/promixed_full_grid_20260819`
+- Paired report: `results/promixed_full_grid_20260819/promixed_full_grid_report.md`
+  and adjacent JSON.
+- FP16 ablation: `results/promixed_ablation_20260820/trec/k010_promixed_fp16`
+- RTE repeat: `results/promixed_repeat_20260820/rte/k005_promixed_k4`
+- Figures: `results/promixed_full_grid_20260819/figures` (PNG and PDF).

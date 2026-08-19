@@ -31,6 +31,38 @@ class DatasetwisePlotTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "sst2/010_ours"):
             MODULE.require_metric(results, "sst2", 10, "ours")
 
+    def test_override_ours_loads_each_independent_summary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            results = {
+                task: {
+                    f"{budget:03d}_ours": {"sentinel": True}
+                    for budget in MODULE.BUDGETS
+                }
+                for task in MODULE.TASKS
+            }
+            for task in MODULE.TASKS:
+                for budget in MODULE.BUDGETS:
+                    output = root / task / f"k{budget:03d}_promixed_k4"
+                    output.mkdir(parents=True)
+                    overall = {
+                        "samples": budget,
+                        "accuracy": budget / 100.0,
+                        "mean_ttft_ms": float(budget),
+                        "p95_ttft_ms": float(budget + 1),
+                        "mean_effective_keep_ratio": budget / 100.0,
+                    }
+                    (output / "summary.json").write_text(
+                        json.dumps({"overall": overall}), encoding="utf-8"
+                    )
+
+            MODULE.override_ours(results, root, "k4")
+
+            metric = results["trec"]["025_ours"]
+            self.assertTrue(metric["sentinel"])
+            self.assertEqual(metric["samples"], 25)
+            self.assertEqual(metric["accuracy"], 0.25)
+
 
 if __name__ == "__main__":
     unittest.main()
