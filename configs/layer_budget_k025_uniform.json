@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "model": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+  "target_mean_ratio": 0.25,
+  "layer_ratios": [
+    0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+    0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+    0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+    0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25
+  ],
+  "calibration": {
+    "method": "uniform-control-with-depth-balanced-integer-rounding-v1"
+  }
+}

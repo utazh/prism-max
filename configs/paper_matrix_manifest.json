@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "model": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+  "samples": 128,
+  "samples_per_task": 32,
+  "tasks": ["sst2", "subj", "trec", "rte"],
+  "run_order": [
+    "k005_impress",
+    "k005_contiguouskv",
+    "k005_ours",
+    "k025_contiguouskv",
+    "k025_ours",
+    "k025_impress",
+    "k025_ours_uniform",
+    "k050_ours",
+    "k050_impress",
+    "k050_contiguouskv"
+  ],
+  "runs": [
+    {"label": "k005_impress", "family": "impress", "display": "IMPRESS", "budget": 0.05, "main": true},
+    {"label": "k005_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.05, "main": true},
+    {"label": "k005_ours", "family": "ours", "display": "Ours", "budget": 0.05, "main": true},
+    {"label": "k025_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.25, "main": true},
+    {"label": "k025_ours", "family": "ours", "display": "Ours", "budget": 0.25, "main": true},
+    {"label": "k025_impress", "family": "impress", "display": "IMPRESS", "budget": 0.25, "main": true},
+    {"label": "k025_ours_uniform", "family": "ours", "display": "Ours-Uniform", "budget": 0.25, "main": false},
+    {"label": "k050_ours", "family": "ours", "display": "Ours", "budget": 0.5, "main": true},
+    {"label": "k050_impress", "family": "impress", "display": "IMPRESS", "budget": 0.5, "main": true},
+    {"label": "k050_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.5, "main": true}
+  ]
+}

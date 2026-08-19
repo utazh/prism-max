@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "model": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+  "target_mean_ratio": 0.1,
+  "layer_ratios": [
+    0.1, 0.125, 0.1, 0.1, 0.125, 0.1, 0.1,
+    0.1, 0.1, 0.1, 0.1, 0.125, 0.125, 0.1,
+    0.125, 0.1, 0.125, 0.075, 0.1, 0.075, 0.125,
+    0.1, 0.1, 0.075, 0.075, 0.075, 0.075, 0.075
+  ],
+  "calibration": {
+    "method": "proportional-scale-from-k050-sensitivity-profile-v1",
+    "source_target_mean_ratio": 0.5,
+    "scale": 0.2,
+    "warning": "Layer ranking is reused from k050 and was not recalibrated at k010"
+  }
+}

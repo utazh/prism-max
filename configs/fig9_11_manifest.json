@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "model": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+  "samples": 410,
+  "samples_by_task": {
+    "sst2": 100,
+    "subj": 110,
+    "trec": 120,
+    "rte": 80
+  },
+  "tasks": ["sst2", "subj", "trec", "rte"],
+  "paper_prefix_examples_by_task": {
+    "sst2": 100,
+    "subj": 110,
+    "trec": 120,
+    "rte": 80
+  },
+  "paper_evaluation_request_count": 410,
+  "run_order": [
+    "k005_impress",
+    "k005_contiguouskv",
+    "k005_ours",
+    "k010_contiguouskv",
+    "k010_ours",
+    "k010_impress",
+    "k025_ours",
+    "k025_impress",
+    "k025_contiguouskv",
+    "k050_impress",
+    "k050_contiguouskv",
+    "k050_ours"
+  ],
+  "runs": [
+    {"label": "k005_impress", "family": "impress", "display": "IMPRESS", "budget": 0.05},
+    {"label": "k005_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.05},
+    {"label": "k005_ours", "family": "ours", "display": "Ours", "budget": 0.05},
+    {"label": "k010_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.10},
+    {"label": "k010_ours", "family": "ours", "display": "Ours", "budget": 0.10},
+    {"label": "k010_impress", "family": "impress", "display": "IMPRESS", "budget": 0.10},
+    {"label": "k025_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.25},
+    {"label": "k025_ours", "family": "ours", "display": "Ours", "budget": 0.25},
+    {"label": "k025_impress", "family": "impress", "display": "IMPRESS", "budget": 0.25},
+    {"label": "k050_ours", "family": "ours", "display": "Ours", "budget": 0.50},
+    {"label": "k050_impress", "family": "impress", "display": "IMPRESS", "budget": 0.50},
+    {"label": "k050_contiguouskv", "family": "contiguouskv", "display": "ContiguousKV", "budget": 0.50}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "metadata": {
+    "method": "impress",
+    "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+    "model_compute_dtype": "bfloat16",
+    "keep_ratio": 0.25,
+    "chunk_size": 16,
+    "online_selection_only": true,
+    "selection_source": "unchanged HyperInfer online importance selector",
+    "hybrid_mode": "importance-voted contiguous blocks plus layer sensitivity",
+    "storage_precision": "float16"
+  }
+}

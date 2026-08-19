@@ -1,0 +1,10 @@
+results/
+data/
+vendor/
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.coverage
+*.tar.gz
+*.lock

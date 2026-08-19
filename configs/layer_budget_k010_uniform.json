@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+  "target_mean_ratio": 0.1,
+  "layer_ratios": [
+    0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
+    0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
+    0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
+    0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+  ],
+  "calibration": {
+    "method": "uniform-ablation",
+    "purpose": "Isolate the effect of the scaled sensitivity profile at 10% KV budget"
+  }
+}

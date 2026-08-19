@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "method": "impress",
+    "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+    "model_compute_dtype": "bfloat16",
+    "keep_ratio": 0.5,
+    "chunk_size": 64,
+    "online_selection_only": true,
+    "selection_source": "IMPRESS online probe voting with physical importance reorder",
+    "storage_precision": "float16"
+  }
+}

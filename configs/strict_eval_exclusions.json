@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "purpose": "Exclude every evaluation UID used to calibrate the offline layer-sensitivity profile.",
+  "source_profiles": [
+    "layer_budget_k005_sensitivity.json",
+    "layer_budget_k010_sensitivity.json",
+    "layer_budget_k025_scaled.json",
+    "layer_budget_k050_sensitivity.json"
+  ],
+  "exclude_uids_by_task": {
+    "sst2": ["sst2-0"],
+    "subj": ["subj-0"],
+    "trec": ["trec-0"],
+    "rte": ["rte-0"]
+  }
+}
