@@ -147,7 +147,7 @@ run_one() {
 if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
   resource_note="reserve GPU $RESERVE_GPU"
 else
-  resource_note="dual-GPU partition mode"
+  resource_note="no idle reserve enforced"
 fi
 echo "[$(date -Is)] ProMixed independent full grid starts; experiment GPU $GPU, $resource_note" |
   tee -a "$DRIVER_LOG"

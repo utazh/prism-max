@@ -107,7 +107,7 @@ mkdir -p "$(dirname "$OUTPUT")"
 if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
   resource_note="GPU $RESERVE_GPU reserved"
 else
-  resource_note="dual-GPU mode explicitly enabled"
+  resource_note="no idle reserve enforced"
 fi
 echo "[$(date -Is)] ProMixed $TASK k$BUDGET_TAG $VARIANT on GPU $GPU; $resource_note" | tee "$LOG"
 guard_gpus
