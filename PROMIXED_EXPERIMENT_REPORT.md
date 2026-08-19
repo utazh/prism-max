@@ -140,7 +140,7 @@ Result:
 | ContiguousKV | 55.0403% | 454.546 | 514.606 |
 | **ProMixed default** | **63.9113%** | **290.363** | **355.905** |
 
-At the same exact 9.925% effective keep ratio, ProMixed:
+At the same k=0.10 target budget (9.9253% effective for ProMixed), it:
 
 - improves accuracy over old Ours by **19.9597 percentage points**;
 - improves accuracy over ContiguousKV by **8.8710 percentage points**;
