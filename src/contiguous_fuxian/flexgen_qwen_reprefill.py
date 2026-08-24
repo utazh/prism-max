@@ -39,7 +39,10 @@ from .paper_plan_generator import (
     impress_probe_token_selection_with_ranking,
     mean_pairwise_jaccard,
 )
-from .promixed import select_promixed_gqa_blocks
+from .promixed import (
+    PromixedSelectionDecision,
+    select_promixed_gqa_blocks,
+)
 from .sparse_qwen_reprefill import (
     _layer_causal_mask,
     _load_bundle_records,
@@ -355,6 +358,22 @@ def validate_plan_keep_ratio(
                 f"plan keep_ratio {keep_ratio} does not match expected ratio {expected}"
             )
     return keep_ratio
+
+
+def process_peak_rss_bytes() -> int | None:
+    """Read Linux's process high-water RSS without adding a dependency."""
+
+    try:
+        for line in Path("/proc/self/status").read_text(
+            encoding="utf-8"
+        ).splitlines():
+            if line.startswith("VmHWM:"):
+                fields = line.split()
+                if len(fields) >= 2:
+                    return int(fields[1]) * 1024
+    except (OSError, ValueError):
+        pass
+    return None
 
 
 def parse_head_ids(value: str) -> tuple[int, ...]:
@@ -800,9 +819,10 @@ def configure_online_layer_selection(
 
     configured_period = period_size
     selector_keys = loader.load_selector_keys(layer_index)
-    torch.cuda.synchronize()
-    started = time.perf_counter()
     if loader.method == "contigkv":
+        score_started = torch.cuda.Event(enable_timing=True)
+        score_finished = torch.cuda.Event(enable_timing=True)
+        score_started.record()
         head_scores = qwen_online_prefix_head_scores(
             decoder_layer=decoder_layer,
             hidden_states=hidden_states,
@@ -810,6 +830,10 @@ def configure_online_layer_selection(
             selector_keys=selector_keys,
             query_heads=None,
         )
+        score_finished.record()
+        score_finished.synchronize()
+        score_path_ms = score_started.elapsed_time(score_finished)
+        decision_started = time.perf_counter()
         token_scores = head_scores.mean(dim=0).tolist()
         chunk_scores = contiguous_chunk_scores(
             token_scores,
@@ -824,9 +848,13 @@ def configure_online_layer_selection(
             chunk_scores=chunk_scores,
             period_size=period_size,
         )
-        torch.cuda.synchronize()
-        loader.record_selector_compute((time.perf_counter() - started) * 1000)
+        loader.record_selector_compute(
+            score_path_ms + (time.perf_counter() - decision_started) * 1000
+        )
     else:
+        score_started = torch.cuda.Event(enable_timing=True)
+        score_finished = torch.cuda.Event(enable_timing=True)
+        score_started.record()
         head_scores = qwen_online_prefix_head_scores(
             decoder_layer=decoder_layer,
             hidden_states=hidden_states,
@@ -836,6 +864,10 @@ def configure_online_layer_selection(
             selector_kv_head_ids=loader.selector_kv_head_ids,
             score_block_size=impress_selection_block_size,
         )
+        score_finished.record()
+        score_finished.synchronize()
+        score_path_ms = score_started.elapsed_time(score_finished)
+        decision_started = time.perf_counter()
         score_rows = head_scores.tolist()
         prepared_block_scores = (
             prepare_impress_block_scores(
@@ -847,6 +879,7 @@ def configure_online_layer_selection(
             else None
         )
         promixed_policy = loader.promixed_policy
+        decisions_by_keep_blocks: dict[int, PromixedSelectionDecision] = {}
         if promixed_policy is not None:
             if prepared_block_scores is None:
                 raise RuntimeError(
@@ -868,13 +901,19 @@ def configure_online_layer_selection(
                 )
                 for target in range(layer_index, window_end)
             )
+            leader_keep_blocks = loader.keep_blocks_for_layer(layer_index)
             leader_decision = select_promixed_gqa_blocks(
                 prepared_block_scores.block_scores,
-                keep_blocks=loader.keep_blocks_for_layer(layer_index),
+                keep_blocks=leader_keep_blocks,
                 max_period=impress_selection_period_size,
                 sensitivity_risk=window_risk,
                 **promixed_policy,
             )
+            adaptive_coverage = bool(
+                promixed_policy.get("adaptive_coverage", False)
+            )
+            if not adaptive_coverage:
+                decisions_by_keep_blocks[leader_keep_blocks] = leader_decision
             configured_period = leader_decision.period
             loader.record_promixed_decision(
                 agreement=leader_decision.agreement,
@@ -897,17 +936,24 @@ def configure_online_layer_selection(
                     raise RuntimeError("IMPRESS block scores were not prepared")
                 keep_blocks = loader.keep_blocks_for_layer(target_layer)
                 if promixed_policy is not None:
-                    target_risk = min(
-                        1.0,
-                        max(0.0, keep_ratio / base_ratio - 1.0),
+                    decision = (
+                        None if adaptive_coverage
+                        else decisions_by_keep_blocks.get(keep_blocks)
                     )
-                    decision = select_promixed_gqa_blocks(
-                        prepared_block_scores.block_scores,
-                        keep_blocks=keep_blocks,
-                        max_period=configured_period,
-                        sensitivity_risk=target_risk,
-                        **promixed_policy,
-                    )
+                    if decision is None:
+                        target_risk = min(
+                            1.0,
+                            max(0.0, keep_ratio / base_ratio - 1.0),
+                        )
+                        decision = select_promixed_gqa_blocks(
+                            prepared_block_scores.block_scores,
+                            keep_blocks=keep_blocks,
+                            max_period=configured_period,
+                            sensitivity_risk=target_risk,
+                            **promixed_policy,
+                        )
+                        if not adaptive_coverage:
+                            decisions_by_keep_blocks[keep_blocks] = decision
                     selected = [
                         token
                         for block in decision.selected_blocks
@@ -969,9 +1015,9 @@ def configure_online_layer_selection(
             similarities.append(similarity)
             used_probe_for_all = used_probe_for_all and used_probe
         loader.schedule_impress_missing(layer_index)
-        torch.cuda.synchronize()
         loader.record_selector_compute(
-            (time.perf_counter() - started) * 1000,
+            score_path_ms
+            + (time.perf_counter() - decision_started) * 1000,
             similarity=sum(similarities) / len(similarities),
             fallback=not used_probe_for_all,
         )
@@ -1178,6 +1224,9 @@ def greedy_flexgen_completion(
     label_continuations: Mapping[str, Sequence[int]] | None = None,
     label_token_logprobs_out: dict[str, list[float]] | None = None,
     label_scoring_time_ms_out: list[float] | None = None,
+    first_token_ready_time_ms_out: list[float] | None = None,
+    response_ready_time_ms_out: list[float] | None = None,
+    evaluation_ready_time_ms_out: list[float] | None = None,
 ) -> tuple[str, float, float, dict[str, Any]]:
     """Generate a short completion while timing the FlexGen-backed TTFT."""
 
@@ -1226,14 +1275,16 @@ def greedy_flexgen_completion(
     if loader.impress_deferred_compute_timing:
         loader.resolve_deferred_impress_compute()
     query_last_logits = logits[0, -1].float()
-    if first_token_logits_out is not None:
-        first_token_logits_out.append(query_last_logits.cpu())
+    generated = [int(query_last_logits.argmax().item())]
+    if first_token_ready_time_ms_out is not None:
+        first_token_ready_time_ms_out.append(
+            (time.perf_counter() - start) * 1000
+        )
     label_cache_data = (
         tuple((layer.keys, layer.values) for layer in cache.layers)
-        if label_token_logprobs_out is not None
+        if label_token_logprobs_out is not None and max_tokens > 1
         else None
     )
-    generated = [int(query_last_logits.argmax().item())]
     for step in range(1, max_tokens):
         if tokenizer.eos_token_id is not None and generated[-1] == tokenizer.eos_token_id:
             break
@@ -1255,6 +1306,17 @@ def greedy_flexgen_completion(
         generated.append(int(logits[0, -1].argmax().item()))
     torch.cuda.synchronize()
     end = time.perf_counter()
+    completion = tokenizer.decode(generated, skip_special_tokens=True)
+    if response_ready_time_ms_out is not None:
+        response_ready_time_ms_out.append(
+            (time.perf_counter() - start) * 1000
+        )
+    if first_token_logits_out is not None:
+        first_token_logits_out.append(query_last_logits.cpu())
+    if label_token_logprobs_out is not None and label_cache_data is None:
+        label_cache_data = tuple(
+            (layer.keys, layer.values) for layer in cache.layers
+        )
     if label_token_logprobs_out is not None:
         if normalized_continuations is None or label_cache_data is None:
             raise RuntimeError("continuation scoring state was not initialized")
@@ -1316,11 +1378,15 @@ def greedy_flexgen_completion(
             label_scoring_time_ms_out.append(
                 (time.perf_counter() - scoring_started) * 1000
             )
+    if evaluation_ready_time_ms_out is not None:
+        evaluation_ready_time_ms_out.append(
+            (time.perf_counter() - start) * 1000
+        )
     metrics = loader.metrics()
     loader.close()
     del cache
     return (
-        tokenizer.decode(generated, skip_special_tokens=True),
+        completion,
         (first_token_time - start) * 1000,
         (end - start) * 1000,
         metrics,
@@ -1388,6 +1454,10 @@ def run_flexgen_reprefill(
     promixed_p1_threshold: float = 0.90,
     promixed_p2_threshold: float = 0.82,
     promixed_p4_threshold: float = 0.68,
+    promixed_adaptive_coverage: bool = False,
+    promixed_utility_max_weight: float = 0.55,
+    promixed_utility_mean_weight: float = 0.35,
+    promixed_utility_vote_weight: float = 0.10,
     defer_cache_score_updates: bool = False,
 ) -> dict[str, Any]:
     """Run a matched method plan on Qwen through the shared FlexGen cache path."""
@@ -1531,6 +1601,9 @@ def run_flexgen_reprefill(
             promixed_p1_threshold,
             promixed_p2_threshold,
             promixed_p4_threshold,
+            promixed_utility_max_weight,
+            promixed_utility_mean_weight,
+            promixed_utility_vote_weight,
         )
         if any(not math.isfinite(float(value)) for value in policy_values):
             raise ValueError("ProMixed policy values must be finite")
@@ -1544,6 +1617,17 @@ def run_flexgen_reprefill(
             raise ValueError("ProMixed sensitivity weight must be in [0, 1]")
         if not 0 <= promixed_p4_threshold <= promixed_p2_threshold <= promixed_p1_threshold <= 1:
             raise ValueError("ProMixed thresholds must satisfy 0 <= P4 <= P2 <= P1 <= 1")
+        utility_weights = (
+            float(promixed_utility_max_weight),
+            float(promixed_utility_mean_weight),
+            float(promixed_utility_vote_weight),
+        )
+        if any(weight < 0 for weight in utility_weights):
+            raise ValueError("ProMixed utility weights must be non-negative")
+        if not math.isclose(
+            sum(utility_weights), 1.0, rel_tol=0.0, abs_tol=1e-12
+        ):
+            raise ValueError("ProMixed utility weights must sum to 1")
         promixed_policy = {
             "coverage_fraction": float(promixed_coverage_fraction),
             "margin_reference": float(promixed_margin_reference),
@@ -1552,15 +1636,15 @@ def run_flexgen_reprefill(
             "p1_threshold": float(promixed_p1_threshold),
             "p2_threshold": float(promixed_p2_threshold),
             "p4_threshold": float(promixed_p4_threshold),
+            "adaptive_coverage": bool(promixed_adaptive_coverage),
+            "utility_max_weight": utility_weights[0],
+            "utility_mean_weight": utility_weights[1],
+            "utility_vote_weight": utility_weights[2],
         }
     if defer_cache_score_updates and (
         not online_selection or flexgen_config.cache_type != "CKLFU"
     ):
         raise ValueError("deferred cache-score updates require online CKLFU")
-    if flexgen_config.selector_index_dir is not None and not promixed_gqa_selection:
-        raise ValueError(
-            "a quantized selector index requires ProMixed GQA selection"
-        )
     if impress_known_period_prefetch and (
         impress_selection_period_size <= 1
         or not online_selection
@@ -1639,8 +1723,13 @@ def run_flexgen_reprefill(
                 "ProMixed requires exactly one probe query head per physical GQA group"
             )
     store = FlexGenPcacheStore(flexgen_config)
+    active_tasks = frozenset(str(task) for task in tasks)
     for task in registered_store_tasks:
-        store.add_task(store_root=store_root, task=task)
+        store.add_task(
+            store_root=store_root,
+            task=task,
+            preload_selector_index=task in active_tasks,
+        )
 
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
@@ -1742,6 +1831,9 @@ def run_flexgen_reprefill(
             if accuracy_scoring == "label_continuation_loglikelihood"
             else None
         )
+        first_token_ready_times: list[float] = []
+        response_ready_times: list[float] = []
+        evaluation_ready_times: list[float] = []
         generation_prediction, ttft_ms, latency_ms, metrics = greedy_flexgen_completion(
             model=model,
             tokenizer=tokenizer,
@@ -1759,7 +1851,16 @@ def run_flexgen_reprefill(
             label_continuations=complete_label_ids,
             label_token_logprobs_out=label_token_logprobs,
             label_scoring_time_ms_out=label_scoring_times,
+            first_token_ready_time_ms_out=first_token_ready_times,
+            response_ready_time_ms_out=response_ready_times,
+            evaluation_ready_time_ms_out=evaluation_ready_times,
         )
+        if (
+            len(first_token_ready_times) != 1
+            or len(response_ready_times) != 1
+            or len(evaluation_ready_times) != 1
+        ):
+            raise RuntimeError("request timing boundaries were not recorded")
         label_first_token_scores = None
         label_first_token_prediction = None
         label_continuation_scores = None
@@ -1831,7 +1932,12 @@ def run_flexgen_reprefill(
             "accuracy_scoring": accuracy_scoring,
             "correct": prediction_is_correct(prediction, str(row["answer"])),
             "ttft_ms": ttft_ms,
+            "logits_ready_ms": ttft_ms,
             "latency_ms": latency_ms,
+            "first_token_ready_ms": first_token_ready_times[0],
+            "response_ready_ms": response_ready_times[0],
+            "evaluation_ready_ms": evaluation_ready_times[0],
+            "accuracy_scores_ready_ms": evaluation_ready_times[0],
             "cache_score_updates": score_updates,
             "cache_update_ms": cache_update_ms,
             "layer_token_selection_sha256": layer_token_selection_sha256(
@@ -1867,7 +1973,6 @@ def run_flexgen_reprefill(
                     "selection_reference_exact_layer_fraction": selection_exact_fraction,
                 }
             )
-        torch.cuda.empty_cache()
         return result
 
     warmup_rows = rows
@@ -1880,6 +1985,8 @@ def run_flexgen_reprefill(
         for _ in range(warmup_passes):
             for row in warmup_rows:
                 execute(row)
+        if torch.cuda.is_available():
+            torch.cuda.reset_peak_memory_stats()
         for row in rows:
             scored.append(execute(row))
     finally:
@@ -1889,6 +1996,16 @@ def run_flexgen_reprefill(
     for task in tasks:
         task_rows = [row for row in scored if row["task"] == task]
         ttfts = [float(row["ttft_ms"]) for row in task_rows]
+        latencies = [float(row["latency_ms"]) for row in task_rows]
+        first_token_ready_times = [
+            float(row["first_token_ready_ms"]) for row in task_rows
+        ]
+        response_ready_times = [
+            float(row["response_ready_ms"]) for row in task_rows
+        ]
+        evaluation_ready_times = [
+            float(row["evaluation_ready_ms"]) for row in task_rows
+        ]
         row_count = max(1, len(task_rows))
 
         def mean_metric(name: str) -> float:
@@ -1899,6 +2016,24 @@ def run_flexgen_reprefill(
             "accuracy": sum(row["correct"] for row in task_rows) / row_count,
             "mean_ttft_ms": sum(ttfts) / row_count,
             "p95_ttft_ms": percentile95(ttfts),
+            "mean_logits_ready_ms": sum(ttfts) / row_count,
+            "p95_logits_ready_ms": percentile95(ttfts),
+            "mean_latency_ms": sum(latencies) / row_count,
+            "p95_latency_ms": percentile95(latencies),
+            "mean_first_token_ready_ms": (
+                sum(first_token_ready_times) / row_count
+            ),
+            "p95_first_token_ready_ms": percentile95(
+                first_token_ready_times
+            ),
+            "mean_response_ready_ms": sum(response_ready_times) / row_count,
+            "p95_response_ready_ms": percentile95(response_ready_times),
+            "mean_evaluation_ready_ms": (
+                sum(evaluation_ready_times) / row_count
+            ),
+            "p95_evaluation_ready_ms": percentile95(
+                evaluation_ready_times
+            ),
             "mean_selected_kv_bytes": mean_metric("selected_kv_bytes"),
             "mean_physical_prefetch_kv_bytes": mean_metric("physical_prefetch_kv_bytes"),
             "mean_read_amplification": mean_metric("read_amplification"),
@@ -2033,6 +2168,16 @@ def run_flexgen_reprefill(
             )
         by_task[task] = task_summary
     ttfts = [float(row["ttft_ms"]) for row in scored]
+    latencies = [float(row["latency_ms"]) for row in scored]
+    first_token_ready_times = [
+        float(row["first_token_ready_ms"]) for row in scored
+    ]
+    response_ready_times = [
+        float(row["response_ready_ms"]) for row in scored
+    ]
+    evaluation_ready_times = [
+        float(row["evaluation_ready_ms"]) for row in scored
+    ]
     summary: dict[str, Any] = {
         "model_path": model_path,
         "plan": str(plan_path),
@@ -2042,6 +2187,26 @@ def run_flexgen_reprefill(
             "accuracy": sum(row["correct"] for row in scored) / max(1, len(scored)),
             "mean_ttft_ms": sum(ttfts) / max(1, len(ttfts)),
             "p95_ttft_ms": percentile95(ttfts),
+            "mean_logits_ready_ms": sum(ttfts) / max(1, len(ttfts)),
+            "p95_logits_ready_ms": percentile95(ttfts),
+            "mean_latency_ms": sum(latencies) / max(1, len(latencies)),
+            "p95_latency_ms": percentile95(latencies),
+            "mean_first_token_ready_ms": (
+                sum(first_token_ready_times)
+                / max(1, len(first_token_ready_times))
+            ),
+            "p95_first_token_ready_ms": percentile95(
+                first_token_ready_times
+            ),
+            "mean_response_ready_ms": (
+                sum(response_ready_times) / max(1, len(response_ready_times))
+            ),
+            "p95_response_ready_ms": percentile95(response_ready_times),
+            "mean_evaluation_ready_ms": (
+                sum(evaluation_ready_times)
+                / max(1, len(evaluation_ready_times))
+            ),
+            "p95_evaluation_ready_ms": percentile95(evaluation_ready_times),
             "mean_effective_keep_ratio": sum(
                 float(row["effective_mean_keep_ratio"]) for row in scored
             )
@@ -2135,12 +2300,26 @@ def run_flexgen_reprefill(
             ),
             "online_selection": online_selection,
             "registered_store_tasks": list(registered_store_tasks),
+            "selector_index_preloaded_tasks": list(
+                store.selector_index_preloaded_tasks
+            ),
+            "selector_index_preload_ms": store.selector_index_preload_ms,
+            "selector_index_preloaded_bytes": (
+                store.selector_index_preloaded_bytes
+            ),
+            "nominal_cpu_cache_plus_selector_bytes": (
+                int(flexgen_config.cpu_cache_mb * 1024 * 1024)
+                + store.selector_index_preloaded_bytes
+            ),
             "probe_query_heads": list(probe_query_heads),
             "selector_kv_head_ids": list(flexgen_config.selector_kv_head_ids),
             "selector_index_dir": (
                 str(flexgen_config.selector_index_dir)
                 if flexgen_config.selector_index_dir is not None
                 else None
+            ),
+            "selector_compute_timing": (
+                "CUDA-event score path plus host decision path"
             ),
             "selector_index_bits": 4 if flexgen_config.selector_index_dir is not None else None,
             "selector_index_group_size": (
@@ -2226,8 +2405,29 @@ def run_flexgen_reprefill(
             "warmup_passes": warmup_passes,
             "warmup_samples_per_task": warmup_samples_per_task,
             "warmup_requests": warmup_passes * len(warmup_rows),
+            "response_ready_metric_valid_for_first_token": max_tokens == 1,
+            "response_ready_excludes_accuracy_scoring": True,
+            "evaluation_ready_includes_accuracy_scoring": True,
+            "process_peak_rss_bytes": process_peak_rss_bytes(),
+            "cuda_peak_allocated_bytes": (
+                int(torch.cuda.max_memory_allocated())
+                if torch.cuda.is_available() else None
+            ),
+            "cuda_peak_reserved_bytes": (
+                int(torch.cuda.max_memory_reserved())
+                if torch.cuda.is_available() else None
+            ),
         },
-        "measurement": "TTFT from sparse Re-Prefill entry through Qwen's first generated token",
+        "measurement": (
+            "ttft_ms/logits_ready_ms ends when first-token logits are ready; "
+            "first_token_ready_ms additionally includes cache-score maintenance "
+            "and first-token ID selection; latency_ms ends when all requested "
+            "token IDs are ready; response_ready_ms additionally includes token "
+            "decoding and excludes benchmark-only accuracy scoring; "
+            "evaluation_ready_ms/accuracy_scores_ready_ms additionally includes "
+            "complete-label scoring. latency_ms and response_ready_ms describe "
+            "one token only when max_tokens=1."
+        ),
     }
     if accuracy_scoring == "label_continuation_loglikelihood":
         summary["overall"]["mean_label_scoring_time_ms"] = sum(
@@ -2325,6 +2525,30 @@ def main() -> int:
     parser.add_argument("--promixed-p1-threshold", type=float, default=0.90)
     parser.add_argument("--promixed-p2-threshold", type=float, default=0.82)
     parser.add_argument("--promixed-p4-threshold", type=float, default=0.68)
+    parser.add_argument(
+        "--promixed-adaptive-coverage",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Use minimum one-block-per-group coverage when uncertainty selects "
+            "the longest reuse horizon."
+        ),
+    )
+    parser.add_argument(
+        "--promixed-utility-max-weight",
+        type=float,
+        default=0.55,
+    )
+    parser.add_argument(
+        "--promixed-utility-mean-weight",
+        type=float,
+        default=0.35,
+    )
+    parser.add_argument(
+        "--promixed-utility-vote-weight",
+        type=float,
+        default=0.10,
+    )
     parser.add_argument(
         "--defer-cache-score-updates",
         action=argparse.BooleanOptionalAction,
@@ -2552,6 +2776,16 @@ def main() -> int:
         promixed_p1_threshold=args.promixed_p1_threshold,
         promixed_p2_threshold=args.promixed_p2_threshold,
         promixed_p4_threshold=args.promixed_p4_threshold,
+        promixed_adaptive_coverage=args.promixed_adaptive_coverage,
+        promixed_utility_max_weight=(
+            args.promixed_utility_max_weight
+        ),
+        promixed_utility_mean_weight=(
+            args.promixed_utility_mean_weight
+        ),
+        promixed_utility_vote_weight=(
+            args.promixed_utility_vote_weight
+        ),
         defer_cache_score_updates=args.defer_cache_score_updates,
     )
     print(json.dumps(summary, indent=2))

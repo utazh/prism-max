@@ -109,6 +109,10 @@ def load_run(path: Path, task: str) -> dict[str, Any]:
 def absolute_metrics(run: dict[str, Any]) -> dict[str, Any]:
     rows = list(run["records"].values())
     ttfts = [float(row["ttft_ms"]) for row in rows]
+    latencies = [
+        float(row.get("latency_ms", row["ttft_ms"]))
+        for row in rows
+    ]
     keep_ratios = [
         float(row["effective_mean_keep_ratio"])
         for row in rows
@@ -126,6 +130,8 @@ def absolute_metrics(run: dict[str, Any]) -> dict[str, Any]:
         "accuracy": sum(bool(row["correct"]) for row in rows) / len(rows),
         "mean_ttft_ms": sum(ttfts) / len(ttfts),
         "p95_ttft_ms": percentile95(ttfts),
+        "mean_latency_ms": sum(latencies) / len(latencies),
+        "p95_latency_ms": percentile95(latencies),
         "mean_effective_keep_ratio": sum(keep_ratios) / len(keep_ratios),
         "mean_total_ssd_read_bytes": sum(ssd_reads) / len(ssd_reads),
         "mean_selector_load_ms": sum(selector_loads) / len(selector_loads),
@@ -153,9 +159,21 @@ def paired_comparison(
     right_correct = [bool(right[uid]["correct"]) for uid in uids]
     left_ttft = [float(left[uid]["ttft_ms"]) for uid in uids]
     right_ttft = [float(right[uid]["ttft_ms"]) for uid in uids]
-    deltas = [
+    ttft_deltas = [
         right_value - left_value
         for left_value, right_value in zip(left_ttft, right_ttft)
+    ]
+    left_latency = [
+        float(left[uid].get("latency_ms", left[uid]["ttft_ms"]))
+        for uid in uids
+    ]
+    right_latency = [
+        float(right[uid].get("latency_ms", right[uid]["ttft_ms"]))
+        for uid in uids
+    ]
+    latency_deltas = [
+        right_value - left_value
+        for left_value, right_value in zip(left_latency, right_latency)
     ]
     wrong_to_correct = sum(
         not old and new
@@ -169,6 +187,10 @@ def paired_comparison(
     right_mean = sum(right_ttft) / len(right_ttft)
     left_p95 = percentile95(left_ttft)
     right_p95 = percentile95(right_ttft)
+    left_latency_mean = sum(left_latency) / len(left_latency)
+    right_latency_mean = sum(right_latency) / len(right_latency)
+    left_latency_p95 = percentile95(left_latency)
+    right_latency_p95 = percentile95(right_latency)
     left_ssd = sum(
         float(left[uid].get("total_ssd_read_bytes", 0.0)) for uid in uids
     ) / len(uids)
@@ -193,18 +215,39 @@ def paired_comparison(
         "mean_ttft_reduction_percent": (
             left_mean - right_mean
         ) / left_mean * 100.0,
-        "mean_paired_delta_ms": sum(deltas) / len(deltas),
+        "mean_paired_delta_ms": sum(ttft_deltas) / len(ttft_deltas),
         "paired_mean_delta_95ci_ms": bootstrap_mean_ci(
-            deltas,
+            ttft_deltas,
             samples=bootstrap_samples,
             seed=seed,
         ),
-        "candidate_faster_requests": sum(delta < 0 for delta in deltas),
+        "candidate_faster_requests": sum(delta < 0 for delta in ttft_deltas),
         "baseline_p95_ttft_ms": left_p95,
         "candidate_p95_ttft_ms": right_p95,
         "p95_ttft_reduction_percent": (
             left_p95 - right_p95
         ) / left_p95 * 100.0,
+        "baseline_mean_latency_ms": left_latency_mean,
+        "candidate_mean_latency_ms": right_latency_mean,
+        "mean_latency_reduction_percent": (
+            left_latency_mean - right_latency_mean
+        ) / left_latency_mean * 100.0,
+        "mean_paired_latency_delta_ms": (
+            sum(latency_deltas) / len(latency_deltas)
+        ),
+        "paired_mean_latency_delta_95ci_ms": bootstrap_mean_ci(
+            latency_deltas,
+            samples=bootstrap_samples,
+            seed=seed + 10_000,
+        ),
+        "candidate_faster_latency_requests": sum(
+            delta < 0 for delta in latency_deltas
+        ),
+        "baseline_p95_latency_ms": left_latency_p95,
+        "candidate_p95_latency_ms": right_latency_p95,
+        "p95_latency_reduction_percent": (
+            left_latency_p95 - right_latency_p95
+        ) / left_latency_p95 * 100.0,
         "ssd_read_reduction_percent": (
             (left_ssd - right_ssd) / left_ssd * 100.0
             if left_ssd
@@ -280,7 +323,7 @@ def render_report(result: dict[str, Any]) -> str:
             [
                 f"## {task.upper()}",
                 "",
-                "| KV | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Observed KV |",
+                "| KV | Method | N | Accuracy | Mean/P95 logits-ready (ms) | Mean/P95 completion-token-ready (ms) | Observed KV |",
                 "|---:|---|---:|---:|---:|---:|---:|",
             ]
         )
@@ -289,36 +332,43 @@ def render_report(result: dict[str, Any]) -> str:
                 metric = budget_result["absolute"][family]
                 lines.append(
                     "| {budget:.0f}% | {method} | {samples} | {accuracy:.4f} | "
-                    "{mean:.2f} | {p95:.2f} | {keep:.2f}% |".format(
+                    "{mean:.2f}/{p95:.2f} | "
+                    "{latency:.2f}/{latency_p95:.2f} | {keep:.2f}% |".format(
                         budget=int(budget),
                         method=DISPLAY[family],
                         samples=metric["samples"],
                         accuracy=metric["accuracy"],
                         mean=metric["mean_ttft_ms"],
                         p95=metric["p95_ttft_ms"],
+                        latency=metric["mean_latency_ms"],
+                        latency_p95=metric["p95_latency_ms"],
                         keep=metric["mean_effective_keep_ratio"] * 100.0,
                     )
                 )
         lines.extend(
             [
                 "",
-                "| KV | ProMixed accuracy delta vs ContiguousKV | Mean TTFT reduction | P95 reduction | W->C / C->W | McNemar p | Faster requests |",
+                "| KV | Accuracy delta | Mean/P95 logits-ready reduction | Mean/P95 completion-token-ready reduction | W->C / C->W | McNemar p | Faster completion-token-ready |",
                 "|---:|---:|---:|---:|---:|---:|---:|",
             ]
         )
         for budget, budget_result in task_result.items():
             comparison = budget_result["promixed_vs_contigkv"]
             lines.append(
-                "| {budget:.0f}% | {accuracy:+.2f} pp | {mean:+.2f}% | "
-                "{p95:+.2f}% | {w2c}/{c2w} | {p:.4g} | {faster}/{samples} |".format(
+                "| {budget:.0f}% | {accuracy:+.2f} pp | "
+                "{mean:+.2f}%/{p95:+.2f}% | "
+                "{latency:+.2f}%/{latency_p95:+.2f}% | "
+                "{w2c}/{c2w} | {p:.4g} | {faster}/{samples} |".format(
                     budget=int(budget),
                     accuracy=comparison["accuracy_delta_pp"],
                     mean=comparison["mean_ttft_reduction_percent"],
                     p95=comparison["p95_ttft_reduction_percent"],
+                    latency=comparison["mean_latency_reduction_percent"],
+                    latency_p95=comparison["p95_latency_reduction_percent"],
                     w2c=comparison["wrong_to_correct"],
                     c2w=comparison["correct_to_wrong"],
                     p=comparison["mcnemar_two_sided_p"],
-                    faster=comparison["candidate_faster_requests"],
+                    faster=comparison["candidate_faster_latency_requests"],
                     samples=comparison["samples"],
                 )
             )

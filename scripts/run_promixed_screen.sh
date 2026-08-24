@@ -19,6 +19,11 @@ PROMIXED_SENSITIVITY_WEIGHT="${PROMIXED_SENSITIVITY_WEIGHT:-0.1}"
 PROMIXED_P1_THRESHOLD="${PROMIXED_P1_THRESHOLD:-0.90}"
 PROMIXED_P2_THRESHOLD="${PROMIXED_P2_THRESHOLD:-0.82}"
 PROMIXED_P4_THRESHOLD="${PROMIXED_P4_THRESHOLD:-0.68}"
+PROMIXED_ADAPTIVE_COVERAGE="${PROMIXED_ADAPTIVE_COVERAGE:-false}"
+PROMIXED_UTILITY_MAX_WEIGHT="${PROMIXED_UTILITY_MAX_WEIGHT:-0.55}"
+PROMIXED_UTILITY_MEAN_WEIGHT="${PROMIXED_UTILITY_MEAN_WEIGHT:-0.35}"
+PROMIXED_UTILITY_VOTE_WEIGHT="${PROMIXED_UTILITY_VOTE_WEIGHT:-0.10}"
+DEFER_CACHE_SCORE_UPDATES="${DEFER_CACHE_SCORE_UPDATES:-false}"
 RUN_TIMEOUT_SECONDS="${RUN_TIMEOUT_SECONDS:-14400}"
 RUN_ROOT="${RUN_ROOT:-$ROOT/results/promixed_screen_20260819}"
 
@@ -82,6 +87,24 @@ case "$VARIANT" in
   k4) index_args=(--selector-index-dir "$SELECTOR_INDEX") ;;
   *) echo "VARIANT must be fp16 or k4" >&2; exit 2 ;;
 esac
+case "$PROMIXED_ADAPTIVE_COVERAGE" in
+  true) adaptive_coverage_args=(--promixed-adaptive-coverage) ;;
+  false) adaptive_coverage_args=(--no-promixed-adaptive-coverage) ;;
+  *)
+    echo "PROMIXED_ADAPTIVE_COVERAGE must be true or false" >&2
+    exit 2
+    ;;
+esac
+
+case "$DEFER_CACHE_SCORE_UPDATES" in
+  true) cache_score_args=(--defer-cache-score-updates) ;;
+  false) cache_score_args=(--no-defer-cache-score-updates) ;;
+  *)
+    echo "DEFER_CACHE_SCORE_UPDATES must be true or false" >&2
+    exit 2
+    ;;
+esac
+
 
 KEEP_RATIO="$(budget_ratio "$BUDGET_TAG")"
 PROFILE="$(budget_profile "$BUDGET_TAG")"
@@ -109,7 +132,7 @@ if [[ "$REQUIRE_IDLE_RESERVE" == "true" ]]; then
 else
   resource_note="no idle reserve enforced"
 fi
-echo "[$(date -Is)] ProMixed $TASK k$BUDGET_TAG $VARIANT on GPU $GPU; $resource_note" | tee "$LOG"
+echo "[$(date -Is)] ProMixed $TASK k$BUDGET_TAG $VARIANT on GPU $GPU; $resource_note; deferred=$DEFER_CACHE_SCORE_UPDATES adaptive_coverage=$PROMIXED_ADAPTIVE_COVERAGE" | tee "$LOG"
 guard_gpus
 CUDA_VISIBLE_DEVICES="$GPU" \
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
@@ -157,6 +180,10 @@ timeout "${RUN_TIMEOUT_SECONDS}s" "$PYTHON" \
   --promixed-p1-threshold "$PROMIXED_P1_THRESHOLD" \
   --promixed-p2-threshold "$PROMIXED_P2_THRESHOLD" \
   --promixed-p4-threshold "$PROMIXED_P4_THRESHOLD" \
+  --promixed-utility-max-weight "$PROMIXED_UTILITY_MAX_WEIGHT" \
+  --promixed-utility-mean-weight "$PROMIXED_UTILITY_MEAN_WEIGHT" \
+  --promixed-utility-vote-weight "$PROMIXED_UTILITY_VOTE_WEIGHT" \
+  "${adaptive_coverage_args[@]}" \
   --impress-async-prefetch \
   --impress-period-prefetch-size 1 \
   --no-impress-priority-prefetch \
@@ -167,7 +194,7 @@ timeout "${RUN_TIMEOUT_SECONDS}s" "$PYTHON" \
   --layer-budget-profile "$PROFILE" \
   --exact-layer-block-budget \
   --impress-known-period-prefetch \
-  --defer-cache-score-updates \
+  "${cache_score_args[@]}" \
   "${index_args[@]}" \
   >>"$LOG" 2>&1
 

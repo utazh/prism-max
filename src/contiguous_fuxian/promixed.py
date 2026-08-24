@@ -17,6 +17,7 @@ class PromixedSelectionDecision:
     boundary_margin: float
     uncertainty: float
     period: int
+    effective_coverage_fraction: float
 
 
 def _validate_score_rows(
@@ -107,11 +108,15 @@ def select_promixed_gqa_blocks(
     p1_threshold: float = 0.90,
     p2_threshold: float = 0.82,
     p4_threshold: float = 0.68,
+    adaptive_coverage: bool = False,
+    utility_max_weight: float = 0.55,
+    utility_mean_weight: float = 0.35,
+    utility_vote_weight: float = 0.10,
 ) -> PromixedSelectionDecision:
     """Select exact-budget blocks without averaging away a minority GQA group.
 
     A fraction of the budget is filled round-robin from each physical GQA
-    group's ranking. The remainder uses a scale-normalized max/mean fusion.
+    group's ranking. The remainder uses a scale-normalized max/mean/vote fusion.
     Cross-group Jaccard, top-K boundary margin, and offline layer risk jointly
     choose a P1/P2/P4/P8 reuse horizon.
     """
@@ -134,6 +139,17 @@ def select_promixed_gqa_blocks(
         raise ValueError("ProMixed sensitivity risk must be in [0, 1]")
     if not 0 <= sensitivity_weight <= 1:
         raise ValueError("ProMixed sensitivity weight must be in [0, 1]")
+    utility_weights = (
+        float(utility_max_weight),
+        float(utility_mean_weight),
+        float(utility_vote_weight),
+    )
+    if any(not math.isfinite(weight) or weight < 0 for weight in utility_weights):
+        raise ValueError("ProMixed utility weights must be finite and non-negative")
+    if not math.isclose(
+        sum(utility_weights), 1.0, rel_tol=0.0, abs_tol=1e-12
+    ):
+        raise ValueError("ProMixed utility weights must sum to 1")
 
     rankings = tuple(
         tuple(
@@ -176,16 +192,21 @@ def select_promixed_gqa_blocks(
     for block in range(block_count):
         group_values = [row[block] for row in normalized]
         utilities.append(
-            0.55 * max(group_values)
-            + 0.35 * (sum(group_values) / head_count)
-            + 0.10 * score_scale * (votes[block] / head_count)
+            utility_weights[0] * max(group_values)
+            + utility_weights[1] * (sum(group_values) / head_count)
+            + utility_weights[2] * score_scale * (votes[block] / head_count)
         )
 
+    effective_coverage_fraction = (
+        0.0
+        if adaptive_coverage and uncertainty < p4_threshold
+        else coverage_fraction
+    )
     coverage_target = min(
         keep_blocks,
         max(
             min(head_count, keep_blocks),
-            math.ceil(keep_blocks * coverage_fraction),
+            math.ceil(keep_blocks * effective_coverage_fraction),
         ),
     )
     selected: set[int] = set()
@@ -216,4 +237,5 @@ def select_promixed_gqa_blocks(
         boundary_margin=boundary_margin,
         uncertainty=uncertainty,
         period=period,
+        effective_coverage_fraction=effective_coverage_fraction,
     )

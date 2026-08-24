@@ -2,6 +2,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from contiguous_fuxian.flexgen_qwen_reprefill import (
     _load_layer_chunk_scores,
@@ -9,6 +10,7 @@ from contiguous_fuxian.flexgen_qwen_reprefill import (
     _load_plan_metadata,
     allocate_exact_layer_blocks,
     build_online_layer_plan,
+    configure_online_layer_selection,
     impress_contiguous_block_selection,
     impress_contiguous_block_selection_with_ranking,
     layer_token_selection_sha256,
@@ -253,6 +255,80 @@ class FlexGenQwenReprefillTest(unittest.TestCase):
             ),
             (0, 0, 2),
         )
+
+    def test_contiguous_selector_timing_uses_events_without_stream_sync(self):
+        import torch
+
+        class FakeEvent:
+            instances = []
+
+            def __init__(self, *, enable_timing):
+                self.enable_timing = enable_timing
+                self.recorded = False
+                self.synchronized = False
+                self.instances.append(self)
+
+            def record(self):
+                self.recorded = True
+
+            def synchronize(self):
+                self.synchronized = True
+
+            def elapsed_time(self, finished):
+                self.assert_finished(finished)
+                return 7.5
+
+            def assert_finished(self, finished):
+                if not finished.recorded or not finished.synchronized:
+                    raise AssertionError("finished event was not resolved")
+
+        class FakeLoader:
+            method = "contigkv"
+            chunk_size = 2
+            prefix_tokens = 4
+            keep_ratio = 0.5
+
+            def __init__(self):
+                self.compute_ms = None
+                self.selection = None
+
+            def load_selector_keys(self, layer):
+                self.loaded_layer = layer
+                return object()
+
+            def configure_contiguous_period(self, **selection):
+                self.selection = selection
+
+            def record_selector_compute(self, elapsed_ms):
+                self.compute_ms = elapsed_ms
+
+        loader = FakeLoader()
+        scores = torch.tensor([[0.1, 0.9, 0.2, 0.8]])
+        with patch.object(torch.cuda, "Event", FakeEvent), patch.object(
+            torch.cuda,
+            "current_stream",
+            side_effect=AssertionError("current stream was synchronized"),
+        ), patch(
+            "contiguous_fuxian.flexgen_qwen_reprefill."
+            "qwen_online_prefix_head_scores",
+            return_value=scores,
+        ), patch(
+            "contiguous_fuxian.flexgen_qwen_reprefill.time.perf_counter",
+            side_effect=(10.0, 10.002),
+        ):
+            configured = configure_online_layer_selection(
+                decoder_layer=object(),
+                hidden_states=object(),
+                position_embeddings=(object(), object()),
+                layer_index=3,
+                loader=loader,
+                period_size=8,
+            )
+
+        self.assertEqual(configured, 8)
+        self.assertAlmostEqual(loader.compute_ms, 9.5)
+        self.assertEqual(len(FakeEvent.instances), 2)
+        self.assertTrue(all(event.recorded for event in FakeEvent.instances))
 
     def test_impress_contiguous_block_selection_votes_over_aligned_blocks(self):
         selected, used_probe, similarity = impress_contiguous_block_selection(

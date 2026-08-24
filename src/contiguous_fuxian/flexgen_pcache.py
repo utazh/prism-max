@@ -427,11 +427,34 @@ class FlexGenPcacheStore:
         self._attention_state: dict[tuple[int, int, int], tuple[float, int]] = {}
         self._impress_score_state: dict[tuple[int, int, int], tuple[int, int]] = {}
         self.cache_score_updates = 0
+        self.selector_index_preload_ms = 0.0
+        self.selector_index_preloaded_tasks: list[str] = []
 
-    def add_task(self, *, store_root: str | Path, task: str) -> PrefixStoreInfo:
-        """Insert one task's full prepared prefix before timing requests."""
+    def _preload_selector_task(self, task: str) -> None:
+        if (
+            self._selector_index is None
+            or task in self.selector_index_preloaded_tasks
+        ):
+            return
+        preload_started = time.perf_counter()
+        self._selector_index.preload_task(task)
+        self.selector_index_preload_ms += (
+            time.perf_counter() - preload_started
+        ) * 1000
+        self.selector_index_preloaded_tasks.append(task)
+
+    def add_task(
+        self,
+        *,
+        store_root: str | Path,
+        task: str,
+        preload_selector_index: bool = True,
+    ) -> PrefixStoreInfo:
+        """Register a task while optionally keeping its selector index cold."""
 
         if task in self._task_prefix_ids:
+            if preload_selector_index:
+                self._preload_selector_task(task)
             return self._task_infos[task]
         info = read_store_info(store_root, task)
         if self._selector_index is not None:
@@ -442,7 +465,8 @@ class FlexGenPcacheStore:
                 kv_heads=info.kv_heads,
                 head_dim=info.head_dim,
             )
-            self._selector_index.preload_task(task)
+            if preload_selector_index:
+                self._preload_selector_task(task)
         physical_to_logical = logical_to_physical = None
         if self.config.impress_reorder_path is not None:
             physical_to_logical, logical_to_physical = load_task_reorder(
@@ -474,6 +498,14 @@ class FlexGenPcacheStore:
         del key, value
         return info
 
+    @property
+    def selector_index_preloaded_bytes(self) -> int:
+        """Return compressed selector bytes resident for active tasks."""
+
+        if self._selector_index is None:
+            return 0
+        return int(self._selector_index.preloaded_compressed_bytes)
+
     def new_layer_loader(
         self,
         *,
@@ -495,7 +527,7 @@ class FlexGenPcacheStore:
         impress_rolling_period_prefetch: bool = False,
         impress_value_ordered_prefetch: bool = False,
         impress_value_prefetch_budget_scale: float = 1.0,
-        promixed_policy: Mapping[str, float] | None = None,
+        promixed_policy: Mapping[str, float | bool] | None = None,
         defer_cache_score_updates: bool = False,
     ) -> "FlexGenLayerLoader":
         if task not in self._task_prefix_ids:
@@ -767,7 +799,7 @@ class FlexGenLayerLoader:
         impress_rolling_period_prefetch: bool = False,
         impress_value_ordered_prefetch: bool = False,
         impress_value_prefetch_budget_scale: float = 1.0,
-        promixed_policy: Mapping[str, float] | None = None,
+        promixed_policy: Mapping[str, float | bool] | None = None,
         defer_cache_score_updates: bool = False,
         selector_index: QuantizedKeyIndex | None = None,
         selector_index_task: str | None = None,
@@ -937,18 +969,24 @@ class FlexGenLayerLoader:
                     "ProMixed policies require online IMPRESS/HyperInfer selection"
                 )
             normalized_promixed_policy = {
-                str(key): float(value)
+                str(key): (
+                    bool(value)
+                    if str(key) == "adaptive_coverage"
+                    else float(value)
+                )
                 for key, value in promixed_policy.items()
             }
         else:
             normalized_promixed_policy = None
         if selector_index is not None:
             if (
-                method != "impress"
-                or not online_selection
-                or normalized_promixed_policy is None
+                not online_selection
+                or method not in {"contigkv", "impress"}
+                or (method == "impress" and normalized_promixed_policy is None)
             ):
-                raise ValueError("a selector index requires online ProMixed IMPRESS")
+                raise ValueError(
+                    "a selector index requires online ContiguousKV or ProMixed"
+                )
             if selector_index_task is None:
                 raise ValueError("a selector index requires a task name")
             if selector_index.selector_kv_head_ids != config.selector_kv_head_ids:

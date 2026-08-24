@@ -78,6 +78,54 @@ class PromixedSelectionTest(unittest.TestCase):
         self.assertLessEqual(sensitive.period, normal.period)
         self.assertGreaterEqual(sensitive.uncertainty, normal.uncertainty)
 
+    def test_adaptive_coverage_relaxes_only_low_uncertainty_requests(self):
+        score_rows = [
+            [100.0, 80.0, 70.0, 1.0, 1.0, 90.0, 1.0],
+            [1.0, 80.0, 70.0, 1.0, 100.0, 1.0, 90.0],
+        ]
+        fixed = select_promixed_gqa_blocks(
+            score_rows,
+            keep_blocks=4,
+            coverage_fraction=1.0,
+            adaptive_coverage=False,
+        )
+        low_uncertainty = select_promixed_gqa_blocks(
+            score_rows,
+            keep_blocks=4,
+            coverage_fraction=1.0,
+            adaptive_coverage=True,
+        )
+        high_uncertainty = select_promixed_gqa_blocks(
+            [
+                [9.0, 8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 9.0, 8.0, 0.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 9.0, 8.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0, 8.0],
+            ],
+            keep_blocks=2,
+            coverage_fraction=0.5,
+            adaptive_coverage=True,
+        )
+
+        self.assertEqual(fixed.selected_blocks, (0, 4, 5, 6))
+        self.assertEqual(low_uncertainty.selected_blocks, (0, 1, 2, 4))
+        self.assertEqual(low_uncertainty.uncertainty, 0.5)
+        self.assertEqual(low_uncertainty.period, 8)
+        self.assertEqual(fixed.effective_coverage_fraction, 1.0)
+        self.assertEqual(low_uncertainty.effective_coverage_fraction, 0.0)
+        self.assertGreaterEqual(high_uncertainty.uncertainty, 0.68)
+        self.assertEqual(high_uncertainty.effective_coverage_fraction, 0.5)
+
+    def test_rejects_utility_weights_that_do_not_form_a_convex_mix(self):
+        with self.assertRaisesRegex(ValueError, "sum to 1"):
+            select_promixed_gqa_blocks(
+                [[1.0, 0.0], [1.0, 0.0]],
+                keep_blocks=1,
+                utility_max_weight=0.7,
+                utility_mean_weight=0.7,
+                utility_vote_weight=0.1,
+            )
+
     def test_rejects_invalid_period_threshold_order(self):
         with self.assertRaisesRegex(ValueError, "p4 <= p2 <= p1"):
             select_promixed_gqa_blocks(

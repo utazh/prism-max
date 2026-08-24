@@ -1,6 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 
@@ -136,6 +137,111 @@ class FlexGenPcacheTest(unittest.TestCase):
         self.assertEqual(plans, [plans[0]] * 4)
         self.assertEqual(scores, [scores[0]] * 4)
         self.assertEqual(loader.selected_tokens_by_layer(), [[2, 3, 8, 9]] * 4)
+
+    def test_online_contiguous_accepts_matched_selector_index(self):
+        selector_task = type("SelectorTask", (), {"group_size": 32})()
+        selector_index = type(
+            "SelectorIndex",
+            (),
+            {
+                "selector_kv_head_ids": (0, 1, 2, 3),
+                "tasks": {"rte": selector_task},
+            },
+        )()
+        info = PrefixStoreInfo("rte", 8, 4, 128, 1, "hash")
+        loader = FlexGenLayerLoader(
+            pcache=object(),
+            prefix_id=0,
+            info=info,
+            layer_plan=[["online", "online"]],
+            config=FlexGenPcacheConfig(
+                Path("unused"),
+                Path("unused"),
+                4,
+                selector_kv_head_ids=(0, 1, 2, 3),
+            ),
+            method="contigkv",
+            online_selection=True,
+            keep_ratio=0.5,
+            selector_index=selector_index,
+            selector_index_task="rte",
+        )
+        try:
+            self.assertIs(loader._selector_index, selector_index)
+            self.assertEqual(loader._selector_index_group_size, 32)
+        finally:
+            loader.close()
+
+    def test_task_registration_can_keep_selector_cold_until_activated(self):
+        class FakeSelectorIndex:
+            preloaded_compressed_bytes = 123
+
+            def __init__(self):
+                self.validated = []
+                self.preloaded = []
+
+            def validate_task(self, task, **metadata):
+                self.validated.append((task, metadata))
+
+            def preload_task(self, task):
+                self.preloaded.append(task)
+
+        class FakePcache:
+            def __init__(self):
+                self.inserted = []
+
+            def insert(self, **payload):
+                self.inserted.append(payload)
+
+        selector_index = FakeSelectorIndex()
+        pcache = FakePcache()
+        store = FlexGenPcacheStore.__new__(FlexGenPcacheStore)
+        store.config = FlexGenPcacheConfig(Path("unused"), Path("unused"), 4)
+        store._selector_index = selector_index
+        store._pcache = pcache
+        store._pcache_module = object()
+        store._task_prefix_ids = {}
+        store._task_infos = {}
+        store._physical_to_logical = {}
+        store._logical_to_physical = {}
+        store.selector_index_preload_ms = 0.0
+        store.selector_index_preloaded_tasks = []
+        info = PrefixStoreInfo("rte", 8, 4, 128, 1, "hash")
+
+        with patch(
+            "contiguous_fuxian.flexgen_pcache.read_store_info",
+            return_value=info,
+        ), patch(
+            "contiguous_fuxian.flexgen_pcache._load_task_tensor",
+            return_value=(object(), object()),
+        ):
+            store.add_task(
+                store_root="unused",
+                task="rte",
+                preload_selector_index=False,
+            )
+            self.assertEqual(
+                [task for task, _ in selector_index.validated],
+                ["rte"],
+            )
+            self.assertEqual(selector_index.preloaded, [])
+            self.assertEqual(store.selector_index_preloaded_tasks, [])
+
+            store.add_task(
+                store_root="unused",
+                task="rte",
+                preload_selector_index=True,
+            )
+            store.add_task(
+                store_root="unused",
+                task="rte",
+                preload_selector_index=True,
+            )
+
+        self.assertEqual(selector_index.preloaded, ["rte"])
+        self.assertEqual(store.selector_index_preloaded_tasks, ["rte"])
+        self.assertEqual(store.selector_index_preloaded_bytes, 123)
+        self.assertEqual(len(pcache.inserted), 1)
 
     def test_online_impress_tracks_useful_tokens_separately_from_chunks(self):
         info = PrefixStoreInfo("rte", 10, 4, 128, 1, "hash")
