@@ -687,7 +687,7 @@ def render_markdown(result: Mapping[str, Any]) -> str:
         "",
     ]
     for task, task_result in result["tasks"].items():
-        lines += [f"## {task}", "", "| Budget | Method | UIDs×repeats | Accuracy | Logits mean / P95 (ms) | SSD total (critical + selector) MiB/req | Prefetch stall | Actual keep | Selected MiB |", "|---:|---|---:|---:|---:|---:|---:|---:|---:|"]
+        lines += [f"## {task}", "", "| Budget | Method | UIDs×repeats | Accuracy | TTFT (logits-ready) mean / P95 (ms) | SSD total (critical + selector) MiB/req | Prefetch stall | Actual keep | Selected MiB |", "|---:|---|---:|---:|---:|---:|---:|---:|---:|"]
         for budget, cell in task_result["budgets"].items():
             for method in METHODS:
                 metrics = cell["methods"].get(method)
@@ -698,7 +698,7 @@ def render_markdown(result: Mapping[str, Any]) -> str:
                 lines.append(
                     f"| k{budget} | {DISPLAY_METHODS[method]} | {metrics['uids']}×{metrics['repeats']} | {100.0 * metrics['accuracy']:.2f}% | {metrics['logits_ready_mean_ms']:.3f} / {metrics['logits_ready_p95_ms']:.3f} | {ssd['total']:.3f} ({ssd['critical']:.3f} + {ssd['selector']:.3f}) | {100.0 * metrics['prefetch_stall_ratio']:.2f}% | {100.0 * fairness['actual_keep_ratio']:.2f}% | {fairness['selected_kv_mib']:.3f} |"
                 )
-        lines += ["", "### Paired ProMixed deltas", "", "Positive accuracy is better; negative latency, SSD, and stall are better.", "", "| Budget | Baseline | UIDs | Δ accuracy pp [95% CI] | Δ logits ms [95% CI] | Δ SSD MiB/req [95% CI] | Δ stall pp [95% CI] |", "|---:|---|---:|---:|---:|---:|---:|"]
+        lines += ["", "### Paired ProMixed deltas", "", "Positive accuracy is better; negative latency, SSD, and stall are better.", "", "| Budget | Baseline | UIDs | Δ accuracy pp [95% CI] | Δ TTFT (logits-ready) ms [95% CI] | Δ SSD MiB/req [95% CI] | Δ stall pp [95% CI] |", "|---:|---|---:|---:|---:|---:|---:|"]
         for budget, cell in task_result["budgets"].items():
             for baseline in ("contigkv", "impress"):
                 paired = cell["paired"][f"promixed_vs_{baseline}"]
