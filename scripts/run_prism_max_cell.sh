@@ -36,6 +36,8 @@ BUNDLE_DIR="${BUNDLE_DIR:-$ROOT/data/paper_task_bundles_full_eval}"
 STORE_ROOT="${STORE_ROOT:-/home/panzihang/contiguous_fuxian_ssd/qwen25_7b_paper_seed42}"
 FLEXGEN_ROOT="${FLEXGEN_ROOT:-$ROOT/vendor/flexgen}"
 KV_DIR="${KV_DIR:-/home/panzihang/contiguous_fuxian_ssd/paper4_online_contig_c16_v14}"
+IMPRESS_KV_DIR="${IMPRESS_KV_DIR:-/home/panzihang/contiguous_fuxian_ssd/paper4_online_impress_c64_gqa_unique_reordered_disjoint_v33}"
+IMPRESS_REORDER="${IMPRESS_REORDER:-/home/panzihang/src/contiguous_fuxian/results/impress_reorder/qwen25_7b_paper4_disjoint_history32_35_v2.json}"
 SELECTOR_INDEX="${SELECTOR_INDEX:-$ROOT/assets/selector_index_k4_g32}"
 
 gpu_has_compute_process() {
@@ -88,6 +90,22 @@ budget_profile() {
   esac
 }
 
+json_string_field() {
+  "$PYTHON" - "$1" "$2" <<'PY'
+import json
+import pathlib
+import sys
+
+path = pathlib.Path(sys.argv[1])
+field = sys.argv[2]
+payload = json.loads(path.read_text(encoding="utf-8"))
+value = payload.get(field)
+if not isinstance(value, str) or not value:
+    raise SystemExit(f"{path} is missing non-empty string field {field!r}")
+print(value)
+PY
+}
+
 case "$SELECTOR_BACKEND" in
   fp16) index_args=() ;;
   k4)
@@ -137,6 +155,7 @@ KEEP_RATIO="$(budget_ratio "$BUDGET_TAG")"
 PROFILE="$(budget_profile "$BUDGET_TAG")"
 method_args=()
 profile_args=()
+selected_reorder_manifest=""
 
 case "$METHOD" in
   contigkv)
@@ -145,6 +164,22 @@ case "$METHOD" in
       --probe-query-heads 0,1,2
       --selector-kv-head-ids 0,1,2,3
       --similarity-alpha 0.6
+    )
+    ;;
+  impress)
+    if [[ "$SELECTOR_BACKEND" != "fp16" ]]; then
+      echo "Canonical IMPRESS requires SELECTOR_BACKEND=fp16; its physical reorder is incompatible with K4 selector indexes" >&2
+      exit 2
+    fi
+    PLAN="$ROOT/configs/qwen25_k${BUDGET_TAG}_impress.json"
+    KV_DIR="$IMPRESS_KV_DIR"
+    selected_reorder_manifest="$IMPRESS_REORDER"
+    method_args=(
+      --probe-query-heads 0,1,2
+      --selector-kv-head-ids 0
+      --similarity-alpha 0.6
+      --impress-reorder-manifest "$selected_reorder_manifest"
+      --no-impress-async-prefetch
     )
     ;;
   promixed)
@@ -180,7 +215,7 @@ case "$METHOD" in
     )
     ;;
   *)
-    echo "METHOD must be contigkv or promixed" >&2
+    echo "METHOD must be contigkv, impress, or promixed" >&2
     exit 2
     ;;
 esac
@@ -197,6 +232,49 @@ LOG="$RUN_ROOT/$TASK/$RUN_NAME.log"
 if [[ "$METHOD" == "promixed" && ! -f "$PROFILE" ]]; then
   echo "Layer-budget profile is missing: $PROFILE" >&2
   exit 2
+fi
+BUNDLE_METADATA="$BUNDLE_DIR/metadata.json"
+[[ -d "$BUNDLE_DIR" ]] || {
+  echo "Bundle directory is missing: $BUNDLE_DIR" >&2
+  exit 2
+}
+[[ -f "$BUNDLE_METADATA" ]] || {
+  echo "Bundle metadata is missing: $BUNDLE_METADATA" >&2
+  exit 2
+}
+STORE_TASK_METADATA="$STORE_ROOT/$TASK/metadata.json"
+[[ -f "$STORE_TASK_METADATA" ]] || {
+  echo "Store task metadata is missing: $STORE_TASK_METADATA" >&2
+  exit 2
+}
+KV_COMPLETE_MARKER="$KV_DIR/.contiguous_fuxian_complete"
+[[ -f "$KV_COMPLETE_MARKER" ]] || {
+  echo "Pcache completion marker is missing: $KV_COMPLETE_MARKER" >&2
+  exit 2
+}
+if [[ -n "$selected_reorder_manifest" && ! -f "$selected_reorder_manifest" ]]; then
+  echo "IMPRESS reorder manifest is missing: $selected_reorder_manifest" >&2
+  exit 2
+fi
+PLAN_SHA256="$(sha256sum "$PLAN" | awk '{print $1}')"
+BUNDLE_METADATA_SHA256="$(sha256sum "$BUNDLE_METADATA" | awk '{print $1}')"
+STORE_TASK_METADATA_SHA256="$(sha256sum "$STORE_TASK_METADATA" | awk '{print $1}')"
+KV_COMPLETE_SHA256="$(sha256sum "$KV_COMPLETE_MARKER" | awk '{print $1}')"
+if [[ -n "$selected_reorder_manifest" ]]; then
+  REORDER_SHA256="$(sha256sum "$selected_reorder_manifest" | awk '{print $1}')"
+  if ! KV_DECLARED_REORDER_SHA256="$(
+    json_string_field "$KV_COMPLETE_MARKER" "impress_reorder_sha256"
+  )"; then
+    echo "IMPRESS completion marker has invalid reorder provenance: $KV_COMPLETE_MARKER" >&2
+    exit 2
+  fi
+  if [[ "$KV_DECLARED_REORDER_SHA256" != "$REORDER_SHA256" ]]; then
+    echo "IMPRESS reorder SHA mismatch: completion marker declares $KV_DECLARED_REORDER_SHA256 but manifest is $REORDER_SHA256" >&2
+    exit 2
+  fi
+else
+  REORDER_SHA256="none"
+  KV_DECLARED_REORDER_SHA256="none"
 fi
 [[ ! -e "$OUTPUT" ]] || {
   echo "Output already exists: $OUTPUT" >&2
@@ -234,6 +312,16 @@ guard_gpus
   printf 'source_status=%s\n' "$(git -C "$ROOT" status --porcelain | tr '\n' ';')"
   printf 'method=%s\nselector_backend=%s\nscore_mode=%s\n' \
     "$METHOD" "$SELECTOR_BACKEND" "$score_tag"
+  printf 'plan=%s\nplan_sha256=%s\n' "$PLAN" "$PLAN_SHA256"
+  printf 'bundle_dir=%s\nbundle_metadata=%s\nbundle_metadata_sha256=%s\n' \
+    "$BUNDLE_DIR" "$BUNDLE_METADATA" "$BUNDLE_METADATA_SHA256"
+  printf 'store_root=%s\nstore_task_metadata=%s\nstore_task_metadata_sha256=%s\n' \
+    "$STORE_ROOT" "$STORE_TASK_METADATA" "$STORE_TASK_METADATA_SHA256"
+  printf 'kv_dir=%s\nkv_complete_marker=%s\nkv_complete_sha256=%s\n' \
+    "$KV_DIR" "$KV_COMPLETE_MARKER" "$KV_COMPLETE_SHA256"
+  printf 'impress_reorder_manifest=%s\nimpress_reorder_sha256=%s\nkv_complete_impress_reorder_sha256=%s\n' \
+    "${selected_reorder_manifest:-none}" "$REORDER_SHA256" \
+    "$KV_DECLARED_REORDER_SHA256"
   printf 'adaptive_coverage=%s\nsamples=%s\nwarmup_passes=%s\n' \
     "$PROMIXED_ADAPTIVE_COVERAGE" "$SAMPLES_PER_TASK" "$WARMUP_PASSES"
   printf 'warmup_samples=%s\ngpu_cache_mb=%s\ncpu_cache_mb=%s\n' \
