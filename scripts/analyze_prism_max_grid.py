@@ -414,9 +414,14 @@ def validate_impress_cells_are_fp16(runs: Sequence[LoadedRun]) -> None:
                     runtime.get(key) is None,
                     f"{run.spec.label}.runtime.{key} must be None in a cell containing canonical IMPRESS",
                 )
+            preloaded_bytes = runtime.get("selector_index_preloaded_bytes")
+            no_preloaded_index = preloaded_bytes is None or (
+                type(preloaded_bytes) in (int, float)
+                and preloaded_bytes == 0
+            )
             require(
-                runtime.get("selector_index_preloaded_bytes") is None,
-                f"{run.spec.label}.runtime.selector_index_preloaded_bytes must be None in a cell containing canonical IMPRESS",
+                no_preloaded_index,
+                f"{run.spec.label}.runtime.selector_index_preloaded_bytes must be None or numeric zero in a cell containing canonical IMPRESS",
             )
 
 

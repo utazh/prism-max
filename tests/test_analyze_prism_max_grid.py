@@ -72,7 +72,7 @@ def runtime_for(method, budget):
         "selector_index_bits": None,
         "selector_index_group_size": None,
         "selector_index_manifest_sha256": None,
-        "selector_index_preloaded_bytes": None,
+        "selector_index_preloaded_bytes": 0,
         "similarity_alpha": 1.0,
     }
     runtime.update(grid.METHOD_CONTRACTS[method])
@@ -114,6 +114,43 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
         self.assertEqual(actual, canonical)
         self.assertEqual(len(actual), 64)
         self.assertIsNotNone(re.fullmatch(r"[0-9a-f]{64}", actual))
+
+    def test_fp16_preloaded_bytes_accepts_none_or_numeric_zero_only(self):
+        def loaded(preloaded_bytes):
+            spec = grid.RunSpec(
+                "trec",
+                "010",
+                "impress",
+                "r0",
+                Path("/unused/impress/r0"),
+            )
+            return grid.LoadedRun(
+                spec=spec,
+                summary={
+                    "runtime": {
+                        "selector_index_dir": None,
+                        "selector_index_bits": None,
+                        "selector_index_group_size": None,
+                        "selector_index_manifest_sha256": None,
+                        "selector_index_preloaded_bytes": preloaded_bytes,
+                    }
+                },
+                records={"trec-1": {"correct": True}},
+                raw_count=1,
+                excluded_uids=[],
+            )
+
+        for accepted in (None, 0, 0.0):
+            with self.subTest(accepted=accepted):
+                grid.validate_impress_cells_are_fp16([loaded(accepted)])
+
+        for rejected in (False, 1, "0"):
+            with self.subTest(rejected=rejected):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "must be None or numeric zero",
+                ):
+                    grid.validate_impress_cells_are_fp16([loaded(rejected)])
 
     def test_repeat_average_exclusions_metrics_and_pairs(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -168,8 +205,9 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
                 seed=7,
             )
 
-            self.assertIsNone(
-                result["protocol_by_task"]["trec"]["selector_index_preloaded_bytes"]
+            self.assertEqual(
+                result["protocol_by_task"]["trec"]["selector_index_preloaded_bytes"],
+                0,
             )
             promixed = result["tasks"]["trec"]["budgets"]["010"]["methods"]["promixed"]
             self.assertEqual(promixed["uids"], 2)
