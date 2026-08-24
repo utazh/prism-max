@@ -1,6 +1,7 @@
 import importlib.util
 import json
 import math
+import re
 import sys
 import tempfile
 import unittest
@@ -105,6 +106,15 @@ def write_run(path, *, task, budget, method, rows, runtime_overrides=None):
 
 
 class PrismMaxGridAnalysisTest(unittest.TestCase):
+    def test_impress_reorder_sha256_is_canonical_literal(self):
+        canonical = (
+            "36c5e1ec62187f8916e04e7758e79c9a28cfe1c75cb8999739e6be15287542cf"
+        )
+        actual = grid.IMPRESS_REORDER_SHA256
+        self.assertEqual(actual, canonical)
+        self.assertEqual(len(actual), 64)
+        self.assertIsNotNone(re.fullmatch(r"[0-9a-f]{64}", actual))
+
     def test_repeat_average_exclusions_metrics_and_pairs(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
