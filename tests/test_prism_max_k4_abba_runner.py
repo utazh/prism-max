@@ -28,6 +28,16 @@ class PrismMaxK4AbbaRunnerTest(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
 
+    def test_analysis_candidate_stems_are_suffixless(self):
+        self.assertIn(
+            'local candidate="$RUN_ROOT/validation/.${task}_k${budget}_candidate_$$"',
+            self.script,
+        )
+        self.assertIn(
+            'analysis_candidate="$RUN_ROOT/.grid_analysis_candidate_$$"',
+            self.script,
+        )
+
     def test_exact_four_cell_abba_schedule(self):
         self.assertIn(
             'CELLS=("subj 025" "subj 050" "trec 010" "trec 050")',

@@ -320,7 +320,7 @@ run_one() {
 publish_pair_analysis() {
   local task="$1" budget="$2" expected="${EXPECTED_COUNTS[$1]}"
   local stem="$RUN_ROOT/validation/${task}_k${budget}_k4_nodefer_abba"
-  local candidate="$RUN_ROOT/validation/.${task}_k${budget}_candidate.$$"
+  local candidate="$RUN_ROOT/validation/.${task}_k${budget}_candidate_$$"
   "$PYTHON" "$PAIR_ANALYZER" \
     --run-root "$RUN_ROOT" --task "$task" --budget "$budget" \
     --backend k4 --score-mode nodefer \
@@ -351,7 +351,7 @@ for cell in "${CELLS[@]}"; do
 done
 
 assert_source_frozen
-analysis_candidate="$RUN_ROOT/.grid_analysis_candidate.$$"
+analysis_candidate="$RUN_ROOT/.grid_analysis_candidate_$$"
 "$PYTHON" "$GRID_ANALYZER" \
   --manifest "$SCHEDULE_MANIFEST" \
   --bundle-metadata "$BUNDLE_DIR/metadata.json" \
