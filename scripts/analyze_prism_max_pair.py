@@ -12,6 +12,7 @@ over repeats, and the paired bootstrap is then performed over request UIDs.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import random
@@ -22,6 +23,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 
+PRIMARY_LATENCY_METRIC = "response_ready_ms"
 READY_METRICS = (
     "logits_ready_ms",
     "first_token_ready_ms",
@@ -228,6 +230,61 @@ def load_json(path: Path, *, context: str) -> dict[str, Any]:
         raise ValueError(f"cannot read {context} {path}: {error}") from error
     require(isinstance(value, dict), f"{context} must contain a JSON object: {path}")
     return value
+
+
+def load_bundle_preexclusions(path: Path | None, *, task: str) -> dict[str, Any]:
+    if path is None:
+        return {
+            "metadata_path": None,
+            "metadata_sha256": None,
+            "preapplied": False,
+            "manifest_path": None,
+            "manifest_sha256": None,
+            "excluded_uids_by_task": {},
+        }
+    path = path.resolve()
+    metadata_bytes = path.read_bytes()
+    payload = load_json(path, context="input bundle metadata")
+    strict_filter = payload.get("strict_eval_filter")
+    require(
+        isinstance(strict_filter, dict)
+        and strict_filter.get("schema_version") == 1,
+        "input bundle metadata lacks schema-v1 strict_eval_filter provenance",
+    )
+    raw = strict_filter.get("excluded_uids_by_task")
+    require(
+        isinstance(raw, dict) and task in raw,
+        f"strict_eval_filter lacks exclusions for {task}",
+    )
+    excluded: dict[str, list[str]] = {}
+    for name, values in raw.items():
+        require(
+            isinstance(name, str) and isinstance(values, list),
+            "strict_eval_filter exclusions must map task names to UID lists",
+        )
+        normalized = [str(uid) for uid in values]
+        require(
+            all(uid.startswith(f"{name}-") for uid in normalized),
+            f"strict_eval_filter has an invalid UID for {name}",
+        )
+        require(
+            len(normalized) == len(set(normalized)),
+            f"strict_eval_filter has duplicate UIDs for {name}",
+        )
+        excluded[name] = normalized
+    require(
+        f"{task}-0" in excluded[task],
+        f"strict input bundle did not pre-exclude {task}-0",
+    )
+    return {
+        "metadata_path": str(path),
+        "metadata_sha256": hashlib.sha256(metadata_bytes).hexdigest(),
+        "preapplied": True,
+        "application_stage": "strict bundle construction before benchmark runs",
+        "manifest_path": strict_filter.get("exclusions_manifest"),
+        "manifest_sha256": strict_filter.get("exclusions_manifest_sha256"),
+        "excluded_uids_by_task": excluded,
+    }
 
 
 def validate_ready_row(
@@ -842,6 +899,7 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
             "backend": args.backend,
             "score_mode": args.score_mode,
             "adaptive_coverage": args.adaptive_coverage,
+            "primary_latency_metric": PRIMARY_LATENCY_METRIC,
             "unique_uids": len(uids),
             "repetitions_per_method": 2,
             "run_order": [
@@ -863,6 +921,10 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
             "repeat_selection_hashes_deterministic": True,
             "ready_aliases_and_boundaries_valid": True,
         },
+        "input_bundle_preexclusions": load_bundle_preexclusions(
+            args.bundle_metadata,
+            task=args.task,
+        ),
         "accuracy": accuracy_result(references, candidates, uids),
         "ready_metrics": ready,
         "mechanism": {
@@ -888,19 +950,24 @@ def render_markdown(result: Mapping[str, Any]) -> str:
         "Each ready time is averaged per UID over the two repeats before the paired "
         "bootstrap. Negative paired deltas favor ProMixed; positive reduction "
         "percentages favor ProMixed.",
+        "Response-ready is the primary latency; logits-ready is retained as a phase "
+        "metric.",
         "",
         "| Boundary | ContiguousKV mean/P95 (ms) | ProMixed mean/P95 (ms) | "
         "Mean/P95 reduction | Paired delta 95% CI (ms) | Faster UIDs |",
         "|---|---:|---:|---:|---:|---:|",
     ]
     display = {
-        "logits_ready_ms": "Logits ready",
+        "logits_ready_ms": "Logits ready (phase)",
         "first_token_ready_ms": "First token ready",
         "latency_ms": "All requested token IDs ready (latency)",
-        "response_ready_ms": "Response ready",
+        "response_ready_ms": "Response ready (primary)",
         "evaluation_ready_ms": "Evaluation ready",
     }
-    for metric in READY_METRICS:
+    ordered_metrics = (PRIMARY_LATENCY_METRIC,) + tuple(
+        metric for metric in READY_METRICS if metric != PRIMARY_LATENCY_METRIC
+    )
+    for metric in ordered_metrics:
         row = result["ready_metrics"][metric]
         ci = row["paired_bootstrap_mean_delta_95ci_ms"]
         lines.append(
@@ -910,6 +977,24 @@ def render_markdown(result: Mapping[str, Any]) -> str:
             f"{row['p95_reduction_percent']:+.2f}% | [{ci[0]:+.2f}, {ci[1]:+.2f}] | "
             f"{row['candidate_faster_uids']}/{row['total_uids']} |"
         )
+    lines.extend(
+        [
+            "",
+            "## Exclusion provenance",
+            "",
+        ]
+    )
+    preexclusions = result["input_bundle_preexclusions"]
+    if preexclusions["preapplied"]:
+        excluded = ", ".join(
+            preexclusions["excluded_uids_by_task"].get(protocol["task"], [])
+        )
+        lines.append(
+            "Input-bundle exclusions were pre-applied before all runs: "
+            f"`{excluded}`. No analysis-time exclusion manifest was applied."
+        )
+    else:
+        lines.append("Input-bundle pre-exclusions were not declared.")
     lines.extend(
         [
             "",
@@ -954,6 +1039,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--expected-cpu-cache-mb", type=float, default=131.0)
     parser.add_argument("--bootstrap-samples", type=int, default=20_000)
     parser.add_argument("--seed", type=int, default=20260824)
+    parser.add_argument("--bundle-metadata", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     if args.expected_samples is not None and args.expected_samples <= 0:

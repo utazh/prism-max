@@ -210,6 +210,11 @@ def gather_prefetched_tokens(
     selected = torch.as_tensor(selected_token_ids, dtype=torch.long, device=physical_token_ids.device)
     if selected.numel() == 0:
         return physical_key[:0], physical_value[:0]
+    if (
+        int(selected.numel()) == int(physical_token_ids.numel())
+        and bool(torch.equal(physical_token_ids, selected))
+    ):
+        return physical_key, physical_value
     lookup = torch.searchsorted(physical_token_ids, selected)
     if bool(torch.any(lookup >= physical_token_ids.numel())):
         raise RuntimeError("FlexGen prefetch omitted selected token positions")

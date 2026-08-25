@@ -484,6 +484,7 @@ analysis_candidate="$analysis_candidate_dir/prism_max_grid_fp16_nodefer_strict_r
 mkdir -p "$analysis_candidate_dir"
 "$PYTHON" "$ANALYZER" \
   --manifest "$SCHEDULE_MANIFEST" \
+  --bundle-metadata "$BUNDLE_DIR/metadata.json" \
   --output "$analysis_candidate" \
   --bootstrap-samples "$FINAL_BOOTSTRAP_SAMPLES" \
   --seed 42

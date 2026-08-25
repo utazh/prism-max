@@ -100,6 +100,7 @@ class PrismMaxGridOnceRunnerTest(unittest.TestCase):
     def test_final_analyzer_uses_frozen_manifest_without_overwrite(self):
         self.assertIn('SCHEDULE_MANIFEST="$RUN_ROOT/schedule_manifest.json"', self.script)
         self.assertIn('--manifest "$SCHEDULE_MANIFEST"', self.script)
+        self.assertIn('--bundle-metadata "$BUNDLE_DIR/metadata.json"', self.script)
         self.assertIn('--bootstrap-samples "$FINAL_BOOTSTRAP_SAMPLES"', self.script)
         self.assertIn(
             'ANALYSIS_STEM="$RUN_ROOT/prism_max_grid_fp16_nodefer_strict_r1"',

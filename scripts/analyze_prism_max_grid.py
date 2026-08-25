@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Analyze a matched, task-local Prism-Max re-prefill grid.
 
-The analyzer deliberately reports only accuracy, logits-ready latency, the three
-additional requested views (SSD traffic, prefetch stall, accuracy/latency
-Pareto), and keep/selected-byte fairness context.  Each UID is averaged over
+The analyzer reports accuracy, response-ready primary latency, logits-ready
+phase latency, SSD traffic, prefetch stall, accuracy/latency
+Pareto, and keep/selected-byte fairness context.  Each UID is averaged over
 repeats before any aggregate or paired bootstrap is computed.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import random
@@ -66,6 +67,7 @@ METHOD_CONTRACTS = {
 MIB = 1024.0 * 1024.0
 ROW_METRICS = (
     "logits_ready_ms",
+    "response_ready_ms",
     "prefetch_wait_ms",
     "critical_ssd_read_bytes",
     "selector_disk_source_bytes",
@@ -293,6 +295,71 @@ def load_exclusions(path: Path | None) -> tuple[dict[str, set[str]], dict[str, A
     }
 
 
+def load_bundle_preexclusions(path: Path | None) -> dict[str, Any]:
+    if path is None:
+        return {
+            "metadata_path": None,
+            "metadata_sha256": None,
+            "preapplied": False,
+            "application_stage": None,
+            "manifest_path": None,
+            "manifest_sha256": None,
+            "excluded_uids_by_task": {task: [] for task in TASKS},
+        }
+    path = path.resolve()
+    metadata_bytes = path.read_bytes()
+    payload = load_json(path, context="input bundle metadata")
+    strict_filter = payload.get("strict_eval_filter")
+    require(
+        isinstance(strict_filter, dict),
+        "input bundle metadata lacks strict_eval_filter provenance",
+    )
+    require(
+        strict_filter.get("schema_version") == 1,
+        "strict_eval_filter schema_version must be 1",
+    )
+    raw = strict_filter.get("excluded_uids_by_task")
+    require(
+        isinstance(raw, dict) and set(raw) == set(TASKS),
+        "strict_eval_filter.excluded_uids_by_task must cover all tasks",
+    )
+    excluded: dict[str, list[str]] = {}
+    for task in TASKS:
+        values = raw[task]
+        require(
+            isinstance(values, list),
+            f"strict_eval_filter.excluded_uids_by_task.{task} must be a list",
+        )
+        normalized = [str(value) for value in values]
+        require(
+            all(value and value.startswith(f"{task}-") for value in normalized),
+            f"strict_eval_filter.excluded_uids_by_task.{task} has an invalid UID",
+        )
+        require(
+            len(normalized) == len(set(normalized)),
+            f"strict_eval_filter.excluded_uids_by_task.{task} has duplicates",
+        )
+        excluded[task] = sorted(normalized)
+        task_metadata = payload.get("tasks", {}).get(task, {})
+        require(
+            task_metadata.get("strict_excluded_uids") == values,
+            f"bundle task metadata disagrees with strict exclusions for {task}",
+        )
+    return {
+        "metadata_path": str(path),
+        "metadata_sha256": hashlib.sha256(metadata_bytes).hexdigest(),
+        "preapplied": True,
+        "application_stage": "strict bundle construction before benchmark runs",
+        "manifest_path": strict_filter.get("exclusions_manifest"),
+        "manifest_sha256": strict_filter.get("exclusions_manifest_sha256"),
+        "excluded_uids_by_task": excluded,
+        "source_records_by_task": strict_filter.get("source_records_by_task"),
+        "evaluation_records_by_task": strict_filter.get(
+            "evaluation_records_by_task"
+        ),
+    }
+
+
 def read_records(path: Path, *, context: str) -> dict[str, dict[str, Any]]:
     require(path.is_file(), f"missing {context}: {path}")
     records: dict[str, dict[str, Any]] = {}
@@ -505,10 +572,13 @@ def absolute_metrics(aggregate: Mapping[str, Mapping[str, float | bool]], *, rep
     rows = list(aggregate.values())
     values = lambda metric: [float(row[metric]) for row in rows]
     logits = values("logits_ready_ms")
+    response = values("response_ready_ms")
     return {
         "uids": len(rows),
         "repeats": repeats,
         "accuracy": statistics.fmean(bool(row["correct"]) for row in rows),
+        "response_ready_mean_ms": statistics.fmean(response),
+        "response_ready_p95_ms": p95(response),
         "logits_ready_mean_ms": statistics.fmean(logits),
         "logits_ready_p95_ms": p95(logits),
         "ssd_mib_per_request": {
@@ -547,6 +617,7 @@ def paired_comparison(
     uids = sorted(candidate_uids)
     definitions = {
         "accuracy_delta_pp": (lambda row: 100.0 * float(bool(row["correct"]))),
+        "response_ready_delta_ms": (lambda row: float(row["response_ready_ms"])),
         "logits_ready_delta_ms": (lambda row: float(row["logits_ready_ms"])),
         "ssd_delta_mib_per_request": (lambda row: float(row["total_ssd_read_bytes"]) / MIB),
         "prefetch_stall_delta_pp": (lambda row: 100.0 * float(row["prefetch_stall_ratio"])),
@@ -571,10 +642,10 @@ def mark_pareto(points: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
         dominated = any(
             other is not point
             and other["accuracy"] >= point["accuracy"]
-            and other["logits_ready_mean_ms"] <= point["logits_ready_mean_ms"]
+            and other["response_ready_mean_ms"] <= point["response_ready_mean_ms"]
             and (
                 other["accuracy"] > point["accuracy"]
-                or other["logits_ready_mean_ms"] < point["logits_ready_mean_ms"]
+                or other["response_ready_mean_ms"] < point["response_ready_mean_ms"]
             )
             for other in points
         )
@@ -586,6 +657,7 @@ def analyze(
     specs: Sequence[RunSpec], exclusions: Mapping[str, set[str]], *,
     source: Mapping[str, Any], exclusion_info: Mapping[str, Any],
     bootstrap_samples: int, seed: int,
+    bundle_preexclusions: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     require(bool(specs), "no run paths supplied")
     runs = [load_run(spec, exclusions[spec.task]) for spec in specs]
@@ -632,7 +704,8 @@ def analyze(
                         "method": method,
                         "budget": budget,
                         "accuracy": metrics["accuracy"],
-                        "logits_ready_mean_ms": metrics["logits_ready_mean_ms"],
+                        "response_ready_mean_ms": metrics["response_ready_mean_ms"],
+                        "logits_ready_phase_mean_ms": metrics["logits_ready_mean_ms"],
                     }
                     points.append(point)
                     all_points.append(point)
@@ -661,11 +734,16 @@ def analyze(
         "scope": "re-prefill only; task-local analysis with no cross-task pooling",
         "aggregation": "each UID is averaged over repeats before aggregate and paired metrics",
         "metric_definitions": {
+            "primary_latency": "response_ready_ms; token decoding complete and benchmark-only accuracy scoring excluded",
+            "phase_latency": "logits_ready_ms; first-token logits ready",
             "ssd_mib_per_request": "(critical_ssd_read_bytes + selector_disk_source_bytes) / 2^20, request-time only",
             "prefetch_stall_ratio": "prefetch_wait_ms / logits_ready_ms within each run, then averaged over repeats per UID",
-            "pareto": "non-dominated accuracy (higher) versus mean logits_ready_ms (lower) across budgets",
+            "pareto": "non-dominated accuracy (higher) versus mean response_ready_ms (lower) across budgets",
         },
         "input": dict(source),
+        "input_bundle_preexclusions": dict(
+            bundle_preexclusions or load_bundle_preexclusions(None)
+        ),
         "bootstrap": {"samples": bootstrap_samples, "seed": seed, "unit": "matched UID"},
         "exclusions": exclusion_report,
         "protocol_by_task": protocols,
@@ -678,16 +756,40 @@ def fmt_ci(value: Any, ci: Sequence[float]) -> str:
 
 
 def render_markdown(result: Mapping[str, Any]) -> str:
+    preexclusions = result["input_bundle_preexclusions"]
+    if preexclusions["preapplied"]:
+        excluded = ", ".join(
+            uid
+            for task in TASKS
+            for uid in preexclusions["excluded_uids_by_task"][task]
+        )
+        preexclusion_line = (
+            "Input-bundle exclusions (pre-applied before every run): "
+            f"`{excluded or 'none'}`."
+        )
+    else:
+        preexclusion_line = "Input-bundle exclusions: not declared."
     lines = [
         "# Prism-Max Re-prefill Grid",
         "",
         "Per-UID repeat averages are used throughout. Tasks are never pooled.",
         "",
-        f"Exclusion manifest: `{result['exclusions']['manifest_path']}`",
+        "Primary latency: response-ready. Logits-ready is retained as a phase metric.",
+        "",
+        preexclusion_line,
+        "",
+        "Analysis-time exclusion manifest: "
+        f"`{result['exclusions']['manifest_path']}` "
+        "(no second-pass filtering when this is `None`).",
         "",
     ]
     for task, task_result in result["tasks"].items():
-        lines += [f"## {task}", "", "| Budget | Method | UIDs×repeats | Accuracy | TTFT (logits-ready) mean / P95 (ms) | SSD total (critical + selector) MiB/req | Prefetch stall | Actual keep | Selected MiB |", "|---:|---|---:|---:|---:|---:|---:|---:|---:|"]
+        lines += [
+            f"## {task}",
+            "",
+            "| Budget | Method | UIDs×repeats | Accuracy | Response-ready mean / P95 (ms) | Logits-ready phase mean / P95 (ms) | SSD total (critical + selector) MiB/req | Prefetch stall | Actual keep | Selected MiB |",
+            "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        ]
         for budget, cell in task_result["budgets"].items():
             for method in METHODS:
                 metrics = cell["methods"].get(method)
@@ -696,19 +798,36 @@ def render_markdown(result: Mapping[str, Any]) -> str:
                 ssd = metrics["ssd_mib_per_request"]
                 fairness = metrics["fairness_context"]
                 lines.append(
-                    f"| k{budget} | {DISPLAY_METHODS[method]} | {metrics['uids']}×{metrics['repeats']} | {100.0 * metrics['accuracy']:.2f}% | {metrics['logits_ready_mean_ms']:.3f} / {metrics['logits_ready_p95_ms']:.3f} | {ssd['total']:.3f} ({ssd['critical']:.3f} + {ssd['selector']:.3f}) | {100.0 * metrics['prefetch_stall_ratio']:.2f}% | {100.0 * fairness['actual_keep_ratio']:.2f}% | {fairness['selected_kv_mib']:.3f} |"
+                    f"| k{budget} | {DISPLAY_METHODS[method]} | {metrics['uids']}×{metrics['repeats']} | {100.0 * metrics['accuracy']:.2f}% | {metrics['response_ready_mean_ms']:.3f} / {metrics['response_ready_p95_ms']:.3f} | {metrics['logits_ready_mean_ms']:.3f} / {metrics['logits_ready_p95_ms']:.3f} | {ssd['total']:.3f} ({ssd['critical']:.3f} + {ssd['selector']:.3f}) | {100.0 * metrics['prefetch_stall_ratio']:.2f}% | {100.0 * fairness['actual_keep_ratio']:.2f}% | {fairness['selected_kv_mib']:.3f} |"
                 )
-        lines += ["", "### Paired ProMixed deltas", "", "Positive accuracy is better; negative latency, SSD, and stall are better.", "", "| Budget | Baseline | UIDs | Δ accuracy pp [95% CI] | Δ TTFT (logits-ready) ms [95% CI] | Δ SSD MiB/req [95% CI] | Δ stall pp [95% CI] |", "|---:|---|---:|---:|---:|---:|---:|"]
+        lines += [
+            "",
+            "### Paired ProMixed deltas",
+            "",
+            "Positive accuracy is better; negative latency, SSD, and stall are better.",
+            "",
+            "| Budget | Baseline | UIDs | Δ accuracy pp [95% CI] | Δ response-ready ms [95% CI] | Δ logits-ready phase ms [95% CI] | Δ SSD MiB/req [95% CI] | Δ stall pp [95% CI] |",
+            "|---:|---|---:|---:|---:|---:|---:|---:|",
+        ]
         for budget, cell in task_result["budgets"].items():
             for baseline in ("contigkv", "impress"):
                 paired = cell["paired"][f"promixed_vs_{baseline}"]
                 if paired["available"]:
                     lines.append(
-                        f"| k{budget} | {DISPLAY_METHODS[baseline]} | {paired['uids']} | {fmt_ci(paired['accuracy_delta_pp'], paired['accuracy_delta_pp_paired_bootstrap_95ci'])} | {fmt_ci(paired['logits_ready_delta_ms'], paired['logits_ready_delta_ms_paired_bootstrap_95ci'])} | {fmt_ci(paired['ssd_delta_mib_per_request'], paired['ssd_delta_mib_per_request_paired_bootstrap_95ci'])} | {fmt_ci(paired['prefetch_stall_delta_pp'], paired['prefetch_stall_delta_pp_paired_bootstrap_95ci'])} |"
+                        f"| k{budget} | {DISPLAY_METHODS[baseline]} | {paired['uids']} | {fmt_ci(paired['accuracy_delta_pp'], paired['accuracy_delta_pp_paired_bootstrap_95ci'])} | {fmt_ci(paired['response_ready_delta_ms'], paired['response_ready_delta_ms_paired_bootstrap_95ci'])} | {fmt_ci(paired['logits_ready_delta_ms'], paired['logits_ready_delta_ms_paired_bootstrap_95ci'])} | {fmt_ci(paired['ssd_delta_mib_per_request'], paired['ssd_delta_mib_per_request_paired_bootstrap_95ci'])} | {fmt_ci(paired['prefetch_stall_delta_pp'], paired['prefetch_stall_delta_pp_paired_bootstrap_95ci'])} |"
                     )
                 else:
-                    lines.append(f"| k{budget} | {DISPLAY_METHODS[baseline]} | — | unavailable: {paired['reason']} | — | — | — |")
-        lines += ["", "### Cross-budget accuracy–latency Pareto", "", "| Method | Pareto-optimal budgets |", "|---|---|"]
+                    lines.append(
+                        f"| k{budget} | {DISPLAY_METHODS[baseline]} | — | "
+                        f"unavailable: {paired['reason']} | — | — | — | — |"
+                    )
+        lines += [
+            "",
+            "### Cross-budget accuracy–response-ready Pareto",
+            "",
+            "| Method | Pareto-optimal budgets |",
+            "|---|---|",
+        ]
         for method in METHODS:
             frontier = [f"k{point['budget']}" for point in task_result["pareto"]["by_method"][method] if point["pareto_optimal"]]
             lines.append(f"| {DISPLAY_METHODS[method]} | {', '.join(frontier) if frontier else '—'} |")
@@ -731,6 +850,7 @@ def build_parser() -> argparse.ArgumentParser:
     source.add_argument("--manifest", type=Path, help="schema-v1 JSON with runs[{task,budget,method,repeat,path}]")
     source.add_argument("--run", nargs=5, action="append", metavar=("TASK", "BUDGET", "METHOD", "REPEAT", "PATH"), help="explicit run; repeat this option as needed")
     parser.add_argument("--exclude-uids", type=Path, help="optional configs/strict_eval_exclusions.json-schema manifest")
+    parser.add_argument("--bundle-metadata", type=Path, help="input-bundle metadata with pre-applied strict exclusion provenance")
     parser.add_argument("--output", type=Path, required=True, help="output stem, .json, or .md (both JSON and Markdown are written)")
     parser.add_argument("--bootstrap-samples", type=int, default=5000)
     parser.add_argument("--seed", type=int, default=42)
@@ -743,7 +863,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         require(args.bootstrap_samples > 0, "--bootstrap-samples must be positive")
         specs, source = load_specs(manifest=args.manifest, explicit_runs=args.run)
         exclusions, exclusion_info = load_exclusions(args.exclude_uids)
-        result = analyze(specs, exclusions, source=source, exclusion_info=exclusion_info, bootstrap_samples=args.bootstrap_samples, seed=args.seed)
+        bundle_preexclusions = load_bundle_preexclusions(args.bundle_metadata)
+        result = analyze(specs, exclusions, source=source, exclusion_info=exclusion_info, bootstrap_samples=args.bootstrap_samples, seed=args.seed, bundle_preexclusions=bundle_preexclusions)
         json_path, markdown_path = output_paths(args.output.resolve())
         json_path.parent.mkdir(parents=True, exist_ok=True)
         markdown_path.parent.mkdir(parents=True, exist_ok=True)

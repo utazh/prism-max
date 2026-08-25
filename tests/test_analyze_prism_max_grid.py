@@ -152,6 +152,41 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
                 ):
                     grid.validate_impress_cells_are_fp16([loaded(rejected)])
 
+    def test_bundle_preexclusions_are_reported_as_input_provenance(self):
+        with tempfile.TemporaryDirectory() as temp:
+            metadata_path = Path(temp) / "metadata.json"
+            excluded = {task: [f"{task}-0"] for task in grid.TASKS}
+            metadata_path.write_text(
+                json.dumps(
+                    {
+                        "tasks": {
+                            task: {"strict_excluded_uids": values}
+                            for task, values in excluded.items()
+                        },
+                        "strict_eval_filter": {
+                            "schema_version": 1,
+                            "exclusions_manifest": "/bundle/strict.json",
+                            "exclusions_manifest_sha256": "a" * 64,
+                            "excluded_uids_by_task": excluded,
+                            "source_records_by_task": {},
+                            "evaluation_records_by_task": {},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            provenance = grid.load_bundle_preexclusions(metadata_path)
+
+        self.assertTrue(provenance["preapplied"])
+        self.assertEqual(provenance["excluded_uids_by_task"], excluded)
+        self.assertEqual(provenance["manifest_path"], "/bundle/strict.json")
+        self.assertEqual(len(provenance["metadata_sha256"]), 64)
+        self.assertEqual(
+            provenance["application_stage"],
+            "strict bundle construction before benchmark runs",
+        )
+
     def test_repeat_average_exclusions_metrics_and_pairs(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -214,6 +249,7 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
             self.assertEqual(promixed["repeats"], 2)
             self.assertAlmostEqual(promixed["accuracy"], 1.0)
             self.assertAlmostEqual(promixed["logits_ready_mean_ms"], 91.5)
+            self.assertAlmostEqual(promixed["response_ready_mean_ms"], 91.8)
             self.assertAlmostEqual(promixed["ssd_mib_per_request"]["critical"], 2.0)
             self.assertAlmostEqual(promixed["ssd_mib_per_request"]["selector"], 0.5)
             self.assertAlmostEqual(promixed["ssd_mib_per_request"]["total"], 2.5)
@@ -224,6 +260,8 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
             self.assertTrue(paired["available"])
             self.assertEqual(paired["uids"], 2)
             self.assertAlmostEqual(paired["accuracy_delta_pp"], 50.0)
+            self.assertAlmostEqual(paired["response_ready_delta_ms"], -20.0)
+            self.assertAlmostEqual(paired["logits_ready_delta_ms"], -20.0)
             self.assertEqual(len(paired["accuracy_delta_pp_paired_bootstrap_95ci"]), 2)
 
             exclusions_report = result["exclusions"]
@@ -237,8 +275,11 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
             markdown = grid.render_markdown(result)
             self.assertIn("Tasks are never pooled", markdown)
             self.assertIn("SSD total (critical + selector)", markdown)
+            self.assertIn("Primary latency: response-ready", markdown)
+            self.assertIn("Response-ready mean / P95", markdown)
+            self.assertIn("Logits-ready phase mean / P95", markdown)
+            self.assertIn("Analysis-time exclusion manifest", markdown)
             self.assertNotIn("Overall", markdown)
-            self.assertNotIn("response_ready", markdown)
 
     def test_strict_timing_and_ssd_alias_validation(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -323,6 +364,7 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
             row = {
                 "correct": True,
                 "logits_ready_ms": logits,
+                "response_ready_ms": logits + 0.3,
                 "prefetch_wait_ms": wait,
                 "critical_ssd_read_bytes": 0,
                 "selector_disk_source_bytes": 0,
@@ -356,6 +398,7 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
                 uid: {
                     "correct": True,
                     "logits_ready_ms": 1.0,
+                    "response_ready_ms": 1.3,
                     "total_ssd_read_bytes": 0.0,
                     "prefetch_stall_ratio": 0.0,
                 }
@@ -375,10 +418,10 @@ class PrismMaxGridAnalysisTest(unittest.TestCase):
 
     def test_cross_budget_pareto(self):
         points = [
-            {"method": "promixed", "budget": "005", "accuracy": 0.7, "logits_ready_mean_ms": 80.0},
-            {"method": "promixed", "budget": "010", "accuracy": 0.8, "logits_ready_mean_ms": 90.0},
-            {"method": "promixed", "budget": "025", "accuracy": 0.75, "logits_ready_mean_ms": 100.0},
-            {"method": "promixed", "budget": "050", "accuracy": 0.9, "logits_ready_mean_ms": 120.0},
+            {"method": "promixed", "budget": "005", "accuracy": 0.7, "response_ready_mean_ms": 80.0},
+            {"method": "promixed", "budget": "010", "accuracy": 0.8, "response_ready_mean_ms": 90.0},
+            {"method": "promixed", "budget": "025", "accuracy": 0.75, "response_ready_mean_ms": 100.0},
+            {"method": "promixed", "budget": "050", "accuracy": 0.9, "response_ready_mean_ms": 120.0},
         ]
         marked = {point["budget"]: point["pareto_optimal"] for point in grid.mark_pareto(points)}
         self.assertEqual(marked, {"005": True, "010": True, "025": False, "050": True})

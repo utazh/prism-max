@@ -12,6 +12,7 @@ from contiguous_fuxian.flexgen_pcache import (
     FlexGenLayerLoader,
     FlexGenPcacheStore,
     expected_chunk_count,
+    gather_prefetched_tokens,
     physical_token_ids_for_positions,
     prefetch_source_tensor_tokens,
     retained_token_ids,
@@ -35,6 +36,36 @@ class FlexGenPcacheTest(unittest.TestCase):
         self.assertEqual(expected_chunk_count(prefix_tokens=0, chunk_size=16), 0)
         self.assertEqual(expected_chunk_count(prefix_tokens=16, chunk_size=16), 1)
         self.assertEqual(expected_chunk_count(prefix_tokens=17, chunk_size=16), 2)
+
+    def test_gather_prefetched_tokens_exact_match_is_zero_copy(self):
+        import torch
+
+        physical_key = torch.arange(12).reshape(3, 4)
+        physical_value = physical_key + 100
+        physical_token_ids = torch.tensor([0, 2, 3])
+
+        gathered_key, gathered_value = gather_prefetched_tokens(
+            physical_key,
+            physical_value,
+            physical_token_ids,
+            [0, 2, 3],
+        )
+        self.assertIs(gathered_key, physical_key)
+        self.assertIs(gathered_value, physical_value)
+
+        sparse_key, sparse_value = gather_prefetched_tokens(
+            physical_key,
+            physical_value,
+            physical_token_ids,
+            [0, 3],
+        )
+        self.assertTrue(torch.equal(sparse_key, physical_key[[0, 2]]))
+        self.assertTrue(torch.equal(sparse_value, physical_value[[0, 2]]))
+
+        with self.assertRaisesRegex(RuntimeError, "omitted selected token"):
+            gather_prefetched_tokens(
+                physical_key, physical_value, physical_token_ids, [0, 4]
+            )
 
     def test_physical_token_ids_expand_sparse_positions_to_complete_chunks(self):
         self.assertEqual(
