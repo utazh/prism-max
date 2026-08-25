@@ -50,7 +50,14 @@ esac
   die "RUN_TIMEOUT_SECONDS must be a positive integer"
 [[ "$RUN_ROOT" == /* ]] || die "RUN_ROOT must be absolute"
 
-for required in +  "$PYTHON" +  "$CELL_RUNNER" +  "$PAIR_ANALYZER" +  "$GRID_ANALYZER" +  "$BUNDLE_DIR/metadata.json" +  "$KV_DIR/.contiguous_fuxian_complete" +  "$SELECTOR_INDEX/manifest.json"; do
+for required in \
+  "$PYTHON" \
+  "$CELL_RUNNER" \
+  "$PAIR_ANALYZER" \
+  "$GRID_ANALYZER" \
+  "$BUNDLE_DIR/metadata.json" \
+  "$KV_DIR/.contiguous_fuxian_complete" \
+  "$SELECTOR_INDEX/manifest.json"; do
   [[ -f "$required" ]] || die "required file is missing: $required"
 done
 
@@ -68,7 +75,11 @@ assert_tracked_source_clean() {
     die "staged changes detected; commit them before running"
 }
 
-git -C "$ROOT" ls-files --error-unmatch -- +  scripts/run_prism_max_k4_abba_diagnostics.sh +  scripts/run_prism_max_cell.sh +  scripts/analyze_prism_max_pair.py +  scripts/analyze_prism_max_grid.py >/dev/null ||
+git -C "$ROOT" ls-files --error-unmatch -- \
+  scripts/run_prism_max_k4_abba_diagnostics.sh \
+  scripts/run_prism_max_cell.sh \
+  scripts/analyze_prism_max_pair.py \
+  scripts/analyze_prism_max_grid.py >/dev/null ||
   die "launcher, cell runner, and analyzers must be committed"
 
 SOURCE_COMMIT="$(git -C "$ROOT" rev-parse HEAD)"
@@ -199,12 +210,14 @@ assert_source_frozen() {
   printf 'run_root=%s\n' "$RUN_ROOT"
   printf 'selector_backend=k4\nscore_mode=nodefer\nwarmup_passes=1\n'
   printf 'warmup_samples=32\ngpu=%s\nreserve_gpu=%s\n' "$GPU" "$RESERVE_GPU"
-  nvidia-smi --query-gpu=index,name,uuid,memory.used,utilization.gpu +    --format=csv,noheader
+  nvidia-smi --query-gpu=index,name,uuid,memory.used,utilization.gpu \
+    --format=csv,noheader
 } >"$RUN_ROOT/environment/diagnostics.start.txt"
 
 validate_output() {
   local output="$1" task="$2" budget="$3" method="$4" expected="$5"
-  "$PYTHON" - "$output" "$BUNDLE_DIR/$task.jsonl" +    "$task" "$budget" "$method" "$expected" <<'PY'
+  "$PYTHON" - "$output" "$BUNDLE_DIR/$task.jsonl" \
+    "$task" "$budget" "$method" "$expected" <<'PY'
 import json
 import math
 import pathlib
@@ -246,7 +259,10 @@ for key, value in required.items():
         raise SystemExit(f"runtime.{key}={runtime.get(key)!r}, expected {value!r}")
 if not math.isclose(float(runtime.get("keep_ratio")), int(budget) / 100.0):
     raise SystemExit("keep ratio differs from requested budget")
-if not isinstance(runtime.get("selector_index_preloaded_bytes"), int) or +        runtime["selector_index_preloaded_bytes"] <= 0:
+if (
+    not isinstance(runtime.get("selector_index_preloaded_bytes"), int)
+    or runtime["selector_index_preloaded_bytes"] <= 0
+):
     raise SystemExit("K4 selector index was not resident")
 if any(float(row.get("selector_disk_source_bytes", -1)) != 0 for row in rows):
     raise SystemExit("request path unexpectedly read selector data from SSD")
@@ -273,7 +289,17 @@ run_one() {
     assert_source_frozen
     echo "[$(date -Is)] launch $task k$budget $method $repeat"
     set +e
-    PYTHON="$PYTHON" GPU="$GPU" RESERVE_GPU="$RESERVE_GPU" +    REQUIRE_IDLE_RESERVE="$REQUIRE_IDLE_RESERVE" TASK="$task" +    BUDGET_TAG="$budget" METHOD="$method" SELECTOR_BACKEND=k4 +    SELECTOR_INDEX="$SELECTOR_INDEX" SAMPLES_PER_TASK=1000000 +    WARMUP_PASSES=1 WARMUP_SAMPLES_PER_TASK=32 +    DEFER_CACHE_SCORE_UPDATES=false PROMIXED_ADAPTIVE_COVERAGE=false +    RUN_TIMEOUT_SECONDS="$RUN_TIMEOUT_SECONDS" RUN_ROOT="$RUN_ROOT" +    RUN_NAME="$name" SETTLE_SECONDS="$SETTLE_SECONDS" +    GPU_CACHE_MB=55 CPU_CACHE_MB=131 MODEL_PATH="$MODEL_PATH" +    BUNDLE_DIR="$BUNDLE_DIR" STORE_ROOT="$STORE_ROOT" +    FLEXGEN_ROOT="$FLEXGEN_ROOT" KV_DIR="$KV_DIR" "$CELL_RUNNER"
+    PYTHON="$PYTHON" GPU="$GPU" RESERVE_GPU="$RESERVE_GPU" \
+      REQUIRE_IDLE_RESERVE="$REQUIRE_IDLE_RESERVE" TASK="$task" \
+      BUDGET_TAG="$budget" METHOD="$method" SELECTOR_BACKEND=k4 \
+      SELECTOR_INDEX="$SELECTOR_INDEX" SAMPLES_PER_TASK=1000000 \
+      WARMUP_PASSES=1 WARMUP_SAMPLES_PER_TASK=32 \
+      DEFER_CACHE_SCORE_UPDATES=false PROMIXED_ADAPTIVE_COVERAGE=false \
+      RUN_TIMEOUT_SECONDS="$RUN_TIMEOUT_SECONDS" RUN_ROOT="$RUN_ROOT" \
+      RUN_NAME="$name" SETTLE_SECONDS="$SETTLE_SECONDS" \
+      GPU_CACHE_MB=55 CPU_CACHE_MB=131 MODEL_PATH="$MODEL_PATH" \
+      BUNDLE_DIR="$BUNDLE_DIR" STORE_ROOT="$STORE_ROOT" \
+      FLEXGEN_ROOT="$FLEXGEN_ROOT" KV_DIR="$KV_DIR" "$CELL_RUNNER"
     status=$?
     set -e
     if [[ -e "$output" ]] &&
@@ -295,7 +321,14 @@ publish_pair_analysis() {
   local task="$1" budget="$2" expected="${EXPECTED_COUNTS[$1]}"
   local stem="$RUN_ROOT/validation/${task}_k${budget}_k4_nodefer_abba"
   local candidate="$RUN_ROOT/validation/.${task}_k${budget}_candidate.$$"
-  "$PYTHON" "$PAIR_ANALYZER" +    --run-root "$RUN_ROOT" --task "$task" --budget "$budget" +    --backend k4 --score-mode nodefer +    --expected-samples "$expected" +    --expected-warmup-passes 1 --expected-warmup-samples 32 +    --bundle-metadata "$BUNDLE_DIR/metadata.json" +    --bootstrap-samples "$PAIR_BOOTSTRAP_SAMPLES" +    --output "$candidate"
+  "$PYTHON" "$PAIR_ANALYZER" \
+    --run-root "$RUN_ROOT" --task "$task" --budget "$budget" \
+    --backend k4 --score-mode nodefer \
+    --expected-samples "$expected" \
+    --expected-warmup-passes 1 --expected-warmup-samples 32 \
+    --bundle-metadata "$BUNDLE_DIR/metadata.json" \
+    --bootstrap-samples "$PAIR_BOOTSTRAP_SAMPLES" \
+    --output "$candidate"
   for suffix in json md; do
     if [[ -e "${stem}.${suffix}" ]]; then
       cmp -s "${candidate}.${suffix}" "${stem}.${suffix}" ||
@@ -319,7 +352,11 @@ done
 
 assert_source_frozen
 analysis_candidate="$RUN_ROOT/.grid_analysis_candidate.$$"
-"$PYTHON" "$GRID_ANALYZER" +  --manifest "$SCHEDULE_MANIFEST" +  --bundle-metadata "$BUNDLE_DIR/metadata.json" +  --bootstrap-samples "$GRID_BOOTSTRAP_SAMPLES" +  --output "$analysis_candidate"
+"$PYTHON" "$GRID_ANALYZER" \
+  --manifest "$SCHEDULE_MANIFEST" \
+  --bundle-metadata "$BUNDLE_DIR/metadata.json" \
+  --bootstrap-samples "$GRID_BOOTSTRAP_SAMPLES" \
+  --output "$analysis_candidate"
 for suffix in json md; do
   if [[ -e "${ANALYSIS_STEM}.${suffix}" ]]; then
     cmp -s "${analysis_candidate}.${suffix}" "${ANALYSIS_STEM}.${suffix}" ||
