@@ -18,6 +18,12 @@ class PrismMaxRunnerTest(unittest.TestCase):
         cls.impress_case = cls.script.split("\n  impress)\n", 1)[1].split(
             "\n  promixed)\n", 1
         )[0]
+        cls.as_lru_case = cls.script.split("\n  as_lru)\n", 1)[1].split(
+            "\n  as_h2o_lru)\n", 1
+        )[0]
+        cls.as_h2o_lru_case = cls.script.split("\n  as_h2o_lru)\n", 1)[1].split(
+            "\n  *)\n", 1
+        )[0]
 
     @staticmethod
     def run_runner(**environment_updates):
@@ -98,6 +104,114 @@ class PrismMaxRunnerTest(unittest.TestCase):
             "kv_complete_impress_reorder_sha256",
         ):
             self.assertIn(field, self.script)
+
+    def test_as_lru_case_is_original_full_kv_lru_contract(self):
+        expected = (
+            'PLAN="$ROOT/configs/qwen25_k005_impress.json"',
+            'KV_DIR="$AS_KV_DIR"',
+            'CACHE_TYPE="LRU"',
+            'AS_BASELINE_MODE="as_lru"',
+            'BUDGET_SEMANTICS="full-kv-budget-independent"',
+            'AS_FULL_KEY_RATIO="1.0"',
+            'AS_VALUE_KEEP_RATIO="1.0"',
+            'AS_LOGICAL_TOTAL_KV_RATIO="1.0"',
+            '--as-baseline-mode "$AS_BASELINE_MODE"',
+            '--probe-query-heads 0,7,14,21',
+            '--selector-kv-head-ids 0,1,2,3',
+        )
+        for fragment in expected:
+            self.assertIn(fragment, self.as_lru_case)
+        for forbidden in (
+            "--selector-index-dir",
+            "--impress-async-prefetch",
+            "--impress-reorder-manifest",
+            "--promixed-",
+            "CKLFU",
+        ):
+            self.assertNotIn(forbidden, self.as_lru_case)
+
+    def test_as_h2o_lru_case_is_full_key_selected_value_lru_contract(self):
+        expected = (
+            'PLAN="$ROOT/configs/qwen25_k${BUDGET_TAG}_impress.json"',
+            'KV_DIR="$AS_KV_DIR"',
+            'CACHE_TYPE="LRU"',
+            'AS_BASELINE_MODE="as_h2o_lru"',
+            'BUDGET_SEMANTICS="full-keys-selected-values"',
+            'AS_FULL_KEY_RATIO="1.0"',
+            'AS_VALUE_KEEP_RATIO="$KEEP_RATIO"',
+            '005) AS_LOGICAL_TOTAL_KV_RATIO="0.525"',
+            '010) AS_LOGICAL_TOTAL_KV_RATIO="0.55"',
+            '025) AS_LOGICAL_TOTAL_KV_RATIO="0.625"',
+            '050) AS_LOGICAL_TOTAL_KV_RATIO="0.75"',
+            '--as-baseline-mode "$AS_BASELINE_MODE"',
+            '--probe-query-heads 0,7,14,21',
+            '--selector-kv-head-ids 0,1,2,3',
+        )
+        for fragment in expected:
+            self.assertIn(fragment, self.as_h2o_lru_case)
+        for forbidden in (
+            "--selector-index-dir",
+            "--impress-async-prefetch",
+            "--impress-reorder-manifest",
+            "--promixed-",
+            "CKLFU",
+        ):
+            self.assertNotIn(forbidden, self.as_h2o_lru_case)
+
+    def test_as_completion_marker_contract_is_strict_and_plain_chunk64(self):
+        expected = (
+            '"schema_version": 3',
+            '"method": "attentionstore_as_baselines"',
+            '"chunk_size": 64',
+            '"selector_kv_head_ids": [0, 1, 2, 3]',
+            '"online_selection": True',
+            '"physical_layout": "plain-logical-token-order"',
+            '"impress_reorder_sha256": None',
+            '"registered_store_tasks": ["sst2", "subj", "trec", "rte"]',
+        )
+        for fragment in expected:
+            self.assertIn(fragment, self.script)
+        self.assertIn('--cache-type "$CACHE_TYPE"', self.script)
+
+    @unittest.skipUnless(shutil.which("bash"), "bash is required")
+    def test_as_lru_rejects_k4_before_gpu_or_storage_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            selector_index = Path(directory)
+            (selector_index / "manifest.json").write_text(
+                "{}\n",
+                encoding="utf-8",
+            )
+            completed = self.run_runner(
+                METHOD="as_lru",
+                BUDGET_TAG="full",
+                SELECTOR_BACKEND="k4",
+                SELECTOR_INDEX=str(selector_index),
+            )
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("AS+LRU requires SELECTOR_BACKEND=fp16", completed.stderr)
+
+    @unittest.skipUnless(shutil.which("bash"), "bash is required")
+    def test_as_h2o_rejects_full_budget_label(self):
+        completed = self.run_runner(
+            METHOD="as_h2o_lru",
+            BUDGET_TAG="full",
+            SELECTOR_BACKEND="fp16",
+        )
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("BUDGET_TAG=full is only valid", completed.stderr)
+
+    @unittest.skipUnless(shutil.which("bash"), "bash is required")
+    def test_as_lru_accepts_full_label_before_bundle_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            completed = self.run_runner(
+                METHOD="as_lru",
+                BUDGET_TAG="full",
+                SELECTOR_BACKEND="fp16",
+                BUNDLE_DIR=directory,
+            )
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("Bundle metadata is missing", completed.stderr)
+        self.assertNotIn("Unsupported budget tag", completed.stderr)
 
     @unittest.skipUnless(shutil.which("bash"), "bash is required")
     def test_missing_bundle_metadata_is_rejected_before_gpu_work(self):

@@ -356,6 +356,119 @@ class FlexGenPcacheTest(unittest.TestCase):
         finally:
             loader.close()
 
+    def test_as_lru_resolves_budget_independent_full_kv(self):
+        import torch
+
+        class FakeLayer:
+            chunk_num = 2
+            device_map = ["disk", "disk", "disk", "disk"]
+
+        class FakePrefix:
+            layers = [FakeLayer()]
+
+        class FakePcache:
+            cache = [FakePrefix()]
+
+            def __init__(self):
+                self.calls = []
+
+            def get(self, *, prefix_id, pos_id, layer):
+                self.calls.append((prefix_id, pos_id.tolist(), layer))
+                key = torch.arange(16, dtype=torch.float16).reshape(4, 2, 2)
+                return key, key + 100
+
+        pcache = FakePcache()
+        info = PrefixStoreInfo("rte", 4, 2, 2, 1, "hash")
+        loader = FlexGenLayerLoader(
+            pcache=pcache,
+            prefix_id=0,
+            info=info,
+            layer_plan=[["online", "online"]],
+            config=FlexGenPcacheConfig(Path("unused"), Path("unused"), 2),
+            method="as_lru",
+            online_selection=True,
+            keep_ratio=0.05,
+        )
+        try:
+            loader.configure_as_full_retention()
+            key, value = loader.resolve(0)
+            self.assertEqual(pcache.calls, [(0, [0, 1, 2, 3], 0)])
+            self.assertEqual(tuple(key.shape), (4, 2, 2))
+            self.assertTrue(torch.equal(value, key + 100))
+            metrics = loader.metrics()
+            self.assertEqual(metrics["effective_mean_keep_ratio"], 1.0)
+            self.assertEqual(metrics["selected_kv_bytes"], 64)
+        finally:
+            loader.close()
+
+    def test_as_h2o_loads_full_keys_and_only_selected_values(self):
+        import torch
+
+        class FakeLayer:
+            chunk_num = 2
+            device_map = ["disk", "disk", "disk", "disk"]
+
+        class FakePrefix:
+            layers = [FakeLayer()]
+
+        class FakePcache:
+            cache = [FakePrefix()]
+
+            def __init__(self):
+                self.key_calls = []
+                self.value_calls = []
+                self.full_keys = torch.arange(
+                    16, dtype=torch.float16
+                ).reshape(4, 2, 2)
+
+            def get_key(self, *, prefix_id, pos_id, layer):
+                self.key_calls.append((prefix_id, pos_id, layer))
+                return self.full_keys
+
+            def get_value(self, *, prefix_id, pos_id, layer):
+                self.value_calls.append((prefix_id, pos_id.clone(), layer))
+                result = torch.empty((pos_id.shape[1], 2, 2), dtype=torch.float16)
+                for head in range(2):
+                    for row, token in enumerate(pos_id[head].tolist()):
+                        result[row, head] = torch.tensor(
+                            [token * 10 + head, token * 10 + head + 0.5],
+                            dtype=torch.float16,
+                        )
+                return result
+
+        pcache = FakePcache()
+        info = PrefixStoreInfo("rte", 4, 2, 2, 1, "hash")
+        loader = FlexGenLayerLoader(
+            pcache=pcache,
+            prefix_id=0,
+            info=info,
+            layer_plan=[["online", "online"]],
+            config=FlexGenPcacheConfig(Path("unused"), Path("unused"), 2),
+            method="as_h2o_lru",
+            online_selection=True,
+            keep_ratio=0.5,
+        )
+        positions = torch.tensor([[0, 2], [1, 3]], dtype=torch.long)
+        try:
+            loaded_keys = loader.load_selector_keys(0)
+            self.assertIs(loaded_keys, pcache.full_keys)
+            loader.configure_as_h2o_layer(layer=0, positions=positions)
+            key, value = loader.resolve(0)
+            self.assertIs(key, pcache.full_keys)
+            self.assertEqual(pcache.key_calls, [(0, None, 0)])
+            self.assertTrue(torch.equal(pcache.value_calls[0][1], positions))
+            self.assertTrue(torch.equal(value[1, 0], torch.zeros(2)))
+            self.assertTrue(torch.equal(value[0, 1], torch.zeros(2)))
+            self.assertTrue(torch.equal(value[0, 0], torch.tensor([0.0, 0.5])))
+            self.assertTrue(torch.equal(value[3, 1], torch.tensor([31.0, 31.5])))
+            metrics = loader.metrics()
+            self.assertEqual(metrics["as_h2o_full_key_ratio"], 1.0)
+            self.assertEqual(metrics["as_h2o_value_keep_ratio"], 0.5)
+            self.assertEqual(metrics["as_h2o_total_logical_payload_ratio"], 0.75)
+            self.assertEqual(metrics["selected_kv_bytes"], 48)
+        finally:
+            loader.close()
+
     def test_paper_impress_online_mode_uses_synchronous_get(self):
         loader = FlexGenLayerLoader.__new__(FlexGenLayerLoader)
         loader.method = "impress"

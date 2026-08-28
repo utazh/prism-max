@@ -59,6 +59,14 @@ class FlexGenQwenReprefillTest(unittest.TestCase):
             ("impress", True, False, False, "impress-sync-no-reorder-ablation"),
             ("impress", True, True, True, "hyperinfer-async-reorder"),
             ("impress", True, True, False, "hyperinfer-async-no-reorder"),
+            ("as_lru", True, False, False, "attentionstore-full-kv-lru-c64"),
+            (
+                "as_h2o_lru",
+                True,
+                False,
+                False,
+                "attentionstore-h2o-full-k-selected-v-lru-c64",
+            ),
             ("contigkv", False, False, False, "offline-plan"),
             ("impress", False, True, True, "offline-plan"),
         ]
@@ -212,6 +220,18 @@ class FlexGenQwenReprefillTest(unittest.TestCase):
         )
         validate_online_selector_mapping(
             config,
+            method="as_lru",
+            selector_kv_head_ids=(0,),
+            probe_query_heads=(0,),
+        )
+        validate_online_selector_mapping(
+            config,
+            method="as_h2o_lru",
+            selector_kv_head_ids=(0, 1, 2, 3),
+            probe_query_heads=(0,),
+        )
+        validate_online_selector_mapping(
+            config,
             method="impress",
             selector_kv_head_ids=(0, 0, 1),
             probe_query_heads=(0, 6, 7),
@@ -329,6 +349,90 @@ class FlexGenQwenReprefillTest(unittest.TestCase):
         self.assertAlmostEqual(loader.compute_ms, 9.5)
         self.assertEqual(len(FakeEvent.instances), 2)
         self.assertTrue(all(event.recorded for event in FakeEvent.instances))
+
+    def test_h2o_selector_configures_per_kv_head_value_positions(self):
+        import torch
+
+        class FakeEvent:
+            def __init__(self, *, enable_timing):
+                self.enable_timing = enable_timing
+
+            def record(self):
+                pass
+
+            def synchronize(self):
+                pass
+
+            def elapsed_time(self, finished):
+                return 5.0
+
+        class FakeLoader:
+            method = "as_h2o_lru"
+
+            def __init__(self):
+                self.selection = None
+                self.compute_ms = None
+
+            def load_selector_keys(self, layer):
+                self.loaded_layer = layer
+                return object()
+
+            def keep_ratio_for_layer(self, layer):
+                return 0.25
+
+            def configure_as_h2o_layer(self, **selection):
+                self.selection = selection
+
+            def record_selector_compute(self, elapsed_ms):
+                self.compute_ms = elapsed_ms
+
+        config = type(
+            "Config",
+            (),
+            {"num_attention_heads": 4, "num_key_value_heads": 2},
+        )()
+        decoder_layer = type(
+            "Layer",
+            (),
+            {"self_attn": type("Attention", (), {"config": config})()},
+        )()
+        head_scores = torch.tensor(
+            [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 2.0, 0.0, 0.0],
+                [0.0, 0.0, 4.0, 0.0],
+                [0.0, 0.0, 0.0, 3.0],
+            ]
+        )
+        loader = FakeLoader()
+        with patch.object(torch.cuda, "Event", FakeEvent), patch(
+            "contiguous_fuxian.flexgen_qwen_reprefill."
+            "qwen_online_prefix_head_scores",
+            return_value=head_scores,
+        ) as score_mock, patch(
+            "contiguous_fuxian.flexgen_qwen_reprefill.time.perf_counter",
+            side_effect=(10.0, 10.001),
+        ):
+            configured = configure_online_layer_selection(
+                decoder_layer=decoder_layer,
+                hidden_states=object(),
+                position_embeddings=(object(), object()),
+                layer_index=3,
+                loader=loader,
+                period_size=8,
+            )
+
+        self.assertEqual(configured, 1)
+        self.assertEqual(loader.loaded_layer, 3)
+        self.assertEqual(loader.selection["layer"], 3)
+        self.assertTrue(
+            torch.equal(
+                loader.selection["positions"],
+                torch.tensor([[1], [2]], dtype=torch.long),
+            )
+        )
+        self.assertAlmostEqual(loader.compute_ms, 6.0)
+        self.assertIsNone(score_mock.call_args.kwargs["query_heads"])
 
     def test_impress_contiguous_block_selection_votes_over_aligned_blocks(self):
         selected, used_probe, similarity = impress_contiguous_block_selection(

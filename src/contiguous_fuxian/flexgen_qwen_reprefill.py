@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from .as_baselines import select_h2o_gqa_value_positions
 from .core import contiguous_chunk_scores, select_top_chunks
 from .flexgen_pcache import (
     FlexGenPcacheConfig,
@@ -75,6 +76,10 @@ def runtime_variant(
 ) -> str:
     if not online_selection:
         return "offline-plan"
+    if method == "as_lru":
+        return "attentionstore-full-kv-lru-c64"
+    if method == "as_h2o_lru":
+        return "attentionstore-h2o-full-k-selected-v-lru-c64"
     if method == "contigkv":
         return "contiguouskv-online-period-prefetch"
     if method != "impress":
@@ -404,14 +409,19 @@ def validate_online_selector_mapping(
     groups = query_heads // kv_heads
     selector_ids = tuple(int(head) for head in selector_kv_head_ids)
     probes = tuple(int(head) for head in probe_query_heads)
-    if method == "contigkv":
+    if method in {"contigkv", "as_h2o_lru"}:
         expected = tuple(range(kv_heads))
         if selector_ids != expected:
+            label = "ContiguousKV" if method == "contigkv" else "AS+H2O+LRU"
             raise ValueError(
-                "online ContiguousKV must persist every Qwen KV head in order; "
+                f"online {label} must persist every Qwen KV head in order; "
                 f"expected {expected}, got {selector_ids}"
             )
         return
+    if method == "as_lru":
+        return
+    if method != "impress":
+        raise ValueError(f"unsupported online selector method: {method}")
     if any(head >= query_heads for head in probes):
         raise ValueError(f"probe query heads must be below {query_heads}")
     expected = tuple(head // groups for head in probes)
@@ -819,7 +829,37 @@ def configure_online_layer_selection(
 
     configured_period = period_size
     selector_keys = loader.load_selector_keys(layer_index)
-    if loader.method == "contigkv":
+    if loader.method == "as_h2o_lru":
+        score_started = torch.cuda.Event(enable_timing=True)
+        score_finished = torch.cuda.Event(enable_timing=True)
+        score_started.record()
+        head_scores = qwen_online_prefix_head_scores(
+            decoder_layer=decoder_layer,
+            hidden_states=hidden_states,
+            position_embeddings=position_embeddings,
+            selector_keys=selector_keys,
+            query_heads=None,
+        )
+        score_finished.record()
+        score_finished.synchronize()
+        score_path_ms = score_started.elapsed_time(score_finished)
+        decision_started = time.perf_counter()
+        attention_config = decoder_layer.self_attn.config
+        positions = select_h2o_gqa_value_positions(
+            head_scores,
+            num_query_heads=int(attention_config.num_attention_heads),
+            num_kv_heads=int(attention_config.num_key_value_heads),
+            keep_ratio=float(loader.keep_ratio_for_layer(layer_index)),
+        )
+        loader.configure_as_h2o_layer(
+            layer=layer_index,
+            positions=positions,
+        )
+        loader.record_selector_compute(
+            score_path_ms + (time.perf_counter() - decision_started) * 1000
+        )
+        configured_period = 1
+    elif loader.method == "contigkv":
         score_started = torch.cuda.Event(enable_timing=True)
         score_finished = torch.cuda.Event(enable_timing=True)
         score_started.record()
@@ -1084,7 +1124,8 @@ def flexgen_sparse_decoder_logits(
             )
             configured_impress_period = impress_selection_period_size
             if loader.online_selection and (
-                impress_selection_leader
+                loader.method == "as_h2o_lru"
+                or impress_selection_leader
                 or (loader.method == "contigkv" and within_period == 0)
             ):
                 configured_impress_period = configure_online_layer_selection(
@@ -1459,6 +1500,7 @@ def run_flexgen_reprefill(
     promixed_utility_mean_weight: float = 0.35,
     promixed_utility_vote_weight: float = 0.10,
     defer_cache_score_updates: bool = False,
+    as_baseline_mode: str = "none",
 ) -> dict[str, Any]:
     """Run a matched method plan on Qwen through the shared FlexGen cache path."""
 
@@ -1489,9 +1531,43 @@ def run_flexgen_reprefill(
         raise ValueError(
             f"plan chunk size {chunk_size} does not match Pcache chunk size {flexgen_config.chunk_size}"
         )
-    method = str(plan_metadata.get("method", ""))
-    if method not in {"contigkv", "impress"}:
-        raise ValueError(f"plan metadata has unsupported method {method!r}")
+    plan_method = str(plan_metadata.get("method", ""))
+    if plan_method not in {"contigkv", "impress"}:
+        raise ValueError(f"plan metadata has unsupported method {plan_method!r}")
+    if as_baseline_mode not in {"none", "as_lru", "as_h2o_lru"}:
+        raise ValueError(
+            "as_baseline_mode must be none, as_lru, or as_h2o_lru"
+        )
+    if as_baseline_mode != "none":
+        if not online_selection:
+            raise ValueError("AttentionStore baselines require online selection")
+        if plan_method != "impress":
+            raise ValueError(
+                "AttentionStore baselines require a chunk-64 IMPRESS shape plan"
+            )
+        if flexgen_config.chunk_size != 64:
+            raise ValueError("AttentionStore baselines require 64-token chunks")
+        if flexgen_config.cache_type != "LRU":
+            raise ValueError("AttentionStore baselines require the original LRU policy")
+        if flexgen_config.selector_index_dir is not None:
+            raise ValueError("AttentionStore baselines cannot use a selector index")
+        if flexgen_config.impress_reorder_path is not None:
+            raise ValueError("AttentionStore baselines cannot use IMPRESS reordering")
+        if (
+            impress_async_prefetch
+            or impress_selection_block_size != 1
+            or impress_selection_period_size != 1
+            or layer_budget_profile is not None
+            or exact_layer_block_budget
+            or promixed_gqa_selection
+            or defer_cache_score_updates
+        ):
+            raise ValueError(
+                "AttentionStore baselines cannot use IMPRESS/ProMixed extensions"
+            )
+        method = as_baseline_mode
+    else:
+        method = plan_method
     if flexgen_config.impress_reorder_path is not None and method != "impress":
         raise ValueError("an IMPRESS reorder manifest cannot be used for ContiguousKV")
     if impress_async_prefetch and method != "impress":
@@ -1748,16 +1824,21 @@ def run_flexgen_reprefill(
             )
             token_selections = None
             chunk_scores = None
-            reference_plan = _load_optional_layer_plan(plan_path, uid)
-            if reference_plan is None:
+            if method in {"as_lru", "as_h2o_lru"}:
+                # The IMPRESS plan is shape/budget metadata only for these
+                # baselines, never a selection reference.
                 reference_tokens = None
             else:
-                reference_tokens = selected_tokens_for_plan(
-                    reference_plan,
-                    chunk_size=flexgen_config.chunk_size,
-                    prefix_tokens=info.prefix_tokens,
-                    layer_token_selections=_load_layer_token_selections(plan_path, uid),
-                )
+                reference_plan = _load_optional_layer_plan(plan_path, uid)
+                if reference_plan is None:
+                    reference_tokens = None
+                else:
+                    reference_tokens = selected_tokens_for_plan(
+                        reference_plan,
+                        chunk_size=flexgen_config.chunk_size,
+                        prefix_tokens=info.prefix_tokens,
+                        layer_token_selections=_load_layer_token_selections(plan_path, uid),
+                    )
         else:
             layer_plan, _ = _load_layer_plan(plan_path, uid)
             token_selections = _load_layer_token_selections(plan_path, uid)
@@ -1804,6 +1885,8 @@ def run_flexgen_reprefill(
             promixed_policy=promixed_policy,
             defer_cache_score_updates=defer_cache_score_updates,
         )
+        if method == "as_lru":
+            loader.configure_as_full_retention()
         query_ids = tokenizer(str(row["query_text"]), add_special_tokens=False).input_ids
         labels = tuple(str(label) for label in row["labels"])
         label_continuation_prefix = str(
@@ -2215,6 +2298,8 @@ def run_flexgen_reprefill(
         "runtime": {
             "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
             "method": method,
+            "plan_method": plan_method,
+            "as_baseline_mode": as_baseline_mode,
             "runtime_variant": runtime_variant(
                 method=method,
                 online_selection=online_selection,
@@ -2254,7 +2339,32 @@ def run_flexgen_reprefill(
             ),
             "generation_max_tokens": max_tokens,
             "pcache_storage_dtype": "float16",
-            "keep_ratio": plan_keep_ratio,
+            "keep_ratio": (1.0 if method == "as_lru" else plan_keep_ratio),
+            "configured_plan_keep_ratio": plan_keep_ratio,
+            "budget_semantics": (
+                "full-kv-budget-independent"
+                if method == "as_lru"
+                else (
+                    "full-key-plus-budgeted-values"
+                    if method == "as_h2o_lru"
+                    else "matched-sparse-kv-retention"
+                )
+            ),
+            "actual_key_keep_ratio": (
+                1.0 if method in {"as_lru", "as_h2o_lru"} else plan_keep_ratio
+            ),
+            "actual_value_keep_ratio": (
+                1.0 if method == "as_lru" else plan_keep_ratio
+            ),
+            "actual_total_logical_kv_ratio": (
+                1.0
+                if method == "as_lru"
+                else (
+                    (1.0 + plan_keep_ratio) / 2.0
+                    if method == "as_h2o_lru"
+                    else plan_keep_ratio
+                )
+            ),
             "layer_budget_profile": (
                 str(budget_profile.source_path) if budget_profile is not None else None
             ),
@@ -2294,9 +2404,13 @@ def run_flexgen_reprefill(
             ),
             "defer_cache_score_updates": defer_cache_score_updates,
             "cache_score_policy": (
-                "cumulative-attention-times-frequency"
-                if method == "contigkv"
-                else "chunk-accesses-and-cumulative-important-tokens"
+                "LRU-recency"
+                if method in {"as_lru", "as_h2o_lru"}
+                else (
+                    "cumulative-attention-times-frequency"
+                    if method == "contigkv"
+                    else "chunk-accesses-and-cumulative-important-tokens"
+                )
             ),
             "online_selection": online_selection,
             "registered_store_tasks": list(registered_store_tasks),
@@ -2335,9 +2449,27 @@ def run_flexgen_reprefill(
             "impress_selection_period_size": impress_selection_period_size,
             "promixed_gqa_selection": promixed_gqa_selection,
             "selector_score_reduction": (
-                "gpu-contiguous-block-sum"
-                if method == "impress" and impress_selection_block_size > 1
-                else "token-scores"
+                "gqa-group-sum-per-kv-head-topk"
+                if method == "as_h2o_lru"
+                else (
+                    "none-full-kv"
+                    if method == "as_lru"
+                    else (
+                        "gpu-contiguous-block-sum"
+                        if method == "impress" and impress_selection_block_size > 1
+                        else "token-scores"
+                    )
+                )
+            ),
+            "attentionstore_semantics": (
+                "full K and full V, synchronous layer loads, LRU residency"
+                if method == "as_lru"
+                else (
+                    "full K selector; per-GQA-KV-head H2O value top-k; "
+                    "unselected V zero-filled; LRU residency"
+                    if method == "as_h2o_lru"
+                    else None
+                )
             ),
             "promixed_policy": promixed_policy,
             "impress_known_period_prefetch": impress_known_period_prefetch,
@@ -2390,14 +2522,22 @@ def run_flexgen_reprefill(
                 else None
             ),
             "online_scheduler": (
-                "contig-full-period-v5+hyperinfer-async-v7+prism-ab-v1"
-                if online_selection
-                else "offline-plan-v1"
+                "attentionstore-sync-layerwise-v1"
+                if method in {"as_lru", "as_h2o_lru"}
+                else (
+                    "contig-full-period-v5+hyperinfer-async-v7+prism-ab-v1"
+                    if online_selection
+                    else "offline-plan-v1"
+                )
             ),
             "online_plan_source": (
-                "request-time selector; plan file supplies method/config only"
-                if online_selection
-                else "per-request offline plan"
+                "shape-only IMPRESS plan; AS baseline selection is request-time"
+                if method in {"as_lru", "as_h2o_lru"}
+                else (
+                    "request-time selector; plan file supplies method/config only"
+                    if online_selection
+                    else "per-request offline plan"
+                )
             ),
             "selection_reference_requests": sum(
                 "selection_reference_mean_jaccard" in row for row in scored
@@ -2485,7 +2625,19 @@ def main() -> int:
     parser.add_argument(
         "--online-selection",
         action="store_true",
-        help="Compute ContiguousKV or IMPRESS selections during measured Re-Prefill.",
+        help=(
+            "Compute ContiguousKV, IMPRESS, or AS+H2O selections during "
+            "measured Re-Prefill."
+        ),
+    )
+    parser.add_argument(
+        "--as-baseline-mode",
+        choices=("none", "as_lru", "as_h2o_lru"),
+        default="none",
+        help=(
+            "Run the clean-room AttentionStore full-KV or AttentionStore+H2O "
+            "full-K/selected-V LRU baseline using a chunk-64 shape plan."
+        ),
     )
     parser.add_argument("--probe-query-heads", default="0,1,2")
     parser.add_argument("--selector-kv-head-ids", default="0,1,2")
@@ -2787,6 +2939,7 @@ def main() -> int:
             args.promixed_utility_vote_weight
         ),
         defer_cache_score_updates=args.defer_cache_score_updates,
+        as_baseline_mode=args.as_baseline_mode,
     )
     print(json.dumps(summary, indent=2))
     return 0

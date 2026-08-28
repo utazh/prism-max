@@ -38,6 +38,7 @@ FLEXGEN_ROOT="${FLEXGEN_ROOT:-$ROOT/vendor/flexgen}"
 KV_DIR="${KV_DIR:-/home/panzihang/contiguous_fuxian_ssd/paper4_online_contig_c16_v14}"
 IMPRESS_KV_DIR="${IMPRESS_KV_DIR:-/home/panzihang/contiguous_fuxian_ssd/paper4_online_impress_c64_gqa_unique_reordered_disjoint_v33}"
 IMPRESS_REORDER="${IMPRESS_REORDER:-/home/panzihang/src/contiguous_fuxian/results/impress_reorder/qwen25_7b_paper4_disjoint_history32_35_v2.json}"
+AS_KV_DIR="${AS_KV_DIR:-/home/panzihang/contiguous_fuxian_ssd/paper4_as_c64_plain_v1}"
 SELECTOR_INDEX="${SELECTOR_INDEX:-$ROOT/assets/selector_index_k4_g32}"
 
 gpu_has_compute_process() {
@@ -106,6 +107,37 @@ print(value)
 PY
 }
 
+validate_as_completion_marker() {
+  "$PYTHON" - "$1" <<'PY'
+import json
+import pathlib
+import sys
+
+path = pathlib.Path(sys.argv[1])
+payload = json.loads(path.read_text(encoding="utf-8"))
+expected = {
+    "schema_version": 3,
+    "method": "attentionstore_as_baselines",
+    "chunk_size": 64,
+    "selector_kv_head_ids": [0, 1, 2, 3],
+    "online_selection": True,
+    "physical_layout": "plain-logical-token-order",
+    "impress_reorder_sha256": None,
+    "registered_store_tasks": ["sst2", "subj", "trec", "rte"],
+}
+problems = []
+for field, expected_value in expected.items():
+    if field not in payload:
+        problems.append(f"missing {field!r}")
+    elif payload[field] != expected_value:
+        problems.append(
+            f"{field}={payload[field]!r}, expected {expected_value!r}"
+        )
+if problems:
+    raise SystemExit(f"invalid AS completion marker {path}: " + "; ".join(problems))
+PY
+}
+
 case "$SELECTOR_BACKEND" in
   fp16) index_args=() ;;
   k4)
@@ -151,11 +183,27 @@ case "$PROMIXED_ADAPTIVE_COVERAGE" in
     ;;
 esac
 
-KEEP_RATIO="$(budget_ratio "$BUDGET_TAG")"
-PROFILE="$(budget_profile "$BUDGET_TAG")"
+if [[ "$BUDGET_TAG" == "full" ]]; then
+  if [[ "$METHOD" != "as_lru" ]]; then
+    echo "BUDGET_TAG=full is only valid for budget-independent AS+LRU" >&2
+    exit 2
+  fi
+  # AS+LRU retains all K/V. The 5% plan is shape-only metadata for the runtime.
+  KEEP_RATIO="0.05"
+  PROFILE=""
+else
+  KEEP_RATIO="$(budget_ratio "$BUDGET_TAG")"
+  PROFILE="$(budget_profile "$BUDGET_TAG")"
+fi
 method_args=()
 profile_args=()
 selected_reorder_manifest=""
+CACHE_TYPE="CKLFU"
+AS_BASELINE_MODE="none"
+BUDGET_SEMANTICS="selected-kv-retention"
+AS_FULL_KEY_RATIO="not-applicable"
+AS_VALUE_KEEP_RATIO="not-applicable"
+AS_LOGICAL_TOTAL_KV_RATIO="not-applicable"
 
 case "$METHOD" in
   contigkv)
@@ -214,8 +262,57 @@ case "$METHOD" in
       --impress-known-period-prefetch
     )
     ;;
+  as_lru)
+    if [[ "$SELECTOR_BACKEND" != "fp16" ]]; then
+      echo "AS+LRU requires SELECTOR_BACKEND=fp16; selector indexes are not part of the original baseline" >&2
+      exit 2
+    fi
+    if [[ "$BUDGET_TAG" != "full" && "$BUDGET_TAG" != "005" ]]; then
+      echo "AS+LRU is budget-independent; use BUDGET_TAG=full (or 005 as a compatibility label)" >&2
+      exit 2
+    fi
+    # Shape-only plan: configure_as_full_retention() ignores its 5% selection.
+    PLAN="$ROOT/configs/qwen25_k005_impress.json"
+    KEEP_RATIO="0.05"
+    KV_DIR="$AS_KV_DIR"
+    CACHE_TYPE="LRU"
+    AS_BASELINE_MODE="as_lru"
+    BUDGET_SEMANTICS="full-kv-budget-independent"
+    AS_FULL_KEY_RATIO="1.0"
+    AS_VALUE_KEEP_RATIO="1.0"
+    AS_LOGICAL_TOTAL_KV_RATIO="1.0"
+    method_args=(
+      --as-baseline-mode "$AS_BASELINE_MODE"
+      --probe-query-heads 0,7,14,21
+      --selector-kv-head-ids 0,1,2,3
+    )
+    ;;
+  as_h2o_lru)
+    if [[ "$SELECTOR_BACKEND" != "fp16" ]]; then
+      echo "AS+H2O+LRU requires SELECTOR_BACKEND=fp16; selector indexes are not part of the original baseline" >&2
+      exit 2
+    fi
+    PLAN="$ROOT/configs/qwen25_k${BUDGET_TAG}_impress.json"
+    KV_DIR="$AS_KV_DIR"
+    CACHE_TYPE="LRU"
+    AS_BASELINE_MODE="as_h2o_lru"
+    BUDGET_SEMANTICS="full-keys-selected-values"
+    AS_FULL_KEY_RATIO="1.0"
+    AS_VALUE_KEEP_RATIO="$KEEP_RATIO"
+    case "$BUDGET_TAG" in
+      005) AS_LOGICAL_TOTAL_KV_RATIO="0.525" ;;
+      010) AS_LOGICAL_TOTAL_KV_RATIO="0.55" ;;
+      025) AS_LOGICAL_TOTAL_KV_RATIO="0.625" ;;
+      050) AS_LOGICAL_TOTAL_KV_RATIO="0.75" ;;
+    esac
+    method_args=(
+      --as-baseline-mode "$AS_BASELINE_MODE"
+      --probe-query-heads 0,7,14,21
+      --selector-kv-head-ids 0,1,2,3
+    )
+    ;;
   *)
-    echo "METHOD must be contigkv, impress, or promixed" >&2
+    echo "METHOD must be contigkv, impress, promixed, as_lru, or as_h2o_lru" >&2
     exit 2
     ;;
 esac
@@ -252,6 +349,11 @@ KV_COMPLETE_MARKER="$KV_DIR/.contiguous_fuxian_complete"
   echo "Pcache completion marker is missing: $KV_COMPLETE_MARKER" >&2
   exit 2
 }
+if [[ "$AS_BASELINE_MODE" != "none" ]] &&
+   ! validate_as_completion_marker "$KV_COMPLETE_MARKER"; then
+  echo "AS baselines require the dedicated plain chunk-64 Pcache: $KV_COMPLETE_MARKER" >&2
+  exit 2
+fi
 if [[ -n "$selected_reorder_manifest" && ! -f "$selected_reorder_manifest" ]]; then
   echo "IMPRESS reorder manifest is missing: $selected_reorder_manifest" >&2
   exit 2
@@ -312,6 +414,10 @@ guard_gpus
   printf 'source_status=%s\n' "$(git -C "$ROOT" status --porcelain | tr '\n' ';')"
   printf 'method=%s\nselector_backend=%s\nscore_mode=%s\n' \
     "$METHOD" "$SELECTOR_BACKEND" "$score_tag"
+  printf 'as_baseline_mode=%s\ncache_type=%s\nbudget_semantics=%s\n' \
+    "$AS_BASELINE_MODE" "$CACHE_TYPE" "$BUDGET_SEMANTICS"
+  printf 'as_full_key_ratio=%s\nas_value_keep_ratio=%s\nas_logical_total_kv_ratio=%s\n' \
+    "$AS_FULL_KEY_RATIO" "$AS_VALUE_KEEP_RATIO" "$AS_LOGICAL_TOTAL_KV_RATIO"
   printf 'plan=%s\nplan_sha256=%s\n' "$PLAN" "$PLAN_SHA256"
   printf 'bundle_dir=%s\nbundle_metadata=%s\nbundle_metadata_sha256=%s\n' \
     "$BUNDLE_DIR" "$BUNDLE_METADATA" "$BUNDLE_METADATA_SHA256"
@@ -367,7 +473,7 @@ timeout --kill-after=60s "${RUN_TIMEOUT_SECONDS}s" "$PYTHON" \
   --dtype bfloat16 \
   --gpu-cache-mb "$GPU_CACHE_MB" \
   --cpu-cache-mb "$CPU_CACHE_MB" \
-  --cache-type CKLFU \
+  --cache-type "$CACHE_TYPE" \
   --prefetch-time-budget 10000 \
   --online-selection \
   --reuse-flexgen-kv \

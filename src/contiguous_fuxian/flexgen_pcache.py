@@ -832,7 +832,7 @@ class FlexGenLayerLoader:
         self._prefix_id = prefix_id
         self._info = info
         self._config = config
-        if method not in {"contigkv", "impress"}:
+        if method not in {"contigkv", "impress", "as_lru", "as_h2o_lru"}:
             raise ValueError(f"unsupported sparse cache method {method!r}")
         if online_selection and (keep_ratio is None or not 0 < float(keep_ratio) <= 1):
             raise ValueError("online selection requires keep_ratio in (0, 1]")
@@ -1089,6 +1089,9 @@ class FlexGenLayerLoader:
         self._speculative_source_layer: dict[int, int] = {}
         self._speculative_prediction_recorded: set[int] = set()
         self._loaded: dict[int, tuple[Any, Any]] = {}
+        self._as_h2o_positions: list[Any | None] = [None for _ in layer_plan]
+        self._as_h2o_full_keys: dict[int, Any] = {}
+        self._as_h2o_selected_value_elements = 0
         self._prefetch_wait_ms = 0.0
         self._prefetch_elapsed_ms = 0.0
         self._physical_tokens = 0
@@ -1346,6 +1349,52 @@ class FlexGenLayerLoader:
         self._prefetch_priority_by_layer[layer] = priority
         self._record_speculative_prediction_if_ready(layer)
 
+    def configure_as_full_retention(self) -> None:
+        """Configure AttentionStore's budget-independent full-KV reference."""
+
+        if not self.online_selection or self.method != "as_lru":
+            raise RuntimeError("AS+LRU full retention is not enabled")
+        selected = list(range(self._info.prefix_tokens))
+        for layer in range(self.layers):
+            self._selected_by_layer[layer] = list(selected)
+            self._prefetch_priority_by_layer[layer] = list(selected)
+
+    def configure_as_h2o_layer(self, *, layer: int, positions: Any) -> None:
+        """Record per-KV-head H2O value positions for one Qwen GQA layer."""
+
+        if not self.online_selection or self.method != "as_h2o_lru":
+            raise RuntimeError("AS+H2O+LRU selection is not enabled")
+        if not 0 <= layer < self.layers:
+            raise ValueError(f"AS+H2O layer {layer} is outside the model")
+
+        import torch
+
+        normalized = torch.as_tensor(positions, dtype=torch.long).detach().cpu()
+        if normalized.ndim != 2 or normalized.shape[0] != self._info.kv_heads:
+            raise ValueError(
+                "AS+H2O positions must have shape [num_kv_heads, selected_tokens]"
+            )
+        if normalized.shape[1] <= 0:
+            raise ValueError("AS+H2O must retain at least one value per KV head")
+        if bool(torch.any(normalized < 0)) or bool(
+            torch.any(normalized >= self._info.prefix_tokens)
+        ):
+            raise ValueError("AS+H2O selected a value outside the prefix")
+        for head_positions in normalized:
+            if int(torch.unique(head_positions).numel()) != int(
+                head_positions.numel()
+            ):
+                raise ValueError("AS+H2O selected duplicate values for a KV head")
+
+        self._as_h2o_positions[layer] = normalized
+        self._selected_by_layer[layer] = sorted(
+            set(int(token) for token in normalized.reshape(-1).tolist())
+        )
+        self._prefetch_priority_by_layer[layer] = list(
+            self._selected_by_layer[layer]
+        )
+        self._as_h2o_selected_value_elements += int(normalized.numel())
+
     def _record_speculative_prediction_if_ready(self, layer: int) -> None:
         """Record prediction quality regardless of selection/request ordering."""
 
@@ -1409,6 +1458,45 @@ class FlexGenLayerLoader:
         import torch
 
         started = time.perf_counter()
+        if self.method == "as_h2o_lru":
+            cache_layer = self._pcache.cache[self._prefix_id].layers[layer]
+            chunk_count = int(cache_layer.chunk_num)
+            key_source_bytes = {"gpu": 0, "cpu": 0, "disk": 0}
+            bytes_per_tensor_token = self._info.bytes_per_token_per_tensor
+            for chunk in range(chunk_count):
+                start = chunk * self._config.chunk_size
+                tokens = min(
+                    self._config.chunk_size,
+                    max(0, self._info.prefix_tokens - start),
+                )
+                source_device = str(cache_layer.device_map[chunk])
+                if source_device.startswith("cuda"):
+                    source = "gpu"
+                elif source_device in {"cpu", "disk"}:
+                    source = source_device
+                else:
+                    raise RuntimeError(
+                        f"unsupported AS+H2O key source {source_device!r}"
+                    )
+                key_source_bytes[source] += tokens * bytes_per_tensor_token
+            keys = self._pcache.get_key(
+                prefix_id=self._prefix_id,
+                pos_id=None,
+                layer=layer,
+            )
+            if torch.cuda.is_available():
+                torch.cuda.synchronize()
+            key_bytes = int(keys.numel()) * int(keys.element_size())
+            if key_bytes != sum(key_source_bytes.values()):
+                raise RuntimeError("AS+H2O full-key byte accounting mismatch")
+            self._as_h2o_full_keys[layer] = keys
+            self._selector_load_ms += (time.perf_counter() - started) * 1000
+            self._selector_key_bytes += key_bytes
+            self._selector_dequantized_key_bytes += key_bytes
+            for source, byte_count in key_source_bytes.items():
+                self._selector_source_bytes[source] += byte_count
+            self._selector_calls += 1
+            return keys
         if self._selector_index is not None:
             if self._selector_index_task is None:
                 raise RuntimeError("selector index task was not configured")
@@ -1943,8 +2031,12 @@ class FlexGenLayerLoader:
 
         if layer in self._loaded:
             return self._loaded[layer]
-        if self.method == "impress" and (
-            not self.online_selection or not self.impress_async_prefetch
+        if self.method == "as_h2o_lru":
+            return self._resolve_as_h2o(layer)
+        if self.method in {"impress", "as_lru"} and (
+            not self.online_selection
+            or not self.impress_async_prefetch
+            or self.method == "as_lru"
         ):
             return self._resolve_impress(layer)
         segments = []
@@ -1996,6 +2088,65 @@ class FlexGenLayerLoader:
         self._update_loaded_layer_score(layer)
         self._loaded[layer] = (key, value)
         return key, value
+
+    def _resolve_as_h2o(self, layer: int) -> tuple[Any, Any]:
+        """Resolve full K plus per-KV-head selected/zero-filled V."""
+
+        if layer in self._loaded:
+            return self._loaded[layer]
+        import torch
+        from .as_baselines import scatter_h2o_selected_values
+
+        positions = self._as_h2o_positions[layer]
+        full_keys = self._as_h2o_full_keys.pop(layer, None)
+        if positions is None or full_keys is None:
+            raise RuntimeError(f"AS+H2O layer {layer} was not configured")
+
+        cache_layer = self._pcache.cache[self._prefix_id].layers[layer]
+        chunk_count = int(cache_layer.chunk_num)
+        touched_chunks = sorted(
+            {
+                int(token) // self._config.chunk_size
+                for token in positions.reshape(-1).tolist()
+            }
+        )
+        for chunk in touched_chunks:
+            start = chunk * self._config.chunk_size
+            tokens = min(
+                self._config.chunk_size,
+                max(0, self._info.prefix_tokens - start),
+            )
+            source_device = str(cache_layer.device_map[chunk + chunk_count])
+            if source_device.startswith("cuda"):
+                source = "gpu"
+            elif source_device in {"cpu", "disk"}:
+                source = source_device
+            else:
+                raise RuntimeError(
+                    f"unsupported AS+H2O value source {source_device!r}"
+                )
+            self._source_tensor_tokens[source] += tokens
+            self._physical_tokens += tokens
+            self._physical_chunks.add((layer, chunk))
+
+        started = time.perf_counter()
+        selected_values = self._pcache.get_value(
+            prefix_id=self._prefix_id,
+            pos_id=positions,
+            layer=layer,
+        )
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+        elapsed_ms = (time.perf_counter() - started) * 1000
+        self._prefetch_wait_ms += elapsed_ms
+        self._prefetch_elapsed_ms += elapsed_ms
+        full_values = scatter_h2o_selected_values(
+            full_keys,
+            selected_values,
+            positions.to(device=full_keys.device),
+        )
+        self._loaded[layer] = (full_keys, full_values)
+        return full_keys, full_values
 
     def _resolve_impress(self, layer: int) -> tuple[Any, Any]:
         """Use HyperInfer's synchronous get path for the no-prefetch baseline."""
@@ -2112,6 +2263,31 @@ class FlexGenLayerLoader:
         selected_tokens = sum(len(tokens) for tokens in self._selected_by_layer)
         bytes_per_tensor_token = self._info.bytes_per_token_per_tensor
         bytes_per_token = bytes_per_tensor_token * 2
+        if self.method == "as_h2o_lru":
+            selected_kv_bytes = (
+                self.layers * self._info.prefix_tokens * bytes_per_tensor_token
+                + self._as_h2o_selected_value_elements
+                * self._info.head_dim
+                * 2
+            )
+            effective_keep_ratio = self._as_h2o_selected_value_elements / max(
+                1,
+                self.layers * self._info.prefix_tokens * self._info.kv_heads,
+            )
+            physical_prefetch_kv_bytes = (
+                self._selector_key_bytes
+                + self._physical_tokens * bytes_per_tensor_token
+            )
+            read_amplification = physical_prefetch_kv_bytes / max(
+                1, selected_kv_bytes
+            )
+        else:
+            selected_kv_bytes = selected_tokens * bytes_per_token
+            effective_keep_ratio = selected_tokens / max(
+                1, self.layers * self._info.prefix_tokens
+            )
+            physical_prefetch_kv_bytes = self._physical_tokens * bytes_per_token
+            read_amplification = self._physical_tokens / max(1, selected_tokens)
         source_total = sum(self._source_tensor_tokens.values())
         selector_source_total = sum(self._selector_source_bytes.values())
         critical_ssd_bytes = self._source_tensor_tokens["disk"] * bytes_per_tensor_token
@@ -2165,13 +2341,21 @@ class FlexGenLayerLoader:
                 if self._layer_keep_blocks is not None
                 else None
             ),
-            "effective_mean_keep_ratio": selected_tokens
-            / max(1, self.layers * self._info.prefix_tokens),
-            "selected_kv_bytes": selected_tokens * bytes_per_token,
+            "effective_mean_keep_ratio": effective_keep_ratio,
+            "selected_kv_bytes": selected_kv_bytes,
             "physical_prefetch_tokens": self._physical_tokens,
             "physical_prefetch_chunks": len(self._physical_chunks),
-            "physical_prefetch_kv_bytes": self._physical_tokens * bytes_per_token,
-            "read_amplification": self._physical_tokens / max(1, selected_tokens),
+            "physical_prefetch_kv_bytes": physical_prefetch_kv_bytes,
+            "read_amplification": read_amplification,
+            "as_h2o_full_key_ratio": 1.0 if self.method == "as_h2o_lru" else 0.0,
+            "as_h2o_value_keep_ratio": (
+                effective_keep_ratio if self.method == "as_h2o_lru" else 0.0
+            ),
+            "as_h2o_total_logical_payload_ratio": (
+                (1.0 + effective_keep_ratio) / 2.0
+                if self.method == "as_h2o_lru"
+                else 0.0
+            ),
             "prefetch_gpu_source_tensor_tokens": self._source_tensor_tokens["gpu"],
             "prefetch_cpu_source_tensor_tokens": self._source_tensor_tokens["cpu"],
             "prefetch_disk_source_tensor_tokens": self._source_tensor_tokens["disk"],
