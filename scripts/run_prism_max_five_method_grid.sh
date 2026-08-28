@@ -120,7 +120,7 @@ expected = {"sst2": 867, "subj": 998, "trec": 495, "rte": 272}
 metadata_path = root / "metadata.json"
 metadata_bytes = metadata_path.read_bytes()
 metadata_sha256 = hashlib.sha256(metadata_bytes).hexdigest()
-if metadata_sha256 != "bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c91160abdb5":
+if metadata_sha256 != "bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c9160abdb5":
     raise SystemExit(f"strict metadata SHA changed: {metadata_sha256}")
 metadata = json.loads(metadata_bytes.decode("utf-8"))
 if metadata.get("evaluation_mode") != "each dataset is an independent workload":

@@ -70,7 +70,7 @@ class PrismMaxFiveMethodGridRunnerTest(unittest.TestCase):
 
     def test_strict_bundle_plain_as_and_runtime_validation_are_frozen(self):
         for fragment in (
-            "bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c91160abdb5",
+            "bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c9160abdb5",
             'if f"{task}-0" in set(uids):',
             '"physical_layout": "plain-logical-token-order"',
             '"impress_reorder_sha256": None',
