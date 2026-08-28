@@ -295,6 +295,26 @@ def validate_summary(
             same_number(runtime.get("keep_ratio"), int(spec.budget) / 100.0),
             f"{spec.label} runtime.keep_ratio does not match k{spec.budget}",
         )
+    if spec.method == "as_h2o_lru":
+        requested = int(spec.budget) / 100.0
+        expected = {
+            "actual_key_keep_ratio": requested,
+            "actual_value_keep_ratio": requested,
+            "actual_total_logical_kv_ratio": requested,
+            "logical_attention_keep_ratio": requested,
+            "selector_full_key_load_ratio": 1.0,
+            "minimum_transfer_ratio": (1.0 + requested) / 2.0,
+        }
+        for field, value in expected.items():
+            require(
+                same_number(runtime.get(field), value),
+                f"{spec.label} runtime.{field} must be {value}",
+            )
+        require(
+            runtime.get("budget_semantics")
+            == "h2o-logical-attention-retention-with-full-key-selector-transfer",
+            f"{spec.label} has stale H2O budget semantics",
+        )
 
 
 def load_run(spec: RunSpec) -> LoadedRun:
@@ -358,36 +378,45 @@ def validate_budget_semantics(runs: Sequence[LoadedRun]) -> dict[str, Any]:
         for uid, row in run.records.items():
             context = f"{run.spec.label}[{uid}]"
             prefix_tokens = prefix_tokens_by_uid[(run.spec.task, uid)]
-            key_ratio = finite_number(
-                row.get("as_h2o_full_key_ratio"),
-                context=f"{context}.as_h2o_full_key_ratio",
+            selector_ratio = finite_number(
+                row.get("as_h2o_selector_full_key_ratio"),
+                context=f"{context}.as_h2o_selector_full_key_ratio",
             )
-            value_ratio = finite_number(
-                row.get("as_h2o_value_keep_ratio"),
-                context=f"{context}.as_h2o_value_keep_ratio",
+            logical_ratio = finite_number(
+                row.get("as_h2o_logical_attention_keep_ratio"),
+                context=f"{context}.as_h2o_logical_attention_keep_ratio",
             )
-            total_ratio = finite_number(
-                row.get("as_h2o_total_logical_payload_ratio"),
-                context=f"{context}.as_h2o_total_logical_payload_ratio",
+            value_transfer_ratio = finite_number(
+                row.get("as_h2o_selected_value_transfer_ratio"),
+                context=f"{context}.as_h2o_selected_value_transfer_ratio",
+            )
+            minimum_transfer_ratio = finite_number(
+                row.get("as_h2o_minimum_transfer_ratio"),
+                context=f"{context}.as_h2o_minimum_transfer_ratio",
             )
             require(
-                same_number(key_ratio, 1.0),
-                f"{context} AS+H2O+LRU must retain all keys",
+                same_number(selector_ratio, 1.0),
+                f"{context} H2O selector must load all keys",
             )
-            expected_value = math.ceil(prefix_tokens * requested) / prefix_tokens
-            require(
-                same_number(value_ratio, expected_value, tolerance=1e-10),
-                f"{context} value retention {value_ratio} is not ceil(prefix*k)/prefix "
-                f"({expected_value})",
-            )
-            ceil_error = value_ratio - requested
+            expected_actual = math.ceil(prefix_tokens * requested) / prefix_tokens
+            for name, actual in (
+                ("logical attention", logical_ratio),
+                ("selected-value transfer", value_transfer_ratio),
+            ):
+                require(
+                    same_number(actual, expected_actual, tolerance=1e-10),
+                    f"{context} {name} ratio {actual} is not "
+                    f"ceil(prefix*k)/prefix ({expected_actual})",
+                )
+            ceil_error = logical_ratio - requested
             require(
                 -1e-12 <= ceil_error <= (1.0 / prefix_tokens) + 1e-12,
-                f"{context} value-retention rounding exceeds one prefix token",
+                f"{context} logical-attention rounding exceeds one prefix token",
             )
             require(
-                same_number(total_ratio, (1.0 + value_ratio) / 2.0),
-                f"{context} logical payload must be (full K + retained V) / 2",
+                same_number(minimum_transfer_ratio, (1.0 + logical_ratio) / 2.0),
+                f"{context} minimum transfer must be "
+                "(full selector K + selected V) / 2",
             )
             h2o_rows += 1
             maximum_ceil_error = max(maximum_ceil_error, ceil_error)
@@ -397,8 +426,9 @@ def validate_budget_semantics(runs: Sequence[LoadedRun]) -> dict[str, Any]:
             "effective_mean_keep_ratio=1 and every layer retains prefix_tokens"
         ),
         "as_h2o_lru": (
-            "LRU naming follows the paper title/figure legend; key=1, "
-            "value=ceil(prefix_tokens*k)/prefix_tokens, total=(1+value)/2"
+            "LRU naming follows the paper title/figure legend; selector-key-load=1, "
+            "logical-attention=selected-value-transfer=ceil(prefix_tokens*k)/prefix_tokens, "
+            "minimum-transfer=(1+logical-attention)/2"
         ),
         "validated_as_lru_rows": as_lru_rows,
         "validated_h2o_rows": h2o_rows,
@@ -453,7 +483,7 @@ def analyze_manifest(path: Path) -> dict[str, Any]:
                 "budget_semantics": (
                     "full_kv"
                     if run.spec.method == "as_lru"
-                    else "full_keys_value_retention"
+                    else "compact_kv_attention_full_key_selector_transfer"
                     if run.spec.method == "as_h2o_lru"
                     else "kv_retention"
                 ),
@@ -502,7 +532,8 @@ def analyze_manifest(path: Path) -> dict[str, Any]:
                 "the requested budget is only the comparison-block label"
             ),
             "as_h2o_lru_budget": (
-                "k is value retention with full K; total logical (K+V) ratio is "
+                "k_actual is compact K/V logical-attention and selected-value-transfer "
+                "retention; the selector loads full K, so minimum transfer is "
                 "(1+k_actual)/2; LRU naming follows the paper title/figure legend"
             ),
         },
@@ -536,7 +567,7 @@ def render_markdown(result: Mapping[str, Any]) -> str:
         "",
         "AS+LRU uses full prefix K/V in every cell. The 5%, 10%, 25%, and 50% labels identify comparison blocks only; each cell is timed independently and none claims sparse AS+LRU retention.",
         "",
-        "For AS+H2O+LRU, `k` is the **value-retention ratio** selected by H2O while K remains full, so total logical `(K+V)/2 = (1+k_actual)/2`. The LRU name follows the baseline title and figure legend in the ContiguousKV paper.",
+        "For AS+H2O+LRU, `k_actual` is the compact K/V **logical-attention ratio** and selected-value transfer ratio. The selector still loads full K, so minimum transfer is `(1+k_actual)/2`. The LRU name follows the baseline title and figure legend in the ContiguousKV paper.",
         "",
         "## Detailed results",
         "",

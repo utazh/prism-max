@@ -48,9 +48,10 @@ def make_rows(
         metadata.update(
             {
                 "effective_mean_keep_ratio": value_ratio,
-                "as_h2o_full_key_ratio": 1.0,
-                "as_h2o_value_keep_ratio": value_ratio,
-                "as_h2o_total_logical_payload_ratio": (1.0 + value_ratio) / 2.0,
+                "as_h2o_selector_full_key_ratio": 1.0,
+                "as_h2o_logical_attention_keep_ratio": value_ratio,
+                "as_h2o_selected_value_transfer_ratio": value_ratio,
+                "as_h2o_minimum_transfer_ratio": (1.0 + value_ratio) / 2.0,
             }
         )
     rows = [
@@ -97,6 +98,19 @@ def write_run(path, *, task, budget, rows, keep_ratio=None):
             keep_ratio if keep_ratio is not None else int(budget) / 100.0
         ),
     }
+    if rows and "as_h2o_selector_full_key_ratio" in rows[0]:
+        requested = int(budget) / 100.0
+        runtime.update(
+            {
+                "actual_key_keep_ratio": requested,
+                "actual_value_keep_ratio": requested,
+                "actual_total_logical_kv_ratio": requested,
+                "logical_attention_keep_ratio": requested,
+                "selector_full_key_load_ratio": 1.0,
+                "minimum_transfer_ratio": (1.0 + requested) / 2.0,
+                "budget_semantics": "h2o-logical-attention-retention-with-full-key-selector-transfer",
+            }
+        )
     summary = {
         "runtime": runtime,
         "tasks": {task: aggregate},
@@ -287,7 +301,7 @@ class FiveMethodGridAnalysisTest(unittest.TestCase):
                 method="as_h2o_lru",
                 budget="010",
             )
-            bad_h2o_rows[0]["as_h2o_total_logical_payload_ratio"] += 0.01
+            bad_h2o_rows[0]["as_h2o_minimum_transfer_ratio"] += 0.01
             semantic_runs.append(
                 grid.LoadedRun(
                     spec=grid.RunSpec(
@@ -296,7 +310,7 @@ class FiveMethodGridAnalysisTest(unittest.TestCase):
                     records={row["uid"]: row for row in bad_h2o_rows},
                 )
             )
-            with self.assertRaisesRegex(ValueError, "logical payload"):
+            with self.assertRaisesRegex(ValueError, "minimum transfer"):
                 grid.validate_budget_semantics(semantic_runs)
 
             write_run(

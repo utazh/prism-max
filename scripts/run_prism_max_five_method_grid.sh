@@ -524,6 +524,27 @@ for key, value in common.items():
         )
 
 ratio = int(budget) / 100.0
+if method == "as_h2o_lru":
+    for row in rows:
+        selector_ratio = float(row.get("as_h2o_selector_full_key_ratio"))
+        logical_ratio = float(row.get("as_h2o_logical_attention_keep_ratio"))
+        value_transfer_ratio = float(
+            row.get("as_h2o_selected_value_transfer_ratio")
+        )
+        minimum_transfer_ratio = float(row.get("as_h2o_minimum_transfer_ratio"))
+        if not math.isclose(selector_ratio, 1.0, rel_tol=0.0, abs_tol=1e-10):
+            raise SystemExit(f"{output} H2O selector did not load full keys")
+        if not math.isclose(
+            logical_ratio, value_transfer_ratio, rel_tol=1e-10, abs_tol=1e-10
+        ):
+            raise SystemExit(f"{output} H2O compact K/V ratios diverge")
+        if not math.isclose(
+            minimum_transfer_ratio,
+            (1.0 + logical_ratio) / 2.0,
+            rel_tol=1e-10,
+            abs_tol=1e-10,
+        ):
+            raise SystemExit(f"{output} H2O minimum transfer ratio is invalid")
 expected_runtime_method = "impress" if method == "promixed" else method
 expected_plan_method = (
     "contigkv" if method == "contigkv" else "impress"
@@ -555,12 +576,17 @@ elif method == "as_h2o_lru":
     numeric = {
         "keep_ratio": ratio,
         "configured_plan_keep_ratio": ratio,
-        "actual_key_keep_ratio": 1.0,
+        "actual_key_keep_ratio": ratio,
         "actual_value_keep_ratio": ratio,
-        "actual_total_logical_kv_ratio": (1.0 + ratio) / 2.0,
+        "actual_total_logical_kv_ratio": ratio,
+        "logical_attention_keep_ratio": ratio,
+        "selector_full_key_load_ratio": 1.0,
+        "minimum_transfer_ratio": (1.0 + ratio) / 2.0,
     }
     exact = {
-        "budget_semantics": "full-key-plus-budgeted-values",
+        "budget_semantics": (
+            "h2o-logical-attention-retention-with-full-key-selector-transfer"
+        ),
         "cache_type": "LRU",
         "cache_update_in_ttft": False,
         "chunk_size": 64,

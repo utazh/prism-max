@@ -67,6 +67,28 @@ class PrismMaxFiveMethodGridRunnerTest(unittest.TestCase):
         ):
             self.assertIn(fragment, self.script)
 
+    def test_as_h2o_uses_compact_attention_schema_with_full_key_selector(self):
+        for fragment in (
+            '"actual_key_keep_ratio": ratio',
+            '"actual_value_keep_ratio": ratio',
+            '"actual_total_logical_kv_ratio": ratio',
+            '"logical_attention_keep_ratio": ratio',
+            '"selector_full_key_load_ratio": 1.0',
+            '"minimum_transfer_ratio": (1.0 + ratio) / 2.0',
+            '"h2o-logical-attention-retention-with-full-key-selector-transfer"',
+            '"as_h2o_selector_full_key_ratio"',
+            '"as_h2o_logical_attention_keep_ratio"',
+            '"as_h2o_selected_value_transfer_ratio"',
+            '"as_h2o_minimum_transfer_ratio"',
+        ):
+            self.assertIn(fragment, self.script)
+        for obsolete in (
+            '"as_h2o_full_key_ratio"',
+            '"as_h2o_value_keep_ratio"',
+            '"as_h2o_total_logical_payload_ratio"',
+        ):
+            self.assertNotIn(obsolete, self.script)
+
     def test_method_specific_backends_and_clean_measurement_boundary(self):
         for fragment in (
             'selector = "k4" if method == "promixed" else "fp16"',
