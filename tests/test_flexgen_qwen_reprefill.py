@@ -65,7 +65,7 @@ class FlexGenQwenReprefillTest(unittest.TestCase):
                 True,
                 False,
                 False,
-                "attentionstore-h2o-full-k-selected-v-lru-c64",
+                "attentionstore-h2o-full-k-selector-compact-kv-lru-c64",
             ),
             ("contigkv", False, False, False, "offline-plan"),
             ("impress", False, True, True, "offline-plan"),

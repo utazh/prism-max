@@ -1,7 +1,7 @@
 """Pure tensor utilities for the AttentionStore/H2O comparison baseline.
 
 The helpers in this module intentionally contain no ProMixed policy or cache
-logic. They only implement GQA-aware H2O value selection and reconstruction,
+logic. They only implement GQA-aware H2O selection and compact K/V gathering,
 so the baseline can be integrated without coupling it to the proposed method.
 """
 
@@ -14,7 +14,7 @@ import torch
 
 
 __all__ = [
-    "scatter_h2o_selected_values",
+    "gather_h2o_selected_kv",
     "select_h2o_gqa_value_positions",
 ]
 
@@ -105,16 +105,18 @@ def select_h2o_gqa_value_positions(
     return rankings[:, :keep_tokens].to(dtype=torch.long)
 
 
-def scatter_h2o_selected_values(
+def gather_h2o_selected_kv(
     full_keys: torch.Tensor,
     selected_values: torch.Tensor,
     selected_positions: torch.Tensor,
-) -> torch.Tensor:
-    """Scatter per-head selected values into a zero-filled full prefix tensor.
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Gather compact per-head K/V tensors for true sparse attention.
 
-    ``selected_values[slot, head]`` is placed at prefix token
-    ``selected_positions[head, slot]``. Positions may overlap across KV heads
-    but must be unique within each head.
+    Full keys are used only by the online selector. For attention, each KV head
+    gathers the keys at ``selected_positions[head]`` and pairs them with the
+    already-loaded selected values. Different heads may choose different token
+    positions because the common compact sequence axis represents rank slots,
+    not shared token ids. Positions must remain unique within each head.
     """
 
     if not isinstance(full_keys, torch.Tensor):
@@ -174,12 +176,14 @@ def scatter_h2o_selected_values(
                 "selected_positions must not contain duplicates within a KV head"
             )
 
-    output = torch.zeros_like(full_keys)
-    if keep_tokens:
-        head_ids = torch.arange(
-            kv_heads,
-            dtype=torch.long,
-            device=full_keys.device,
-        ).unsqueeze(1).expand(kv_heads, keep_tokens)
-        output[selected_positions, head_ids, :] = selected_values.permute(1, 0, 2)
-    return output
+    head_ids = torch.arange(
+        kv_heads,
+        dtype=torch.long,
+        device=full_keys.device,
+    ).unsqueeze(1).expand(kv_heads, keep_tokens)
+    selected_keys = full_keys[selected_positions, head_ids, :]
+    selected_keys = selected_keys.permute(1, 0, 2).contiguous()
+    compact_values = selected_values.contiguous()
+    if selected_keys.shape != compact_values.shape:
+        raise RuntimeError("compact H2O key/value shapes diverged")
+    return selected_keys, compact_values

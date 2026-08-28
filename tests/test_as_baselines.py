@@ -3,7 +3,7 @@ import unittest
 import torch
 
 from contiguous_fuxian.as_baselines import (
-    scatter_h2o_selected_values,
+    gather_h2o_selected_kv,
     select_h2o_gqa_value_positions,
 )
 
@@ -102,37 +102,45 @@ class H2OGQASelectionTest(unittest.TestCase):
             )
 
 
-class H2OValueScatterTest(unittest.TestCase):
-    def test_scatters_per_head_and_leaves_unselected_values_zero(self):
-        full_keys = torch.ones((5, 2, 3), dtype=torch.float32)
-        positions = torch.tensor([[4, 1], [4, 3]], dtype=torch.long)
+class H2OCompactGatherTest(unittest.TestCase):
+    def test_gathers_per_head_positions_into_a_common_compact_axis(self):
+        full_keys = torch.arange(30, dtype=torch.float32).reshape(5, 2, 3)
+        positions = torch.tensor([[4, 1], [0, 3]], dtype=torch.long)
         values = torch.tensor(
             [
-                [[4.0, 4.1, 4.2], [40.0, 40.1, 40.2]],
+                [[4.0, 4.1, 4.2], [0.0, 0.1, 0.2]],
                 [[1.0, 1.1, 1.2], [30.0, 30.1, 30.2]],
             ],
             dtype=torch.float32,
         )
 
-        scattered = scatter_h2o_selected_values(full_keys, values, positions)
+        selected_keys, selected_values = gather_h2o_selected_kv(
+            full_keys,
+            values,
+            positions,
+        )
 
-        expected = torch.zeros_like(full_keys)
-        expected[4, 0] = values[0, 0]
-        expected[1, 0] = values[1, 0]
-        expected[4, 1] = values[0, 1]
-        expected[3, 1] = values[1, 1]
-        self.assertTrue(torch.equal(scattered, expected))
-        self.assertTrue(torch.equal(full_keys, torch.ones_like(full_keys)))
+        expected_keys = torch.stack(
+            (
+                torch.stack((full_keys[4, 0], full_keys[0, 1])),
+                torch.stack((full_keys[1, 0], full_keys[3, 1])),
+            )
+        )
+        self.assertEqual(tuple(selected_keys.shape), (2, 2, 3))
+        self.assertTrue(torch.equal(selected_keys, expected_keys))
+        self.assertTrue(torch.equal(selected_values, values))
+        self.assertEqual(tuple(full_keys.shape), (5, 2, 3))
 
     def test_supports_an_empty_selection(self):
         full_keys = torch.ones((3, 2, 4), dtype=torch.float16)
-        scattered = scatter_h2o_selected_values(
+        selected_keys, selected_values = gather_h2o_selected_kv(
             full_keys,
             torch.empty((0, 2, 4), dtype=torch.float16),
             torch.empty((2, 0), dtype=torch.long),
         )
 
-        self.assertTrue(torch.equal(scattered, torch.zeros_like(full_keys)))
+        self.assertEqual(tuple(selected_keys.shape), (0, 2, 4))
+        self.assertEqual(tuple(selected_values.shape), (0, 2, 4))
 
     def test_rejects_duplicate_and_out_of_range_positions(self):
         full_keys = torch.zeros((4, 2, 3), dtype=torch.float32)
@@ -144,7 +152,7 @@ class H2OValueScatterTest(unittest.TestCase):
         )
         for positions in invalid:
             with self.subTest(positions=positions), self.assertRaises(ValueError):
-                scatter_h2o_selected_values(full_keys, values, positions)
+                gather_h2o_selected_kv(full_keys, values, positions)
 
     def test_rejects_shape_and_dtype_mismatches(self):
         full_keys = torch.zeros((4, 2, 3), dtype=torch.float32)
@@ -166,8 +174,7 @@ class H2OValueScatterTest(unittest.TestCase):
                 value_shape=tuple(selected.shape),
                 position_shape=tuple(selected_positions.shape),
             ), self.assertRaises(ValueError):
-                scatter_h2o_selected_values(keys, selected, selected_positions)
-
+                gather_h2o_selected_kv(keys, selected, selected_positions)
 
 if __name__ == "__main__":
     unittest.main()

@@ -79,7 +79,7 @@ def runtime_variant(
     if method == "as_lru":
         return "attentionstore-full-kv-lru-c64"
     if method == "as_h2o_lru":
-        return "attentionstore-h2o-full-k-selected-v-lru-c64"
+        return "attentionstore-h2o-full-k-selector-compact-kv-lru-c64"
     if method == "contigkv":
         return "contiguouskv-online-period-prefetch"
     if method != "impress":
@@ -2118,7 +2118,8 @@ def run_flexgen_reprefill(
                 evaluation_ready_times
             ),
             "mean_selected_kv_bytes": mean_metric("selected_kv_bytes"),
-            "mean_physical_prefetch_kv_bytes": mean_metric("physical_prefetch_kv_bytes"),
+            "mean_minimum_transfer_kv_bytes": mean_metric("minimum_transfer_kv_bytes"),
+            "mean_logical_attention_keep_ratio": mean_metric("logical_attention_keep_ratio"),            "mean_physical_prefetch_kv_bytes": mean_metric("physical_prefetch_kv_bytes"),
             "mean_read_amplification": mean_metric("read_amplification"),
             "mean_effective_keep_ratio": mean_metric("effective_mean_keep_ratio"),
             "mean_prefetch_gpu_source_fraction": mean_metric(
@@ -2345,27 +2346,31 @@ def run_flexgen_reprefill(
                 "full-kv-budget-independent"
                 if method == "as_lru"
                 else (
-                    "full-key-plus-budgeted-values"
+                    "h2o-logical-attention-retention-with-full-key-selector-transfer"
                     if method == "as_h2o_lru"
                     else "matched-sparse-kv-retention"
                 )
             ),
             "actual_key_keep_ratio": (
-                1.0 if method in {"as_lru", "as_h2o_lru"} else plan_keep_ratio
+                1.0 if method == "as_lru" else plan_keep_ratio
             ),
             "actual_value_keep_ratio": (
                 1.0 if method == "as_lru" else plan_keep_ratio
             ),
             "actual_total_logical_kv_ratio": (
-                1.0
-                if method == "as_lru"
-                else (
-                    (1.0 + plan_keep_ratio) / 2.0
-                    if method == "as_h2o_lru"
-                    else plan_keep_ratio
-                )
+                1.0 if method == "as_lru" else plan_keep_ratio
             ),
-            "layer_budget_profile": (
+            "logical_attention_keep_ratio": (
+                1.0 if method == "as_lru" else plan_keep_ratio
+            ),
+            "minimum_transfer_ratio": (
+                (1.0 + plan_keep_ratio) / 2.0
+                if method == "as_h2o_lru"
+                else None
+            ),
+            "selector_full_key_load_ratio": (
+                1.0 if method == "as_h2o_lru" else None
+            ),            "layer_budget_profile": (
                 str(budget_profile.source_path) if budget_profile is not None else None
             ),
             "layer_budget_profile_sha256": (
@@ -2465,8 +2470,8 @@ def run_flexgen_reprefill(
                 "full K and full V, synchronous layer loads, LRU residency"
                 if method == "as_lru"
                 else (
-                    "full K selector; per-GQA-KV-head H2O value top-k; "
-                    "unselected V zero-filled; LRU residency"
+                    "full K selector load; per-GQA-KV-head H2O compact K/V attention; "
+                    "selected V load only; LRU residency"
                     if method == "as_h2o_lru"
                     else None
                 )

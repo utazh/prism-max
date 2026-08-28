@@ -401,7 +401,7 @@ class FlexGenPcacheTest(unittest.TestCase):
         finally:
             loader.close()
 
-    def test_as_h2o_loads_full_keys_and_only_selected_values(self):
+    def test_as_h2o_loads_full_selector_keys_and_compact_selected_kv(self):
         import torch
 
         class FakeLayer:
@@ -454,21 +454,39 @@ class FlexGenPcacheTest(unittest.TestCase):
             self.assertIs(loaded_keys, pcache.full_keys)
             loader.configure_as_h2o_layer(layer=0, positions=positions)
             key, value = loader.resolve(0)
-            self.assertIs(key, pcache.full_keys)
             self.assertEqual(pcache.key_calls, [(0, None, 0)])
             self.assertTrue(torch.equal(pcache.value_calls[0][1], positions))
-            self.assertTrue(torch.equal(value[1, 0], torch.zeros(2)))
-            self.assertTrue(torch.equal(value[0, 1], torch.zeros(2)))
-            self.assertTrue(torch.equal(value[0, 0], torch.tensor([0.0, 0.5])))
-            self.assertTrue(torch.equal(value[3, 1], torch.tensor([31.0, 31.5])))
+            self.assertEqual(tuple(key.shape), (2, 2, 2))
+            self.assertEqual(tuple(value.shape), (2, 2, 2))
+            expected_keys = torch.stack(
+                (
+                    torch.stack((pcache.full_keys[0, 0], pcache.full_keys[1, 1])),
+                    torch.stack((pcache.full_keys[2, 0], pcache.full_keys[3, 1])),
+                )
+            )
+            self.assertTrue(torch.equal(key, expected_keys))
+            self.assertTrue(
+                torch.equal(
+                    value,
+                    torch.tensor(
+                        [
+                            [[0.0, 0.5], [11.0, 11.5]],
+                            [[20.0, 20.5], [31.0, 31.5]],
+                        ],
+                        dtype=torch.float16,
+                    ),
+                )
+            )
             metrics = loader.metrics()
-            self.assertEqual(metrics["as_h2o_full_key_ratio"], 1.0)
-            self.assertEqual(metrics["as_h2o_value_keep_ratio"], 0.5)
-            self.assertEqual(metrics["as_h2o_total_logical_payload_ratio"], 0.75)
-            self.assertEqual(metrics["selected_kv_bytes"], 48)
+            self.assertEqual(metrics["logical_attention_keep_ratio"], 0.5)
+            self.assertEqual(metrics["as_h2o_selector_full_key_ratio"], 1.0)
+            self.assertEqual(metrics["as_h2o_logical_attention_keep_ratio"], 0.5)
+            self.assertEqual(metrics["as_h2o_selected_value_transfer_ratio"], 0.5)
+            self.assertEqual(metrics["as_h2o_minimum_transfer_ratio"], 0.75)
+            self.assertEqual(metrics["selected_kv_bytes"], 32)
+            self.assertEqual(metrics["minimum_transfer_kv_bytes"], 48)
         finally:
             loader.close()
-
     def test_paper_impress_online_mode_uses_synchronous_get(self):
         loader = FlexGenLayerLoader.__new__(FlexGenLayerLoader)
         loader.method = "impress"

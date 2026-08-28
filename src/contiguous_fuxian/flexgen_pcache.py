@@ -2090,12 +2090,12 @@ class FlexGenLayerLoader:
         return key, value
 
     def _resolve_as_h2o(self, layer: int) -> tuple[Any, Any]:
-        """Resolve full K plus per-KV-head selected/zero-filled V."""
+        """Resolve compact per-head K/V after a full-key selector load."""
 
         if layer in self._loaded:
             return self._loaded[layer]
         import torch
-        from .as_baselines import scatter_h2o_selected_values
+        from .as_baselines import gather_h2o_selected_kv
 
         positions = self._as_h2o_positions[layer]
         full_keys = self._as_h2o_full_keys.pop(layer, None)
@@ -2140,14 +2140,22 @@ class FlexGenLayerLoader:
         elapsed_ms = (time.perf_counter() - started) * 1000
         self._prefetch_wait_ms += elapsed_ms
         self._prefetch_elapsed_ms += elapsed_ms
-        full_values = scatter_h2o_selected_values(
+        compact_positions = positions.to(device=full_keys.device)
+        selected_keys, selected_values = gather_h2o_selected_kv(
             full_keys,
             selected_values,
-            positions.to(device=full_keys.device),
+            compact_positions,
         )
-        self._loaded[layer] = (full_keys, full_values)
-        return full_keys, full_values
-
+        keep_tokens = int(positions.shape[1])
+        expected_shape = (keep_tokens, self._info.kv_heads, self._info.head_dim)
+        if tuple(selected_keys.shape) != expected_shape or tuple(
+            selected_values.shape
+        ) != expected_shape:
+            raise RuntimeError(
+                "AS+H2O compact K/V shape does not match the selected attention budget"
+            )
+        self._loaded[layer] = (selected_keys, selected_values)
+        return selected_keys, selected_values
     def _resolve_impress(self, layer: int) -> tuple[Any, Any]:
         """Use HyperInfer's synchronous get path for the no-prefetch baseline."""
 
@@ -2264,12 +2272,19 @@ class FlexGenLayerLoader:
         bytes_per_tensor_token = self._info.bytes_per_token_per_tensor
         bytes_per_token = bytes_per_tensor_token * 2
         if self.method == "as_h2o_lru":
-            selected_kv_bytes = (
-                self.layers * self._info.prefix_tokens * bytes_per_tensor_token
-                + self._as_h2o_selected_value_elements
-                * self._info.head_dim
-                * 2
+            bytes_per_element = bytes_per_tensor_token // (
+                self._info.kv_heads * self._info.head_dim
             )
+            selected_value_bytes = (
+                self._as_h2o_selected_value_elements
+                * self._info.head_dim
+                * bytes_per_element
+            )
+            full_selector_key_bytes = (
+                self.layers * self._info.prefix_tokens * bytes_per_tensor_token
+            )
+            selected_kv_bytes = selected_value_bytes * 2
+            minimum_transfer_kv_bytes = full_selector_key_bytes + selected_value_bytes
             effective_keep_ratio = self._as_h2o_selected_value_elements / max(
                 1,
                 self.layers * self._info.prefix_tokens * self._info.kv_heads,
@@ -2279,10 +2294,11 @@ class FlexGenLayerLoader:
                 + self._physical_tokens * bytes_per_tensor_token
             )
             read_amplification = physical_prefetch_kv_bytes / max(
-                1, selected_kv_bytes
+                1, minimum_transfer_kv_bytes
             )
         else:
             selected_kv_bytes = selected_tokens * bytes_per_token
+            minimum_transfer_kv_bytes = selected_kv_bytes
             effective_keep_ratio = selected_tokens / max(
                 1, self.layers * self._info.prefix_tokens
             )
@@ -2347,16 +2363,22 @@ class FlexGenLayerLoader:
             "physical_prefetch_chunks": len(self._physical_chunks),
             "physical_prefetch_kv_bytes": physical_prefetch_kv_bytes,
             "read_amplification": read_amplification,
-            "as_h2o_full_key_ratio": 1.0 if self.method == "as_h2o_lru" else 0.0,
-            "as_h2o_value_keep_ratio": (
+            "minimum_transfer_kv_bytes": minimum_transfer_kv_bytes,
+            "logical_attention_keep_ratio": effective_keep_ratio,
+            "as_h2o_selector_full_key_ratio": (
+                1.0 if self.method == "as_h2o_lru" else 0.0
+            ),
+            "as_h2o_logical_attention_keep_ratio": (
                 effective_keep_ratio if self.method == "as_h2o_lru" else 0.0
             ),
-            "as_h2o_total_logical_payload_ratio": (
+            "as_h2o_selected_value_transfer_ratio": (
+                effective_keep_ratio if self.method == "as_h2o_lru" else 0.0
+            ),
+            "as_h2o_minimum_transfer_ratio": (
                 (1.0 + effective_keep_ratio) / 2.0
                 if self.method == "as_h2o_lru"
                 else 0.0
-            ),
-            "prefetch_gpu_source_tensor_tokens": self._source_tensor_tokens["gpu"],
+            ),            "prefetch_gpu_source_tensor_tokens": self._source_tensor_tokens["gpu"],
             "prefetch_cpu_source_tensor_tokens": self._source_tensor_tokens["cpu"],
             "prefetch_disk_source_tensor_tokens": self._source_tensor_tokens["disk"],
             "prefetch_gpu_source_fraction": self._source_tensor_tokens["gpu"] / max(1, source_total),
