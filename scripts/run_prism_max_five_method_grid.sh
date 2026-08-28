@@ -26,12 +26,12 @@ GRID_LOCK_PATH="${GRID_LOCK_PATH:-/tmp/prism_max_five_method_strict_r1.lock}"
 TASKS=(sst2 subj trec rte)
 BUDGETS=(005 010 025 050)
 METHOD_ORDERS=(
-  "impress contigkv promixed as_h2o_lru"
-  "contigkv promixed as_h2o_lru impress"
-  "promixed as_h2o_lru impress contigkv"
-  "as_h2o_lru impress contigkv promixed"
+  "impress contigkv promixed as_lru as_h2o_lru"
+  "contigkv promixed as_lru as_h2o_lru impress"
+  "promixed as_lru as_h2o_lru impress contigkv"
+  "as_lru as_h2o_lru impress contigkv promixed"
+  "as_h2o_lru impress contigkv promixed as_lru"
 )
-AS_INSERT_OFFSETS=(0 5 10 16)
 declare -A EXPECTED_COUNTS=(
   [sst2]=867
   [subj]=998
@@ -99,11 +99,51 @@ git -C "$ROOT" ls-files --error-unmatch -- \
   src/contiguous_fuxian/flexgen_qwen_reprefill.py >/dev/null ||
   die "five-method runtime sources must be committed before running"
 
+LEGACY_68_PROTOCOL=false
+if [[ -f "$SCHEDULE_MANIFEST" ]] &&
+   "$PYTHON" - "$SCHEDULE_MANIFEST" <<'PYLEGACY'
+import json
+import pathlib
+import sys
+path = pathlib.Path(sys.argv[1])
+try:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+except (OSError, json.JSONDecodeError):
+    raise SystemExit(1)
+runs = payload.get("runs")
+if not isinstance(runs, list) or len(runs) != 68:
+    raise SystemExit(1)
+as_runs = [row for row in runs if row.get("method") == "as_lru"]
+if len(as_runs) != 4 or any(row.get("budget") != "full" for row in as_runs):
+    raise SystemExit(1)
+tasks = ("sst2", "subj", "trec", "rte")
+budgets = ("005", "010", "025", "050")
+varying = ("impress", "contigkv", "promixed", "as_h2o_lru")
+expected = {
+    (task, budget, method)
+    for task in tasks for budget in budgets for method in varying
+} | {(task, "full", "as_lru") for task in tasks}
+actual = {(row.get("task"), row.get("budget"), row.get("method")) for row in runs}
+if actual != expected or len({row.get("path") for row in runs}) != 68:
+    raise SystemExit(1)
+PYLEGACY
+then
+  LEGACY_68_PROTOCOL=true
+fi
+
 SOURCE_COMMIT="$(git -C "$ROOT" rev-parse HEAD)"
 assert_tracked_source_clean
 if [[ -f "$SOURCE_COMMIT_FILE" ]]; then
-  [[ "$(<"$SOURCE_COMMIT_FILE")" == "$SOURCE_COMMIT" ]] ||
-    die "RUN_ROOT is frozen to a different source commit"
+  if [[ "$(<"$SOURCE_COMMIT_FILE")" != "$SOURCE_COMMIT" ]]; then
+    if [[ "$LEGACY_68_PROTOCOL" == "true" && ! -e "$RUN_ROOT/grid.done" ]]; then
+      legacy_commit_file="${SOURCE_COMMIT_FILE}.legacy68.$(date +%Y%m%d_%H%M%S).$$"
+      cp -- "$SOURCE_COMMIT_FILE" "$legacy_commit_file"
+      printf '%s\n' "$SOURCE_COMMIT" >"$SOURCE_COMMIT_FILE"
+      echo "[$(date -Is)] recorded 68-to-80 protocol source upgrade at $legacy_commit_file"
+    else
+      die "RUN_ROOT is frozen to a different source commit"
+    fi
+  fi
 else
   printf '%s\n' "$SOURCE_COMMIT" >"$SOURCE_COMMIT_FILE"
 fi
@@ -176,6 +216,7 @@ PY
 "$PYTHON" - "$RUN_ROOT" "$SCHEDULE_MANIFEST" "$EXECUTION_TSV" <<'PY'
 import json
 import pathlib
+import shutil
 import sys
 
 run_root = pathlib.Path(sys.argv[1]).resolve()
@@ -184,62 +225,101 @@ execution_path = pathlib.Path(sys.argv[3])
 tasks = ("sst2", "subj", "trec", "rte")
 budgets = ("005", "010", "025", "050")
 orders = (
-    ("impress", "contigkv", "promixed", "as_h2o_lru"),
-    ("contigkv", "promixed", "as_h2o_lru", "impress"),
-    ("promixed", "as_h2o_lru", "impress", "contigkv"),
-    ("as_h2o_lru", "impress", "contigkv", "promixed"),
+    ("impress", "contigkv", "promixed", "as_lru", "as_h2o_lru"),
+    ("contigkv", "promixed", "as_lru", "as_h2o_lru", "impress"),
+    ("promixed", "as_lru", "as_h2o_lru", "impress", "contigkv"),
+    ("as_lru", "as_h2o_lru", "impress", "contigkv", "promixed"),
+    ("as_h2o_lru", "impress", "contigkv", "promixed", "as_lru"),
 )
-as_insert_offsets = (0, 5, 10, 16)
+existing = None
+legacy_manifest = False
+legacy_as_k005_paths = {}
+if manifest_path.exists():
+    existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+    existing_runs = existing.get("runs")
+    if isinstance(existing_runs, list) and len(existing_runs) == 68:
+        legacy_as = [row for row in existing_runs if row.get("method") == "as_lru"]
+        expected_legacy = {
+            (task, budget, method)
+            for task in tasks
+            for budget in budgets
+            for method in ("impress", "contigkv", "promixed", "as_h2o_lru")
+        } | {(task, "full", "as_lru") for task in tasks}
+        actual_legacy = {
+            (row.get("task"), row.get("budget"), row.get("method"))
+            for row in existing_runs
+        }
+        if (
+            len(legacy_as) != 4
+            or any(row.get("budget") != "full" for row in legacy_as)
+            or actual_legacy != expected_legacy
+            or len({row.get("path") for row in existing_runs}) != 68
+        ):
+            raise SystemExit("existing 68-entry manifest is not the known AS projection protocol")
+        legacy_manifest = True
+        for row in legacy_as:
+            candidate = pathlib.Path(row["path"]).resolve()
+            if (candidate / "summary.json").is_file() and (
+                candidate / "scored_records.jsonl"
+            ).is_file():
+                legacy_as_k005_paths[row["task"]] = candidate
+    elif isinstance(existing_runs, list) and len(existing_runs) == 80:
+        for row in existing_runs:
+            if row.get("method") == "as_lru" and row.get("budget") == "005":
+                legacy_as_k005_paths[row["task"]] = pathlib.Path(row["path"]).resolve()
+
 runs = []
 cell_index = 0
-for task_index, task in enumerate(tasks):
-    task_runs = []
+for task in tasks:
     for budget in budgets:
         for method in orders[cell_index % len(orders)]:
             selector = "k4" if method == "promixed" else "fp16"
-            name = (
-                f"k{budget}_{method}_{selector}_nodefer_warm1_response_r1"
-            )
-            task_runs.append(
+            name = f"k{budget}_{method}_{selector}_nodefer_warm1_response_r1"
+            path = run_root / task / name
+            if method == "as_lru" and budget == "005" and task in legacy_as_k005_paths:
+                path = legacy_as_k005_paths[task]
+            runs.append(
                 {
                     "task": task,
                     "budget": budget,
                     "method": method,
-                    "path": str(run_root / task / name),
+                    "path": str(path),
                 }
             )
         cell_index += 1
-    as_name = "full_as_lru_fp16_nodefer_warm1_response_r1"
-    task_runs.insert(
-        as_insert_offsets[task_index],
-        {
-            "task": task,
-            "budget": "full",
-            "method": "as_lru",
-            "path": str(run_root / task / as_name),
-        },
-    )
-    runs.extend(task_runs)
 payload = {
     "schema_version": 1,
     "purpose": (
-        "Strict one-repeat five-method re-prefill grid; response-ready primary, "
-        "one 32-request warm-up, nodefer; AS+LRU full-KV projected over budgets."
+        "Strict one-repeat five-method re-prefill grid with 80 actual executions; "
+        "response-ready primary, one 32-request warm-up, nodefer. Every AS+LRU "
+        "budget-label cell is independently timed with effective full K/V."
     ),
     "runs": runs,
 }
 if cell_index != 16:
     raise SystemExit(f"internal schedule error: expected 16 cells, got {cell_index}")
-if len(runs) != 68:
-    raise SystemExit(f"internal schedule error: expected 68 runs, got {len(runs)}")
+if len(runs) != 80:
+    raise SystemExit(f"internal schedule error: expected 80 runs, got {len(runs)}")
 identities = {(row["task"], row["budget"], row["method"]) for row in runs}
-if len(identities) != 68:
-    raise SystemExit("internal schedule error: duplicate execution identity")
-if manifest_path.exists():
-    existing = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if existing != payload:
+paths = {row["path"] for row in runs}
+if len(identities) != 80 or len(paths) != 80:
+    raise SystemExit("internal schedule error: identities and paths must both be unique")
+if existing is not None and existing != payload:
+    if not legacy_manifest:
         raise SystemExit(f"existing schedule manifest differs: {manifest_path}")
-else:
+    pending = run_root / "environment" / "protocol80_migration_pending"
+    pending.parent.mkdir(parents=True, exist_ok=True)
+    pending.write_text("68-to-80 manifest migration in progress\n", encoding="utf-8")
+    archive = manifest_path.with_name(manifest_path.name + ".legacy68")
+    if archive.exists():
+        if json.loads(archive.read_text(encoding="utf-8")) != existing:
+            raise SystemExit(f"legacy manifest archive differs: {archive}")
+    else:
+        shutil.copy2(manifest_path, archive)
+    manifest_path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+elif existing is None:
     manifest_path.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
@@ -247,10 +327,14 @@ tsv = "".join(
     f"{row['task']}\t{row['budget']}\t{row['method']}\t{row['path']}\n"
     for row in runs
 )
-if execution_path.exists():
-    if execution_path.read_text(encoding="utf-8") != tsv:
+if execution_path.exists() and execution_path.read_text(encoding="utf-8") != tsv:
+    if not legacy_manifest:
         raise SystemExit(f"existing execution order differs: {execution_path}")
-else:
+    archive = execution_path.with_name(execution_path.name + ".legacy68")
+    if not archive.exists():
+        shutil.copy2(execution_path, archive)
+    execution_path.write_text(tsv, encoding="utf-8")
+elif not execution_path.exists():
     execution_path.write_text(tsv, encoding="utf-8")
 PY
 
@@ -306,14 +390,25 @@ fingerprint_candidate="$RUN_ROOT/environment/.source_and_input_sha256.candidate.
 sha256sum "${fingerprint_inputs[@]}" >"$fingerprint_candidate"
 if [[ -f "$FINGERPRINT" ]]; then
   if ! cmp -s "$FINGERPRINT" "$fingerprint_candidate"; then
-    mismatch="${FINGERPRINT}.mismatch.$(date +%Y%m%d_%H%M%S).$$"
-    mv "$fingerprint_candidate" "$mismatch"
-    die "source/input fingerprints changed; candidate preserved at $mismatch"
+    if [[ ! -e "$RUN_ROOT/grid.done" ]] &&
+       { [[ "$LEGACY_68_PROTOCOL" == "true" ]] ||
+         [[ -f "$RUN_ROOT/environment/protocol80_migration_pending" ]]; }; then
+      legacy_fingerprint="${FINGERPRINT}.legacy68.$(date +%Y%m%d_%H%M%S).$$"
+      mv "$FINGERPRINT" "$legacy_fingerprint"
+      mv "$fingerprint_candidate" "$FINGERPRINT"
+      echo "[$(date -Is)] archived 68-run fingerprint at $legacy_fingerprint"
+    else
+      mismatch="${FINGERPRINT}.mismatch.$(date +%Y%m%d_%H%M%S).$$"
+      mv "$fingerprint_candidate" "$mismatch"
+      die "source/input fingerprints changed; candidate preserved at $mismatch"
+    fi
+  else
+    rm -f "$fingerprint_candidate"
   fi
-  rm -f "$fingerprint_candidate"
 else
   mv "$fingerprint_candidate" "$FINGERPRINT"
 fi
+rm -f "$RUN_ROOT/environment/protocol80_migration_pending"
 
 assert_source_frozen() {
   [[ "$(git -C "$ROOT" rev-parse HEAD)" == "$SOURCE_COMMIT" ]] ||
@@ -336,7 +431,7 @@ fi
   printf 'primary_latency=response_ready_ms\n'
   printf 'accuracy_scoring=label_continuation_loglikelihood\n'
   printf 'warmup_passes=1\nwarmup_samples_per_task=32\n'
-  printf 'score_mode=nodefer\nrepeats=1\nexecutions=68\nexpanded_cells=80\n'
+  printf 'score_mode=nodefer\nrepeats=1\nexecutions=80\nexpanded_cells=80\n'
   printf 'baseline_selector_backend=fp16\npromixed_selector_backend=k4\n'
   nvidia-smi --query-gpu=index,name,uuid,memory.used,utilization.gpu,temperature.gpu \
     --format=csv,noheader
@@ -428,7 +523,7 @@ for key, value in common.items():
             f"{output} runtime.{key}={runtime.get(key)!r}, expected {value!r}"
         )
 
-ratio = None if budget == "full" else int(budget) / 100.0
+ratio = int(budget) / 100.0
 expected_runtime_method = "impress" if method == "promixed" else method
 expected_plan_method = (
     "contigkv" if method == "contigkv" else "impress"
@@ -604,17 +699,13 @@ run_one() {
   local task="$1" budget="$2" method="$3" manifest_output="$4"
   local expected="${EXPECTED_COUNTS[$task]}"
   local selector="fp16"
+  local runner_budget="$budget"
   local run_name output status
 
   [[ "$method" != "promixed" ]] || selector="k4"
-  if [[ "$budget" == "full" ]]; then
-    run_name="full_as_lru_fp16_nodefer_warm1_response_r1"
-  else
-    run_name="k${budget}_${method}_${selector}_nodefer_warm1_response_r1"
-  fi
-  output="$RUN_ROOT/$task/$run_name"
-  [[ "$output" == "$manifest_output" ]] ||
-    die "manifest path and computed output differ for $task/$budget/$method"
+  [[ "$method" != "as_lru" ]] || runner_budget="full"
+  output="$manifest_output"
+  run_name="$(basename "$output")"
 
   if [[ -e "$output" ]]; then
     if validate_output "$output" "$task" "$budget" "$method" "$expected"; then
@@ -623,6 +714,8 @@ run_one() {
     fi
     die "existing output is incomplete or invalid and will not be overwritten: $output"
   fi
+  [[ "$output" == "$RUN_ROOT/$task/"* ]] ||
+    die "a missing imported legacy output will not be recreated outside RUN_ROOT: $output"
 
   while true; do
     archive_stale_attempts "$task" "$run_name"
@@ -631,7 +724,7 @@ run_one() {
     set +e
     PYTHON="$PYTHON" GPU="$GPU" RESERVE_GPU="$RESERVE_GPU" \
     REQUIRE_IDLE_RESERVE="$REQUIRE_IDLE_RESERVE" TASK="$task" \
-    BUDGET_TAG="$budget" METHOD="$method" SELECTOR_BACKEND="$selector" \
+    BUDGET_TAG="$runner_budget" METHOD="$method" SELECTOR_BACKEND="$selector" \
     SELECTOR_INDEX="$SELECTOR_INDEX" \
     SAMPLES_PER_TASK=1000000 WARMUP_PASSES=1 WARMUP_SAMPLES_PER_TASK=32 \
     DEFER_CACHE_SCORE_UPDATES=false PROMIXED_ADAPTIVE_COVERAGE=false \
@@ -680,8 +773,8 @@ while IFS=$'\t' read -r task budget method manifest_output; do
   run_one "$task" "$budget" "$method" "$manifest_output"
   execution_count=$((execution_count + 1))
 done <"$EXECUTION_TSV"
-[[ "$execution_count" -eq 68 ]] ||
-  die "internal execution count is $execution_count, expected 68"
+[[ "$execution_count" -eq 80 ]] ||
+  die "internal execution count is $execution_count, expected 80"
 
 assert_source_frozen
 analysis_candidate_dir="$RUN_ROOT/.analysis_candidate.$$"
@@ -710,7 +803,7 @@ if [[ ! -e "$RUN_ROOT/environment/grid.end.txt" ]]; then
   {
     date -Is
     printf 'source_commit=%s\n' "$SOURCE_COMMIT"
-    printf 'executions=68\nexpanded_cells=80\nrepeats=1\n'
+    printf 'executions=80\nexpanded_cells=80\nrepeats=1\n'
     printf 'primary_latency=response_ready_ms\n'
     printf 'analysis_json=%s.json\n' "$ANALYSIS_STEM"
     printf 'analysis_markdown=%s.md\n' "$ANALYSIS_STEM"
@@ -719,5 +812,5 @@ fi
 if [[ ! -e "$RUN_ROOT/grid.done" ]]; then
   date -Is >"$RUN_ROOT/grid.done"
 fi
-echo "[$(date -Is)] completed 68 executions / 80 projected cells"
+echo "[$(date -Is)] completed 80 independently timed cells"
 echo "analysis: ${ANALYSIS_STEM}.{json,md}"

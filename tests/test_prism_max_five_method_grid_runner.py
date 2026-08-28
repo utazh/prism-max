@@ -28,29 +28,44 @@ class PrismMaxFiveMethodGridRunnerTest(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
 
-    def test_exact_68_execution_80_cell_protocol(self):
+    def test_exact_80_execution_protocol(self):
         for fragment in (
             "TASKS=(sst2 subj trec rte)",
             "BUDGETS=(005 010 025 050)",
-            'if len(runs) != 68:',
-            '[[ "$execution_count" -eq 68 ]]',
-            "executions=68",
+            'if len(runs) != 80:',
+            '[[ "$execution_count" -eq 80 ]]',
+            "executions=80",
             "expanded_cells=80",
-            '"budget": "full"',
-            '"method": "as_lru"',
+            "80 actual executions",
+            "independently timed with effective full K/V",
         ):
             self.assertIn(fragment, self.script)
+        self.assertNotIn("expected 68 runs", self.script)
+        self.assertNotIn("80 projected cells", self.script)
 
-    def test_four_varying_methods_rotate_and_as_positions_differ(self):
+    def test_all_five_methods_rotate_within_each_budget_cell(self):
         for order in (
-            '"impress contigkv promixed as_h2o_lru"',
-            '"contigkv promixed as_h2o_lru impress"',
-            '"promixed as_h2o_lru impress contigkv"',
-            '"as_h2o_lru impress contigkv promixed"',
+            '"impress contigkv promixed as_lru as_h2o_lru"',
+            '"contigkv promixed as_lru as_h2o_lru impress"',
+            '"promixed as_lru as_h2o_lru impress contigkv"',
+            '"as_lru as_h2o_lru impress contigkv promixed"',
+            '"as_h2o_lru impress contigkv promixed as_lru"',
         ):
             self.assertIn(order, self.script)
-        self.assertIn("AS_INSERT_OFFSETS=(0 5 10 16)", self.script)
-        self.assertIn("as_insert_offsets = (0, 5, 10, 16)", self.script)
+        self.assertNotIn("AS_INSERT_OFFSETS", self.script)
+
+    def test_as_lru_gets_four_independent_paths_but_full_runtime_semantics(self):
+        for fragment in (
+            'name = f"k{budget}_{method}_{selector}_nodefer_warm1_response_r1"',
+            '[[ "$method" != "as_lru" ]] || runner_budget="full"',
+            'BUDGET_TAG="$runner_budget"',
+            '"keep_ratio": 1.0',
+            '"actual_key_keep_ratio": 1.0',
+            '"actual_value_keep_ratio": 1.0',
+            '"actual_total_logical_kv_ratio": 1.0',
+            '"budget_semantics": "full-kv-budget-independent"',
+        ):
+            self.assertIn(fragment, self.script)
 
     def test_method_specific_backends_and_clean_measurement_boundary(self):
         for fragment in (
@@ -67,6 +82,23 @@ class PrismMaxFiveMethodGridRunnerTest(unittest.TestCase):
         ):
             self.assertIn(fragment, self.script)
         self.assertNotIn("WARMUP_PASSES=0", self.script)
+
+    def test_legacy_68_manifest_is_safely_migrated(self):
+        for fragment in (
+            "LEGACY_68_PROTOCOL=false",
+            "len(runs) != 68",
+            'row.get("budget") != "full"',
+            'manifest_path.name + ".legacy68"',
+            'execution_path.name + ".legacy68"',
+            '"summary.json").is_file()',
+            '"scored_records.jsonl"',
+            'method == "as_lru" and budget == "005"',
+            "68-to-80 protocol source upgrade",
+            "archived 68-run fingerprint",
+            "protocol80_migration_pending",
+            "a missing imported legacy output will not be recreated outside RUN_ROOT",
+        ):
+            self.assertIn(fragment, self.script)
 
     def test_strict_bundle_plain_as_and_runtime_validation_are_frozen(self):
         for fragment in (

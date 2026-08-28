@@ -112,38 +112,13 @@ def build_grid(root):
     runs = []
     correct_methods = {"promixed", "as_lru", "as_h2o_lru"}
     for task_index, task in enumerate(grid.TASKS):
-        as_path = root / "runs" / task / "as_lru_full"
-        write_run(
-            as_path,
-            task=task,
-            budget="050",
-            rows=make_rows(
-                task,
-                latency=180.0 + task_index,
-                both_correct=True,
-                method="as_lru",
-                budget="050",
-            ),
-            # Shape-only plan metadata is not the actual AS+LRU retention budget.
-            keep_ratio=0.05,
-        )
-        runs.append(
-            {
-                "task": task,
-                "budget": "full",
-                "method": "as_lru",
-                "path": str(as_path.relative_to(root)),
-            }
-        )
         for method_index, method in enumerate(grid.METHODS):
-            if method == "as_lru":
-                continue
-            for budget in grid.BUDGETS:
+            for budget_index, budget in enumerate(grid.BUDGETS):
                 path = root / "runs" / task / f"{method}_k{budget}"
                 latency = (
                     100.0
                     + 20.0 * method_index
-                    + int(budget) / 10.0
+                    + 3.0 * budget_index
                     + task_index
                 )
                 write_run(
@@ -157,6 +132,7 @@ def build_grid(root):
                         method=method,
                         budget=budget,
                     ),
+                    keep_ratio=1.0 if method == "as_lru" else None,
                 )
                 runs.append(
                     {
@@ -171,7 +147,7 @@ def build_grid(root):
         json.dumps(
             {
                 "schema_version": 1,
-                "purpose": "five-method test grid",
+                "purpose": "five-method 80-execution test grid",
                 "runs": runs,
             }
         ),
@@ -181,7 +157,7 @@ def build_grid(root):
 
 
 class FiveMethodGridAnalysisTest(unittest.TestCase):
-    def test_full_grid_cli_and_as_lru_projection(self):
+    def test_full_80_run_grid_and_independent_as_lru_timings(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             manifest = build_grid(root)
@@ -195,50 +171,79 @@ class FiveMethodGridAnalysisTest(unittest.TestCase):
             result = json.loads(output.read_text(encoding="utf-8"))
             markdown = output.with_suffix(".md").read_text(encoding="utf-8")
 
-        self.assertEqual(result["input"]["manifest_entries"], 68)
+        self.assertEqual(result["input"]["manifest_entries"], 80)
         self.assertEqual(result["input"]["expanded_cells"], 80)
         self.assertEqual(result["overall_by_method"]["as_lru"]["cells"], 16)
         self.assertEqual(
+            result["budget_semantics_validation"]["validated_as_lru_rows"], 32
+        )
+        self.assertEqual(
             result["budget_semantics_validation"]["validated_h2o_rows"], 32
         )
-        self.assertAlmostEqual(
-            result["overall_by_method"]["as_lru"]["accuracy"], 1.0
-        )
+        as_means = []
+        as_paths = []
         for budget in grid.BUDGETS:
             cell = result["tasks"]["sst2"]["budgets"][budget]["methods"]["as_lru"]
-            self.assertTrue(cell["reused_full_run"])
-            self.assertEqual(cell["source_budget"], "full")
+            self.assertTrue(cell["independent_measurement"])
+            self.assertEqual(cell["requested_budget_label"], budget)
             self.assertEqual(cell["budget_semantics"], "full_kv")
-            self.assertAlmostEqual(cell["response_ready_mean_ms"], 185.5)
-        self.assertIn("full (reused)", markdown)
-        self.assertIn("value/KV-retention ratio", markdown)
+            self.assertEqual(cell["effective_kv_retention_ratio"], 1.0)
+            as_means.append(cell["response_ready_mean_ms"])
+            as_paths.append(cell["source_path"])
+        self.assertEqual(len(set(as_means)), 4)
+        self.assertEqual(len(set(as_paths)), 4)
+        self.assertIn("each cell is timed independently", markdown)
+        self.assertIn("none claims sparse AS+LRU retention", markdown)
+        self.assertIn("(1+k_actual)/2", markdown)
+        self.assertIn("title and figure legend", markdown)
+        self.assertNotIn("full (reused)", markdown)
         self.assertIn("Primary latency is **response-ready**", markdown)
-        self.assertIn("Overall macro average", markdown)
 
-    def test_four_as_lru_entries_may_reference_one_path(self):
+    def test_as_lru_paths_must_be_distinct_and_full_is_not_a_budget(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             manifest = build_grid(root)
             payload = json.loads(manifest.read_text(encoding="utf-8"))
-            expanded = []
-            for item in payload["runs"]:
-                if item["method"] == "as_lru":
-                    expanded.extend(
-                        [{**item, "budget": budget} for budget in grid.BUDGETS]
-                    )
-                else:
-                    expanded.append(item)
-            payload["runs"] = expanded
+            as_items = [item for item in payload["runs"] if item["method"] == "as_lru"]
+            same_task = [item for item in as_items if item["task"] == "sst2"]
+            for item in same_task[1:]:
+                item["path"] = same_task[0]["path"]
             manifest.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "distinct measured output paths"):
+                grid.load_manifest(manifest)
 
-            specs, info = grid.load_manifest(manifest)
+            root2 = root / "second"
+            payload = json.loads(build_grid(root2).read_text(encoding="utf-8"))
+            next(item for item in payload["runs"] if item["method"] == "as_lru")[
+                "budget"
+            ] = "full"
+            manifest.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "invalid budget"):
+                grid.load_manifest(manifest)
 
-        self.assertEqual(info["manifest_entries"], 80)
-        as_specs = [spec for spec in specs if spec.method == "as_lru"]
-        self.assertEqual(len(as_specs), 16)
-        self.assertTrue(all(spec.reused_full_run for spec in as_specs))
+    def test_as_lru_runtime_must_report_full_kv(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / "as_lru"
+            rows = make_rows(
+                "trec",
+                latency=100.0,
+                both_correct=True,
+                method="as_lru",
+                budget="010",
+            )
+            write_run(
+                path,
+                task="trec",
+                budget="010",
+                rows=rows,
+                keep_ratio=0.10,
+            )
+            spec = grid.RunSpec("trec", "010", "as_lru", path)
+            with self.assertRaisesRegex(ValueError, "full K/V"):
+                grid.load_run(spec)
 
-    def test_duplicate_uid_and_wrong_retention_are_rejected(self):
+    def test_duplicate_uid_and_wrong_h2o_retention_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             path = root / "as_h2o"
@@ -256,13 +261,7 @@ class FiveMethodGridAnalysisTest(unittest.TestCase):
                 rows=rows,
                 keep_ratio=0.25,
             )
-            spec = grid.RunSpec(
-                task="trec",
-                budget="010",
-                method="as_h2o_lru",
-                path=path,
-                source_budget="010",
-            )
+            spec = grid.RunSpec("trec", "010", "as_h2o_lru", path)
             with self.assertRaisesRegex(ValueError, "keep_ratio does not match"):
                 grid.load_run(spec)
 
@@ -273,18 +272,11 @@ class FiveMethodGridAnalysisTest(unittest.TestCase):
                     latency=100.0,
                     both_correct=True,
                     method="as_lru",
-                    budget="050",
+                    budget="005",
                 )
                 semantic_runs.append(
                     grid.LoadedRun(
-                        spec=grid.RunSpec(
-                            task,
-                            "005",
-                            "as_lru",
-                            root / task,
-                            "full",
-                            True,
-                        ),
+                        spec=grid.RunSpec(task, "005", "as_lru", root / task),
                         records={row["uid"]: row for row in full_rows},
                     )
                 )
@@ -299,11 +291,7 @@ class FiveMethodGridAnalysisTest(unittest.TestCase):
             semantic_runs.append(
                 grid.LoadedRun(
                     spec=grid.RunSpec(
-                        "trec",
-                        "010",
-                        "as_h2o_lru",
-                        root / "bad_h2o",
-                        "010",
+                        "trec", "010", "as_h2o_lru", root / "bad_h2o"
                     ),
                     records={row["uid"]: row for row in bad_h2o_rows},
                 )

@@ -8,7 +8,7 @@ import json
 import math
 import statistics
 import sys
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -38,8 +38,6 @@ class RunSpec:
     budget: str
     method: str
     path: Path
-    source_budget: str
-    reused_full_run: bool = False
 
     @property
     def label(self) -> str:
@@ -82,10 +80,8 @@ def p95(values: Sequence[float]) -> float:
     return ordered[max(0, math.ceil(0.95 * len(ordered)) - 1)]
 
 
-def normalize_budget(value: Any, *, allow_full: bool = False) -> str:
+def normalize_budget(value: Any) -> str:
     text = str(value).strip().lower()
-    if allow_full and text == "full":
-        return "full"
     if text.startswith("k"):
         text = text[1:]
     if text.endswith("%"):
@@ -128,25 +124,20 @@ def load_manifest(path: Path) -> tuple[list[RunSpec], dict[str, Any]]:
         method = str(item["method"]).strip().lower()
         require(task in TASKS, f"{context} has unsupported task {task!r}")
         require(method in METHODS, f"{context} has unsupported method {method!r}")
-        budget = normalize_budget(item["budget"], allow_full=method == "as_lru")
+        budget = normalize_budget(item["budget"])
         path_text = str(item["path"]).strip()
         require(bool(path_text), f"{context}.path must be non-empty")
         run_path = Path(path_text).expanduser()
         if not run_path.is_absolute():
             run_path = path.parent / run_path
-        run_path = run_path.resolve()
-        target_budgets = BUDGETS if budget == "full" else (budget,)
-        for target_budget in target_budgets:
-            specs.append(
-                RunSpec(
-                    task=task,
-                    budget=target_budget,
-                    method=method,
-                    path=run_path,
-                    source_budget=budget,
-                    reused_full_run=budget == "full",
-                )
+        specs.append(
+            RunSpec(
+                task=task,
+                budget=budget,
+                method=method,
+                path=run_path.resolve(),
             )
+        )
 
     identities = [(spec.task, spec.budget, spec.method) for spec in specs]
     require(len(identities) == len(set(identities)), "duplicate task/budget/method cell")
@@ -163,29 +154,20 @@ def load_manifest(path: Path) -> tuple[list[RunSpec], dict[str, Any]]:
         f"missing={sorted(expected - actual)}, extra={sorted(actual - expected)}",
     )
 
-    for task in TASKS:
-        family = [spec for spec in specs if spec.task == task and spec.method == "as_lru"]
-        require(
-            len({spec.path for spec in family}) == 1,
-            f"{task} AS+LRU must be one full run or four references to one path",
-        )
-        specs = [
-            replace(spec, reused_full_run=True)
-            if spec.task == task and spec.method == "as_lru"
-            else spec
-            for spec in specs
-        ]
+    require(len(items) == 80, f"manifest must contain 80 actual runs, got {len(items)}")
     for task in TASKS:
         for method in METHODS:
-            if method == "as_lru":
-                continue
             paths = {
                 spec.path for spec in specs if spec.task == task and spec.method == method
             }
             require(
                 len(paths) == len(BUDGETS),
-                f"{task}/{method} must use a distinct output path at each budget",
+                f"{task}/{method} must use four distinct measured output paths",
             )
+    require(
+        len({spec.path for spec in specs}) == 80,
+        "all 80 task/budget/method executions must have distinct output paths",
+    )
     specs.sort(
         key=lambda spec: (
             TASKS.index(spec.task),
@@ -303,7 +285,12 @@ def validate_summary(
         runtime.get("response_ready_excludes_accuracy_scoring") is True,
         f"{spec.label} response-ready must exclude benchmark-only scoring",
     )
-    if spec.method != "as_lru":
+    if spec.method == "as_lru":
+        require(
+            same_number(runtime.get("keep_ratio"), 1.0),
+            f"{spec.label} AS+LRU runtime.keep_ratio must be full K/V (1.0)",
+        )
+    else:
         require(
             same_number(runtime.get("keep_ratio"), int(spec.budget) / 100.0),
             f"{spec.label} runtime.keep_ratio does not match k{spec.budget}",
@@ -325,35 +312,42 @@ def validate_budget_semantics(runs: Sequence[LoadedRun]) -> dict[str, Any]:
     """Validate actual K/V residency metadata, independent of shape-only plans."""
 
     prefix_tokens_by_uid: dict[tuple[str, str], int] = {}
-    for task in TASKS:
-        full_run = next(
-            run
-            for run in runs
-            if run.spec.task == task and run.spec.method == "as_lru"
-        )
-        for uid, row in full_run.records.items():
+    as_lru_rows = 0
+    for run in runs:
+        if run.spec.method != "as_lru":
+            continue
+        for uid, row in run.records.items():
+            context = f"{run.spec.label}[{uid}]"
             effective = finite_number(
                 row.get("effective_mean_keep_ratio"),
-                context=f"{full_run.spec.label}[{uid}].effective_mean_keep_ratio",
+                context=f"{context}.effective_mean_keep_ratio",
             )
             require(
                 same_number(effective, 1.0),
-                f"{full_run.spec.label}[{uid}] AS+LRU must retain full K/V",
+                f"{context} AS+LRU must retain full K/V",
             )
             layer_counts = row.get("selected_tokens_by_layer")
             require(
                 isinstance(layer_counts, list) and layer_counts,
-                f"{full_run.spec.label}[{uid}].selected_tokens_by_layer must be non-empty",
+                f"{context}.selected_tokens_by_layer must be non-empty",
             )
             require(
                 all(type(count) is int and count > 0 for count in layer_counts),
-                f"{full_run.spec.label}[{uid}] has invalid selected token counts",
+                f"{context} has invalid selected token counts",
             )
             require(
                 len(set(layer_counts)) == 1,
-                f"{full_run.spec.label}[{uid}] is not full retention in every layer",
+                f"{context} is not full retention in every layer",
             )
-            prefix_tokens_by_uid[(task, uid)] = layer_counts[0]
+            key = (run.spec.task, uid)
+            if key in prefix_tokens_by_uid:
+                require(
+                    prefix_tokens_by_uid[key] == layer_counts[0],
+                    f"{context} prefix length differs across independent AS+LRU runs",
+                )
+            else:
+                prefix_tokens_by_uid[key] = layer_counts[0]
+            as_lru_rows += 1
 
     h2o_rows = 0
     maximum_ceil_error = 0.0
@@ -398,8 +392,15 @@ def validate_budget_semantics(runs: Sequence[LoadedRun]) -> dict[str, Any]:
             h2o_rows += 1
             maximum_ceil_error = max(maximum_ceil_error, ceil_error)
     return {
-        "as_lru": "effective_mean_keep_ratio=1 and every layer retains prefix_tokens",
-        "as_h2o_lru": "key=1, value=ceil(prefix_tokens*k)/prefix_tokens, total=(1+value)/2",
+        "as_lru": (
+            "four independently timed budget-label runs per task; "
+            "effective_mean_keep_ratio=1 and every layer retains prefix_tokens"
+        ),
+        "as_h2o_lru": (
+            "LRU naming follows the paper title/figure legend; key=1, "
+            "value=ceil(prefix_tokens*k)/prefix_tokens, total=(1+value)/2"
+        ),
+        "validated_as_lru_rows": as_lru_rows,
         "validated_h2o_rows": h2o_rows,
         "maximum_h2o_value_ceil_error": maximum_ceil_error,
     }
@@ -444,8 +445,11 @@ def analyze_manifest(path: Path) -> dict[str, Any]:
         cell.update(
             {
                 "source_path": str(run.spec.path),
-                "source_budget": run.spec.source_budget,
-                "reused_full_run": run.spec.reused_full_run,
+                "requested_budget_label": run.spec.budget,
+                "independent_measurement": True,
+                "effective_kv_retention_ratio": (
+                    1.0 if run.spec.method == "as_lru" else None
+                ),
                 "budget_semantics": (
                     "full_kv"
                     if run.spec.method == "as_lru"
@@ -493,17 +497,28 @@ def analyze_manifest(path: Path) -> dict[str, Any]:
             "phase_latency": "logits_ready_ms (first-token logits ready)",
             "p95": "nearest-rank P95 within each task/budget/method cell",
             "macro": "unweighted arithmetic mean of cell metrics; requests are not pooled across tasks",
-            "as_lru_budget": "full-prefix AS+LRU run reused at all four displayed budget columns",
-            "as_h2o_lru_budget": "k is the H2O value/KV-retention ratio",
+            "as_lru_budget": (
+                "each task-budget cell is independently timed with full prefix K/V; "
+                "the requested budget is only the comparison-block label"
+            ),
+            "as_h2o_lru_budget": (
+                "k is value retention with full K; total logical (K+V) ratio is "
+                "(1+k_actual)/2; LRU naming follows the paper title/figure legend"
+            ),
         },
-        "as_lru_full_run_reuse": {
-            task: str(
-                next(
-                    spec.path
-                    for spec in specs
-                    if spec.task == task and spec.method == "as_lru"
+        "as_lru_independent_runs": {
+            task: {
+                budget: str(
+                    next(
+                        spec.path
+                        for spec in specs
+                        if spec.task == task
+                        and spec.budget == budget
+                        and spec.method == "as_lru"
+                    )
                 )
-            )
+                for budget in BUDGETS
+            }
             for task in TASKS
         },
         "budget_semantics_validation": budget_semantics_validation,
@@ -519,9 +534,9 @@ def render_markdown(result: Mapping[str, Any]) -> str:
         "",
         "Primary latency is **response-ready**; logits-ready is retained as a phase metric. Accuracy uses complete-label continuation log-likelihood. Tasks are not sample-pooled.",
         "",
-        "AS+LRU uses the full prefix KV. Its one task-local `full` run is reused in the 5%, 10%, 25%, and 50% display columns; those columns are not AS+LRU retention ratios.",
+        "AS+LRU uses full prefix K/V in every cell. The 5%, 10%, 25%, and 50% labels identify comparison blocks only; each cell is timed independently and none claims sparse AS+LRU retention.",
         "",
-        "For AS+H2O+LRU, `k` is the **value/KV-retention ratio** selected by H2O.",
+        "For AS+H2O+LRU, `k` is the **value-retention ratio** selected by H2O while K remains full, so total logical `(K+V)/2 = (1+k_actual)/2`. The LRU name follows the baseline title and figure legend in the ContiguousKV paper.",
         "",
         "## Detailed results",
         "",
@@ -534,9 +549,9 @@ def render_markdown(result: Mapping[str, Any]) -> str:
             for method in METHODS:
                 metrics = methods[method]
                 source = (
-                    "full (reused)"
-                    if metrics["reused_full_run"]
-                    else f"k{metrics['source_budget']}"
+                    f"independent k{budget} timing; full K/V"
+                    if method == "as_lru"
+                    else f"independent k{budget} timing"
                 )
                 lines.append(
                     f"| {task} | {int(budget)}% | {DISPLAY_METHODS[method]} | "
