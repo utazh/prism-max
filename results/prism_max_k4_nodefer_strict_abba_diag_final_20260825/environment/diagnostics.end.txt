@@ -1,0 +1,6 @@
+2026-08-25T22:25:51+08:00
+source_commit=d35240de08a0236f89859d6638ecbd2ac2d583f6
+executions=16
+repeats_per_method=2
+primary_latency=response_ready_ms
+phase_latency=logits_ready_ms

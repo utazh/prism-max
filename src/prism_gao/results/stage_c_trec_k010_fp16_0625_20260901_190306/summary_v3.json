@@ -1,0 +1,47 @@
+[
+  {
+    "task": "trec",
+    "run": "k010_coalesced_hostasync",
+    "orders": 2,
+    "samples_total": 128,
+    "accuracy": 0.59375,
+    "response_ready_ms": 247.10637311363826,
+    "selector_calls": 5.125,
+    "mean_period": 6.110937500000004,
+    "payload_byte_ratio": 0.9665705188428821,
+    "payload_read_ms": 94.6027487370884,
+    "host_wait_ms": 8.373525030037854,
+    "materialize_ms": 36.369565066706855,
+    "pread_calls": 1123.625
+  },
+  {
+    "task": "trec",
+    "run": "k010_fp16_hostasync",
+    "orders": 2,
+    "samples_total": 128,
+    "accuracy": 0.625,
+    "response_ready_ms": 254.76857180183288,
+    "selector_calls": 5.09375,
+    "mean_period": 6.189583333333338,
+    "payload_byte_ratio": 1.0,
+    "payload_read_ms": 96.59208894299809,
+    "host_wait_ms": 8.290309167932719,
+    "materialize_ms": 36.950054360204376,
+    "pread_calls": 1053.125
+  },
+  {
+    "task": "trec",
+    "run": "k010_original_async",
+    "orders": 2,
+    "samples_total": 128,
+    "accuracy": 0.625,
+    "response_ready_ms": 251.00893992203055,
+    "selector_calls": 6.859375,
+    "mean_period": 6.189583333333338,
+    "payload_byte_ratio": 0.0,
+    "payload_read_ms": 0.0,
+    "host_wait_ms": 0.0,
+    "materialize_ms": 0.0,
+    "pread_calls": 0.0
+  }
+]

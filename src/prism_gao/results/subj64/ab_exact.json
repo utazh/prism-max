@@ -1,0 +1,75 @@
+{
+  "task": "subj",
+  "samples": 64,
+  "baseline": "/home/panzihang/src/prism_max/src/prism_gao/results/subj64/subj/k025_promixed_k4_torch_64",
+  "candidate": "/home/panzihang/src/prism_max/src/prism_gao/results/subj64/subj/k025_promixed_k4_fused_exact_64",
+  "metrics": {
+    "accuracy": {
+      "baseline": 0.765625,
+      "candidate": 0.765625,
+      "delta": 0.0,
+      "delta_percent": 0.0
+    },
+    "mean_ttft_ms": {
+      "baseline": 472.5320020224899,
+      "candidate": 438.76505715888925,
+      "delta": -33.766944863600656,
+      "delta_percent": -7.145959367635282
+    },
+    "p95_ttft_ms": {
+      "baseline": 544.0461589023471,
+      "candidate": 518.7433632090688,
+      "delta": -25.302795693278313,
+      "delta_percent": -4.650854579017441
+    },
+    "mean_response_ready_ms": {
+      "baseline": 472.81384555390105,
+      "candidate": 439.0041019942146,
+      "delta": -33.80974355968647,
+      "delta_percent": -7.150751585981663
+    },
+    "mean_selector_load_ms": {
+      "baseline": 10.353856006986462,
+      "candidate": 3.5284575424157083,
+      "delta": -6.825398464570753,
+      "delta_percent": -65.92131916809724
+    },
+    "mean_selector_compute_ms": {
+      "baseline": 80.0437492527999,
+      "candidate": 74.48134827020112,
+      "delta": -5.562400982598774,
+      "delta_percent": -6.949200948885092
+    },
+    "mean_selector_wait_ms": {
+      "baseline": 0.8506704471074045,
+      "candidate": 0.45533489901572466,
+      "delta": -0.3953355480916798,
+      "delta_percent": -46.47340805548935
+    },
+    "mean_selector_calls": {
+      "baseline": 7.5625,
+      "candidate": 7.5625,
+      "delta": 0.0,
+      "delta_percent": 0.0
+    },
+    "mean_promixed_period": {
+      "baseline": 4.391889880952379,
+      "candidate": 4.391889880952379,
+      "delta": 0.0,
+      "delta_percent": 0.0
+    }
+  },
+  "record_differences": {
+    "layer_token_selection_sha256": 0,
+    "generation_prediction": 0,
+    "label_first_token_prediction": 0,
+    "prediction": 0,
+    "correct": 0,
+    "selector_calls": 0,
+    "promixed_decisions": 0,
+    "promixed_p1_decisions": 0,
+    "promixed_p2_decisions": 0,
+    "promixed_p4_decisions": 0,
+    "promixed_p8_decisions": 0
+  }
+}

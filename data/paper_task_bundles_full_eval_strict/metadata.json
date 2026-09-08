@@ -1,0 +1,172 @@
+{
+  "schema_version": 3,
+  "seed": 42,
+  "evaluation_mode": "each dataset is an independent workload",
+  "pooled_headline_metrics_allowed": false,
+  "prefix_fewshot_examples_by_task": {
+    "sst2": 100,
+    "subj": 110,
+    "trec": 120,
+    "rte": 80
+  },
+  "evaluation_requests_by_task": {
+    "sst2": 867,
+    "subj": 998,
+    "trec": 495,
+    "rte": 272
+  },
+  "excluded_uids_manifest": "/home/panzihang/src/contiguous_fuxian/results/impress_reorder/qwen25_7b_paper4_disjoint_history32_35_v2.json",
+  "excluded_uids_manifest_sha256": "36c5e1ec62187f8916e04e7758e79c9a28cfe1c75cb8999739e6be15287542cf",
+  "tasks": {
+    "sst2": {
+      "fewshot_examples": 100,
+      "paper_prefix_tokens": 3800,
+      "records": 867,
+      "prefix_characters": 17554,
+      "actual_prefix_tokens": 3811,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_datasetwise_logit_20260804/data/paper_task_bundles_full_eval/sst2.jsonl",
+      "prefix_fewshot_examples": 100,
+      "source_evaluation_rows": 872,
+      "excluded_calibration_uids": [
+        "sst2-32",
+        "sst2-33",
+        "sst2-34",
+        "sst2-35"
+      ],
+      "evaluation_requests": 867,
+      "prefix_text_sha256": "ca642ee0f97a402ab1d528cd7fc3e9f5275dc0df502b864fc12f554376359bdf",
+      "validated_reference_records": 100,
+      "accuracy_protocol": "label_continuation_loglikelihood",
+      "label_continuation_prefix": "",
+      "strict_source_records": 868,
+      "strict_excluded_uids": [
+        "sst2-0"
+      ]
+    },
+    "subj": {
+      "fewshot_examples": 110,
+      "paper_prefix_tokens": 4400,
+      "records": 998,
+      "prefix_characters": 20701,
+      "actual_prefix_tokens": 4412,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_datasetwise_logit_20260804/data/paper_task_bundles_full_eval/subj.jsonl",
+      "prefix_fewshot_examples": 110,
+      "source_evaluation_rows": 1003,
+      "excluded_calibration_uids": [
+        "subj-32",
+        "subj-33",
+        "subj-34",
+        "subj-35"
+      ],
+      "evaluation_requests": 998,
+      "prefix_text_sha256": "1e68faa21963d2e31401cb591406c3efa94268ae27b737410a604236586f167d",
+      "validated_reference_records": 110,
+      "accuracy_protocol": "label_continuation_loglikelihood",
+      "label_continuation_prefix": "",
+      "strict_source_records": 999,
+      "strict_excluded_uids": [
+        "subj-0"
+      ]
+    },
+    "trec": {
+      "fewshot_examples": 120,
+      "paper_prefix_tokens": 5000,
+      "records": 495,
+      "prefix_characters": 19833,
+      "actual_prefix_tokens": 4940,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_datasetwise_logit_20260804/data/paper_task_bundles_full_eval/trec.jsonl",
+      "prefix_fewshot_examples": 120,
+      "source_evaluation_rows": 500,
+      "excluded_calibration_uids": [
+        "trec-32",
+        "trec-33",
+        "trec-34",
+        "trec-35"
+      ],
+      "evaluation_requests": 495,
+      "prefix_text_sha256": "b67ac86d2014b838287bcfa021b5bea5b3865a22c6e3b8ed98f5e47cf6e0a70d",
+      "validated_reference_records": 120,
+      "accuracy_protocol": "label_continuation_loglikelihood",
+      "label_continuation_prefix": "",
+      "strict_source_records": 496,
+      "strict_excluded_uids": [
+        "trec-0"
+      ]
+    },
+    "rte": {
+      "fewshot_examples": 80,
+      "paper_prefix_tokens": 6000,
+      "records": 272,
+      "prefix_characters": 25989,
+      "actual_prefix_tokens": 6011,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_datasetwise_logit_20260804/data/paper_task_bundles_full_eval/rte.jsonl",
+      "prefix_fewshot_examples": 80,
+      "source_evaluation_rows": 277,
+      "excluded_calibration_uids": [
+        "rte-32",
+        "rte-33",
+        "rte-34",
+        "rte-35"
+      ],
+      "evaluation_requests": 272,
+      "prefix_text_sha256": "2538fbefd9ab6c2fdd9f78a25c166bbf9523bc2ccfc8cb0bd1efe443add916b0",
+      "validated_reference_records": 80,
+      "accuracy_protocol": "label_continuation_loglikelihood",
+      "label_continuation_prefix": "",
+      "strict_source_records": 273,
+      "strict_excluded_uids": [
+        "rte-0"
+      ]
+    }
+  },
+  "strict_eval_filter": {
+    "schema_version": 1,
+    "source_bundle": "/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval",
+    "source_metadata_sha256": "cb5838f20d8a4c555ea05907d1e4b1f35894b16098add175aa05031313af2191",
+    "source_task_jsonl_sha256": {
+      "sst2": "9d737446bd3f31175dbc010b2155fb1829e6c73a5cba1e489381b7770a3cf9a9",
+      "subj": "3a7c62937f8a2127afd85b0a8a88ef6fc8fb41d20a61f60868bfdc387fec92f9",
+      "trec": "60b231a44a177def354f1d00c584a34f59115da0ddd6039020574ccdb507def6",
+      "rte": "2a6e3cf01dabbd55ff93b3accbf3c2a39cfc192eb4f9a2b959452752bfcb492d"
+    },
+    "output_task_jsonl_sha256": {
+      "sst2": "0582a4521620e112bffca91e2ceb0e748c741a0c48aec5e9a1ba94fd795fd826",
+      "subj": "457e71cd3e50b4ea3b855e7b7db9b8ec435d0dd66a63d779456956c131ae4e91",
+      "trec": "547ad401fb621358768ec69af3e267f0c82dedc2320090eedc54099eb9d6d148",
+      "rte": "46072de2c434ebdb0b9b35c05fd9a352a543f759235903efef74a4f2a5edf090"
+    },
+    "exclusions_manifest": "/home/panzihang/src/prism_max/configs/strict_eval_exclusions.json",
+    "exclusions_manifest_sha256": "b89e0216afdc427a5c3012467232bb595b3f8366f727078c3a89305017bb6ec9",
+    "excluded_uids_by_task": {
+      "sst2": [
+        "sst2-0"
+      ],
+      "subj": [
+        "subj-0"
+      ],
+      "trec": [
+        "trec-0"
+      ],
+      "rte": [
+        "rte-0"
+      ]
+    },
+    "source_records_by_task": {
+      "sst2": 868,
+      "subj": 999,
+      "trec": 496,
+      "rte": 273
+    },
+    "evaluation_records_by_task": {
+      "sst2": 867,
+      "subj": 998,
+      "trec": 495,
+      "rte": 272
+    },
+    "retained_row_serialization": "copied byte-for-byte from source JSONL"
+  }
+}

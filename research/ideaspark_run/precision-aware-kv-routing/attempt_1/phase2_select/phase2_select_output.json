@@ -1,0 +1,66 @@
+{
+  "selected_gaps": [
+    {
+      "gap": "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+      "chosen_pattern_id": "reframe_as_solvable_object",
+      "anchor_alternates": [],
+      "companion_pattern": null,
+      "companion_rationale": "",
+      "selection_rationale": "This is the load-bearing method gap because any accuracy improvement is undeployable unless the request-level decisions obey both exact KV-byte and measured TTFT ceilings. Recasting routing as a robust multiple-choice resource program closes it with a runnable exact-feasibility solver over action-conditional downstream damage, rather than regressing to attention-mass token allocation (H2O/DynamicKV) or a fixed KIVI/Oaken quantization regime."
+    },
+    {
+      "gap": "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling.",
+      "chosen_pattern_id": "controlled_diagnostic_design",
+      "anchor_alternates": [],
+      "companion_pattern": null,
+      "companion_rationale": "",
+      "selection_rationale": "Under the shared_object thread, this leg validates whether the same block-action damage certificate used by the router needs a distributional bound rather than a point estimate. Controlled matched prompts with equal point estimates but different counterfactual damage spread isolate calibration form from ranking quality and expose when a point score causes harmful irreversible actions."
+    },
+    {
+      "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+      "chosen_pattern_id": "heterogeneous_decomposition",
+      "anchor_alternates": [],
+      "companion_pattern": null,
+      "companion_rationale": "",
+      "selection_rationale": "Under the shared_object thread, each layer-block is treated according to its action-conditional damage distribution and exact resource cost rather than a method-wide rule. Decomposing by certified functional risk closes uniformity without reducing to simple attention-importance mixed precision: the discriminant is the full downstream-damage distribution for every retain/quantize/omit action, and the exact solver—not a per-block rank—couples all treatments."
+    },
+    {
+      "gap": "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+      "chosen_pattern_id": "self_supervised_signal_engineering",
+      "anchor_alternates": [],
+      "companion_pattern": null,
+      "companion_rationale": "",
+      "selection_rationale": "Under the shared_object thread, uncertainty is part of the block-action damage certificate consumed by the exact router rather than a separate uncertainty module. Counterfactual full-cache teacher replays manufacture action-conditional downstream-damage distributions, enabling calibrated upper-risk estimates that protect ambiguous regions instead of treating them like confidently irrelevant ones."
+    }
+  ],
+  "coherence_thread_type": "shared_object",
+  "deliverable_coverage": "method — the anchor gap → reframe_as_solvable_object yields a runnable robust multiple-choice resource solver that enforces exact KV-byte and TTFT feasibility.",
+  "pattern_saturation": {
+    "reframe_as_solvable_object": {
+      "share": 0.09,
+      "saturation_band": "untested",
+      "selection_note": "untested lane — differentiation_from_lit must substantively defend the choice"
+    },
+    "controlled_diagnostic_design": {
+      "share": 0.18,
+      "saturation_band": "mid_frequency",
+      "selection_note": ""
+    },
+    "self_supervised_signal_engineering": {
+      "share": 0.0,
+      "saturation_band": "untested",
+      "selection_note": "untested lane — differentiation_from_lit must substantively defend the choice"
+    },
+    "heterogeneous_decomposition": {
+      "share": 0.64,
+      "saturation_band": "saturated",
+      "selection_note": "saturated lane — differentiation_from_lit must substantively defend the action-conditional risk distribution and exact coupled solver beyond importance-only differentiated treatment"
+    }
+  },
+  "deferred_gaps": [
+    {
+      "gap": "No retrieved frontier leaf closes the gap between offline model-level sensitivity and prompt-specific evidence strongly enough to preserve accuracy across task shifts while keeping selection overhead inside the serving deadline.",
+      "reason": "Future work: cross-task guarantees for fusing offline sensitivity with prompt evidence require a task-shift calibration study beyond this paper’s shared block-action damage certificate and exact routing mechanism."
+    }
+  ]
+}

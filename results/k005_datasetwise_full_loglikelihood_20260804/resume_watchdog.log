@@ -1,0 +1,310 @@
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Another dataset-wise run owns GPU lock 3
+Skipping completed sst2 k010 contigkv
+Skipping completed sst2 k010 ours
+Skipping completed sst2 k010 impress
+Skipping completed sst2 k025 contigkv
+Skipping completed sst2 k025 ours
+Skipping completed sst2 k025 impress
+Skipping completed sst2 k050 contigkv
+Skipping completed sst2 k050 ours
+Skipping completed sst2 k050 impress
+Skipping completed subj k010 contigkv
+Skipping completed subj k010 ours
+Skipping completed subj k010 impress
+Skipping completed subj k025 contigkv
+Skipping completed subj k025 ours
+Skipping completed subj k025 impress
+Skipping completed subj k050 contigkv
+[2026-08-04T18:40:02+08:00] starting subj k050 ours
+[2026-08-04T18:56:11+08:00] completed subj k050 ours
+[2026-08-04T18:56:11+08:00] starting subj k050 impress
+[2026-08-04T19:36:32+08:00] completed subj k050 impress
+[2026-08-04T19:36:32+08:00] starting trec k010 contigkv
+[2026-08-04T19:41:58+08:00] completed trec k010 contigkv
+[2026-08-04T19:41:58+08:00] starting trec k010 ours
+[2026-08-04T19:45:52+08:00] completed trec k010 ours
+[2026-08-04T19:45:52+08:00] starting trec k010 impress
+[2026-08-04T19:59:12+08:00] completed trec k010 impress
+[2026-08-04T19:59:12+08:00] starting trec k025 contigkv
+[2026-08-04T20:07:29+08:00] completed trec k025 contigkv
+[2026-08-04T20:07:29+08:00] starting trec k025 ours
+[2026-08-04T20:12:54+08:00] completed trec k025 ours
+[2026-08-04T20:12:54+08:00] starting trec k025 impress
+[2026-08-04T20:33:17+08:00] completed trec k025 impress
+[2026-08-04T20:33:17+08:00] starting trec k050 contigkv
+[2026-08-04T20:45:46+08:00] completed trec k050 contigkv
+[2026-08-04T20:45:46+08:00] starting trec k050 ours
+[2026-08-04T20:55:31+08:00] completed trec k050 ours
+[2026-08-04T20:55:31+08:00] starting trec k050 impress
+[2026-08-04T21:21:50+08:00] completed trec k050 impress
+[2026-08-04T21:21:51+08:00] starting rte k010 contigkv
+[2026-08-04T21:25:12+08:00] completed rte k010 contigkv
+[2026-08-04T21:25:12+08:00] starting rte k010 ours
+[2026-08-04T21:28:06+08:00] completed rte k010 ours
+[2026-08-04T21:28:06+08:00] starting rte k010 impress
+[2026-08-04T21:40:06+08:00] completed rte k010 impress
+[2026-08-04T21:40:06+08:00] starting rte k025 contigkv
+[2026-08-04T21:45:47+08:00] completed rte k025 contigkv
+[2026-08-04T21:45:47+08:00] starting rte k025 ours
+[2026-08-04T21:49:59+08:00] completed rte k025 ours
+[2026-08-04T21:49:59+08:00] starting rte k025 impress
+[2026-08-04T22:07:47+08:00] completed rte k025 impress
+[2026-08-04T22:07:47+08:00] starting rte k050 contigkv
+[2026-08-04T22:21:28+08:00] completed rte k050 contigkv
+[2026-08-04T22:21:29+08:00] starting rte k050 ours
+[2026-08-04T22:31:23+08:00] completed rte k050 ours
+[2026-08-04T22:31:23+08:00] starting rte k050 impress
+[2026-08-04T22:53:30+08:00] completed rte k050 impress
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+Accuracy scoring: `label_continuation_loglikelihood`.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 273 | 0.8974 | 6.91% | +1.91 | 1328.65 | 1758.42 | 28.00 | 1 |
+| 5% | ContiguousKV | 273 | 0.8645 | 4.97% | -0.03 | 295.05 | 337.89 | 4.00 | 1 |
+| 5% | Ours | 273 | 0.8755 | 4.94% | -0.06 | 238.89 | 296.83 | 4.00 | 8 |
+| 10% | IMPRESS | 273 | 0.8901 | 13.25% | +3.25 | 2009.69 | 2518.69 | 28.00 | 1 |
+| 10% | ContiguousKV | 273 | 0.8535 | 10.03% | +0.03 | 395.15 | 467.93 | 4.00 | 1 |
+| 10% | Ours | 273 | 0.8681 | 9.95% | -0.05 | 311.27 | 375.98 | 4.00 | 8 |
+| 25% | IMPRESS | 273 | 0.8828 | 27.86% | +2.86 | 3150.75 | 3731.94 | 28.00 | 1 |
+| 25% | ContiguousKV | 273 | 0.8718 | 24.94% | -0.06 | 794.79 | 949.11 | 4.00 | 1 |
+| 25% | Ours | 273 | 0.8608 | 24.94% | -0.06 | 536.55 | 638.67 | 4.00 | 8 |
+| 50% | IMPRESS | 273 | 0.8864 | 52.34% | +2.34 | 3863.54 | 4654.85 | 28.00 | 1 |
+| 50% | ContiguousKV | 273 | 0.8901 | 49.96% | -0.04 | 2307.61 | 3139.03 | 4.00 | 1 |
+| 50% | Ours | 273 | 0.8681 | 49.96% | -0.04 | 1576.83 | 2060.46 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +1.10 | +19.03% | +12.15% |
+| 10% | +1.47 | +21.23% | +19.65% |
+| 25% | -1.10 | +32.49% | +32.71% |
+| 50% | -2.20 | +31.67% | +34.36% |
+
+## SST2
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 868 | 0.9343 | 5.49% | +0.49 | 725.02 | 1009.56 | 28.00 | 1 |
+| 5% | ContiguousKV | 868 | 0.8952 | 4.79% | -0.21 | 200.30 | 228.39 | 4.00 | 1 |
+| 5% | Ours | 868 | 0.9182 | 4.85% | -0.15 | 153.71 | 184.09 | 4.00 | 8 |
+| 10% | IMPRESS | 868 | 0.9401 | 13.37% | +3.37 | 964.37 | 1281.55 | 28.00 | 1 |
+| 10% | ContiguousKV | 868 | 0.9240 | 9.75% | -0.25 | 259.30 | 295.18 | 4.00 | 1 |
+| 10% | Ours | 868 | 0.9274 | 9.81% | -0.19 | 205.86 | 240.34 | 4.00 | 8 |
+| 25% | IMPRESS | 868 | 0.9401 | 30.50% | +5.50 | 1195.53 | 1608.69 | 28.00 | 1 |
+| 25% | ContiguousKV | 868 | 0.9435 | 24.85% | -0.15 | 435.54 | 505.03 | 4.00 | 1 |
+| 25% | Ours | 868 | 0.9378 | 24.84% | -0.16 | 323.98 | 372.87 | 4.00 | 8 |
+| 50% | IMPRESS | 868 | 0.9470 | 54.58% | +4.58 | 1480.51 | 1909.47 | 28.00 | 1 |
+| 50% | ContiguousKV | 868 | 0.9424 | 50.04% | +0.04 | 699.20 | 868.45 | 4.00 | 1 |
+| 50% | Ours | 868 | 0.9389 | 49.92% | -0.08 | 622.32 | 755.91 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +2.30 | +23.26% | +19.40% |
+| 10% | +0.35 | +20.61% | +18.58% |
+| 25% | -0.58 | +25.61% | +26.17% |
+| 50% | -0.35 | +11.00% | +12.96% |
+
+## SUBJ
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 999 | 0.6577 | 5.55% | +0.55 | 893.47 | 1212.02 | 28.00 | 1 |
+| 5% | ContiguousKV | 999 | 0.4905 | 4.99% | -0.01 | 227.94 | 262.53 | 4.00 | 1 |
+| 5% | Ours | 999 | 0.5255 | 4.94% | -0.06 | 187.58 | 221.79 | 4.00 | 8 |
+| 10% | IMPRESS | 999 | 0.6747 | 13.23% | +3.23 | 1082.68 | 1427.31 | 28.00 | 1 |
+| 10% | ContiguousKV | 999 | 0.4424 | 10.06% | +0.06 | 298.04 | 334.88 | 4.00 | 1 |
+| 10% | Ours | 999 | 0.5556 | 9.94% | -0.06 | 233.55 | 265.59 | 4.00 | 8 |
+| 25% | IMPRESS | 999 | 0.7888 | 28.40% | +3.40 | 1534.72 | 2002.94 | 28.00 | 1 |
+| 25% | ContiguousKV | 999 | 0.4625 | 24.93% | -0.07 | 473.94 | 561.34 | 4.00 | 1 |
+| 25% | Ours | 999 | 0.7918 | 24.93% | -0.07 | 410.11 | 470.00 | 4.00 | 8 |
+| 50% | IMPRESS | 999 | 0.8619 | 53.95% | +3.95 | 2160.92 | 2670.51 | 28.00 | 1 |
+| 50% | ContiguousKV | 999 | 0.6236 | 49.95% | -0.05 | 901.19 | 1072.37 | 4.00 | 1 |
+| 50% | Ours | 999 | 0.8599 | 49.96% | -0.04 | 808.94 | 926.39 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +3.50 | +17.71% | +15.52% |
+| 10% | +11.31 | +21.64% | +20.69% |
+| 25% | +32.93 | +13.47% | +16.27% |
+| 50% | +23.62 | +10.24% | +13.61% |
+
+## TREC
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 496 | 0.3589 | 5.00% | +0.00 | 977.91 | 1306.83 | 28.00 | 1 |
+| 5% | ContiguousKV | 496 | 0.5081 | 5.10% | +0.10 | 341.04 | 389.70 | 4.00 | 1 |
+| 5% | Ours | 496 | 0.5444 | 4.95% | -0.05 | 198.56 | 229.77 | 4.00 | 8 |
+| 10% | IMPRESS | 496 | 0.4718 | 13.21% | +3.21 | 1271.36 | 1607.89 | 28.00 | 1 |
+| 10% | ContiguousKV | 496 | 0.5504 | 9.96% | -0.04 | 454.55 | 514.61 | 4.00 | 1 |
+| 10% | Ours | 496 | 0.4395 | 9.93% | -0.07 | 266.48 | 291.29 | 4.00 | 8 |
+| 25% | IMPRESS | 496 | 0.6230 | 30.36% | +5.36 | 2066.55 | 2509.15 | 28.00 | 1 |
+| 25% | ContiguousKV | 496 | 0.5060 | 25.18% | +0.18 | 738.80 | 843.29 | 4.00 | 1 |
+| 25% | Ours | 496 | 0.5484 | 24.94% | -0.06 | 437.17 | 501.61 | 4.00 | 8 |
+| 50% | IMPRESS | 496 | 0.6109 | 58.68% | +8.68 | 2714.05 | 3349.58 | 28.00 | 1 |
+| 50% | ContiguousKV | 496 | 0.4879 | 50.12% | +0.12 | 1190.88 | 1726.79 | 4.00 | 1 |
+| 50% | Ours | 496 | 0.5988 | 49.96% | -0.04 | 898.79 | 1171.28 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +3.63 | +41.78% | +41.04% |
+| 10% | -11.09 | +41.37% | +43.39% |
+| 25% | +4.23 | +40.83% | +40.52% |
+| 50% | +11.09 | +24.53% | +32.17% |
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+Accuracy scoring: `label_continuation_loglikelihood`.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 273 | 0.8974 | 6.91% | +1.91 | 1328.65 | 1758.42 | 28.00 | 1 |
+| 5% | ContiguousKV | 273 | 0.8645 | 4.97% | -0.03 | 295.05 | 337.89 | 4.00 | 1 |
+| 5% | Ours | 273 | 0.8755 | 4.94% | -0.06 | 238.89 | 296.83 | 4.00 | 8 |
+| 10% | IMPRESS | 273 | 0.8901 | 13.25% | +3.25 | 2009.69 | 2518.69 | 28.00 | 1 |
+| 10% | ContiguousKV | 273 | 0.8535 | 10.03% | +0.03 | 395.15 | 467.93 | 4.00 | 1 |
+| 10% | Ours | 273 | 0.8681 | 9.95% | -0.05 | 311.27 | 375.98 | 4.00 | 8 |
+| 25% | IMPRESS | 273 | 0.8828 | 27.86% | +2.86 | 3150.75 | 3731.94 | 28.00 | 1 |
+| 25% | ContiguousKV | 273 | 0.8718 | 24.94% | -0.06 | 794.79 | 949.11 | 4.00 | 1 |
+| 25% | Ours | 273 | 0.8608 | 24.94% | -0.06 | 536.55 | 638.67 | 4.00 | 8 |
+| 50% | IMPRESS | 273 | 0.8864 | 52.34% | +2.34 | 3863.54 | 4654.85 | 28.00 | 1 |
+| 50% | ContiguousKV | 273 | 0.8901 | 49.96% | -0.04 | 2307.61 | 3139.03 | 4.00 | 1 |
+| 50% | Ours | 273 | 0.8681 | 49.96% | -0.04 | 1576.83 | 2060.46 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +1.10 | +19.03% | +12.15% |
+| 10% | +1.47 | +21.23% | +19.65% |
+| 25% | -1.10 | +32.49% | +32.71% |
+| 50% | -2.20 | +31.67% | +34.36% |
+
+## SST2
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 868 | 0.9343 | 5.49% | +0.49 | 725.02 | 1009.56 | 28.00 | 1 |
+| 5% | ContiguousKV | 868 | 0.8952 | 4.79% | -0.21 | 200.30 | 228.39 | 4.00 | 1 |
+| 5% | Ours | 868 | 0.9182 | 4.85% | -0.15 | 153.71 | 184.09 | 4.00 | 8 |
+| 10% | IMPRESS | 868 | 0.9401 | 13.37% | +3.37 | 964.37 | 1281.55 | 28.00 | 1 |
+| 10% | ContiguousKV | 868 | 0.9240 | 9.75% | -0.25 | 259.30 | 295.18 | 4.00 | 1 |
+| 10% | Ours | 868 | 0.9274 | 9.81% | -0.19 | 205.86 | 240.34 | 4.00 | 8 |
+| 25% | IMPRESS | 868 | 0.9401 | 30.50% | +5.50 | 1195.53 | 1608.69 | 28.00 | 1 |
+| 25% | ContiguousKV | 868 | 0.9435 | 24.85% | -0.15 | 435.54 | 505.03 | 4.00 | 1 |
+| 25% | Ours | 868 | 0.9378 | 24.84% | -0.16 | 323.98 | 372.87 | 4.00 | 8 |
+| 50% | IMPRESS | 868 | 0.9470 | 54.58% | +4.58 | 1480.51 | 1909.47 | 28.00 | 1 |
+| 50% | ContiguousKV | 868 | 0.9424 | 50.04% | +0.04 | 699.20 | 868.45 | 4.00 | 1 |
+| 50% | Ours | 868 | 0.9389 | 49.92% | -0.08 | 622.32 | 755.91 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +2.30 | +23.26% | +19.40% |
+| 10% | +0.35 | +20.61% | +18.58% |
+| 25% | -0.58 | +25.61% | +26.17% |
+| 50% | -0.35 | +11.00% | +12.96% |
+
+## SUBJ
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 999 | 0.6577 | 5.55% | +0.55 | 893.47 | 1212.02 | 28.00 | 1 |
+| 5% | ContiguousKV | 999 | 0.4905 | 4.99% | -0.01 | 227.94 | 262.53 | 4.00 | 1 |
+| 5% | Ours | 999 | 0.5255 | 4.94% | -0.06 | 187.58 | 221.79 | 4.00 | 8 |
+| 10% | IMPRESS | 999 | 0.6747 | 13.23% | +3.23 | 1082.68 | 1427.31 | 28.00 | 1 |
+| 10% | ContiguousKV | 999 | 0.4424 | 10.06% | +0.06 | 298.04 | 334.88 | 4.00 | 1 |
+| 10% | Ours | 999 | 0.5556 | 9.94% | -0.06 | 233.55 | 265.59 | 4.00 | 8 |
+| 25% | IMPRESS | 999 | 0.7888 | 28.40% | +3.40 | 1534.72 | 2002.94 | 28.00 | 1 |
+| 25% | ContiguousKV | 999 | 0.4625 | 24.93% | -0.07 | 473.94 | 561.34 | 4.00 | 1 |
+| 25% | Ours | 999 | 0.7918 | 24.93% | -0.07 | 410.11 | 470.00 | 4.00 | 8 |
+| 50% | IMPRESS | 999 | 0.8619 | 53.95% | +3.95 | 2160.92 | 2670.51 | 28.00 | 1 |
+| 50% | ContiguousKV | 999 | 0.6236 | 49.95% | -0.05 | 901.19 | 1072.37 | 4.00 | 1 |
+| 50% | Ours | 999 | 0.8599 | 49.96% | -0.04 | 808.94 | 926.39 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +3.50 | +17.71% | +15.52% |
+| 10% | +11.31 | +21.64% | +20.69% |
+| 25% | +32.93 | +13.47% | +16.27% |
+| 50% | +23.62 | +10.24% | +13.61% |
+
+## TREC
+
+| KV budget | Method | N | Accuracy | Observed KV | Delta (pp) | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 496 | 0.3589 | 5.00% | +0.00 | 977.91 | 1306.83 | 28.00 | 1 |
+| 5% | ContiguousKV | 496 | 0.5081 | 5.10% | +0.10 | 341.04 | 389.70 | 4.00 | 1 |
+| 5% | Ours | 496 | 0.5444 | 4.95% | -0.05 | 198.56 | 229.77 | 4.00 | 8 |
+| 10% | IMPRESS | 496 | 0.4718 | 13.21% | +3.21 | 1271.36 | 1607.89 | 28.00 | 1 |
+| 10% | ContiguousKV | 496 | 0.5504 | 9.96% | -0.04 | 454.55 | 514.61 | 4.00 | 1 |
+| 10% | Ours | 496 | 0.4395 | 9.93% | -0.07 | 266.48 | 291.29 | 4.00 | 8 |
+| 25% | IMPRESS | 496 | 0.6230 | 30.36% | +5.36 | 2066.55 | 2509.15 | 28.00 | 1 |
+| 25% | ContiguousKV | 496 | 0.5060 | 25.18% | +0.18 | 738.80 | 843.29 | 4.00 | 1 |
+| 25% | Ours | 496 | 0.5484 | 24.94% | -0.06 | 437.17 | 501.61 | 4.00 | 8 |
+| 50% | IMPRESS | 496 | 0.6109 | 58.68% | +8.68 | 2714.05 | 3349.58 | 28.00 | 1 |
+| 50% | ContiguousKV | 496 | 0.4879 | 50.12% | +0.12 | 1190.88 | 1726.79 | 4.00 | 1 |
+| 50% | Ours | 496 | 0.5988 | 49.96% | -0.04 | 898.79 | 1171.28 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+| 5% | +3.63 | +41.78% | +41.04% |
+| 10% | -11.09 | +41.37% | +43.39% |
+| 25% | +4.23 | +40.83% | +40.52% |
+| 50% | +11.09 | +24.53% | +32.17% |

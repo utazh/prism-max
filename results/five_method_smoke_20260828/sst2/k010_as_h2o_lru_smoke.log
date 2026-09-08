@@ -1,0 +1,29 @@
+[2026-08-28T17:45:08+08:00] as_h2o_lru/fp16 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 62.46it/s]
+/home/panzihang/src/prism_max/vendor/flexgen/my_pcache_fast.py:314: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  self.key = torch.from_numpy(data[:]).to(device)
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 2949, in <module>
+    raise SystemExit(main())
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 2884, in main
+    summary = run_flexgen_reprefill(
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 2074, in run_flexgen_reprefill
+    scored.append(execute(row))
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1920, in execute
+    generation_prediction, ttft_ms, latency_ms, metrics = greedy_flexgen_completion(
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1298, in greedy_flexgen_completion
+    logits = flexgen_sparse_decoder_logits(
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1184, in flexgen_sparse_decoder_logits
+    key, value = loader.resolve(layer_index)
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_pcache.py", line 2035, in resolve
+    return self._resolve_as_h2o(layer)
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_pcache.py", line 2143, in _resolve_as_h2o
+    full_values = scatter_h2o_selected_values(
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/as_baselines.py", line 156, in scatter_h2o_selected_values
+    raise ValueError(
+ValueError: selected_positions and full_keys must use the same device

@@ -1,0 +1,13 @@
+2026-08-25T18:55:47+08:00
+source_commit=7470ab762d6aee9c942c813922a1bc20e1bec010
+run_root=/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_20260825
+selector_backend=k4
+score_mode=nodefer
+warmup_passes=1
+warmup_samples=32
+gpu=0
+reserve_gpu=3
+0, NVIDIA GeForce RTX 3090, GPU-b1f7fa73-f984-05f0-b325-0edef724c0d0, 15 MiB, 0 %
+1, NVIDIA GeForce RTX 3090, GPU-ce16a16b-91ae-18c1-8704-776d412380dd, 12857 MiB, 0 %
+2, NVIDIA GeForce RTX 3090, GPU-040da80c-3e74-ca1d-0c7f-34018d9e5f72, 12857 MiB, 0 %
+3, NVIDIA GeForce RTX 3090, GPU-86cfbc78-00fa-197b-f4bd-8e35560370ae, 15 MiB, 0 %

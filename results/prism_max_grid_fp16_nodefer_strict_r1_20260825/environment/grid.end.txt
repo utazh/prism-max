@@ -1,0 +1,6 @@
+2026-08-25T11:44:13+08:00
+source_commit=38b2f2f9538834c5e445604b46af25c74bc6d840
+executions=48
+repeats=1
+analysis_json=/home/panzihang/src/prism_max/results/prism_max_grid_fp16_nodefer_strict_r1_20260825/prism_max_grid_fp16_nodefer_strict_r1.json
+analysis_markdown=/home/panzihang/src/prism_max/results/prism_max_grid_fp16_nodefer_strict_r1_20260825/prism_max_grid_fp16_nodefer_strict_r1.md

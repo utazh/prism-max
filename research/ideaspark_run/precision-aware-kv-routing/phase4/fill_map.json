@@ -1,0 +1,369 @@
+{
+  "title_zh": "ByteLadder：面向 ProMixed KV Cache 的提示条件渐进精度分配",
+  "method_name": "ByteLadder (BL)",
+  "abstract_draft": "Long-context LLM serving must decide which historical key-value (KV) regions to preserve when capacity is measured in actually allocated bytes, yet current methods usually separate token retention from representation choice. DynamicKV reallocates layer budgets from prompt attention but keeps one representation rule (openalex:W4416034925); Oaken fixes a low-bit block format (openalex:W4411487104); and EMPIRIC shows that heuristic selection remains far from joint accuracy, computation, and storage bounds (openalex:W4413014966). We propose ByteLadder, a prompt-conditioned precision ladder for ProMixed caches. It encodes every nonmandatory 16-token block as independently addressable Q4→Q4→Q8 residual extents, estimates category-level single-promotion gains offline, retrieves three profiles from a twelve-dimensional prompt fingerprint, and admits only positive gain-per-byte frontier promotions after charging mandatory FP16 bytes. Rung precedence and allocator-reported costs guarantee B_used≤B, while a request-level account reports conservative residual error, predicted suffix-KL gain, and cross-block interaction support. The claim is falsified if, on complete held-out LongBench categories and Needle-in-a-Haystack at 5%, 10%, and 25% measured-byte ceilings, profile permutation leaves downstream gains intact rather than returning them toward global-profile ByteLadder or uniform-format ProMixed. If supported, ByteLadder should improve held-out task accuracy at equal or lower KV bytes, especially under the two tightest ceilings, without an action-value network or serving-time teacher pass.",
+  "motivation.problem_framing": "For long-prefix Qwen2.5-7B inference, the damage caused by compressing or omitting a historical KV region varies with its layer, prompt, content, and precision, while the real cost is a discrete allocator footprint rather than a token count. DynamicKV moves retained-token budgets across layers using prefill attention (openalex:W4416034925), Oaken makes a fixed low-bit format practical through offline calibration and lightweight online statistics (openalex:W4411487104), and EMPIRIC exposes a large gap between heuristic selectors and joint accuracy/computation/storage bounds (openalex:W4413014966). None provides one decision surface over omission and multiple representation prefixes at exact per-request byte cost.\n\nThat missing surface matters because a single format spends bytes on tolerant blocks and can irreversibly damage a small sensitive minority, while a richer learned router can erase the serving benefit with action-value inference or counterfactual passes. ByteLadder narrows the contract to a hard, auditable KV-byte ceiling and measured—not promised—TTFT: mandatory recent-window and sink bytes are charged first, then prompt-conditioned gains rank independently addressable residual promotions for the remaining historical blocks. The scientific question is whether this minimal combination transfers across entire held-out task categories, rather than merely fitting the reference tasks.",
+  "motivation.why_now": "The gap is timely because recent work has made both sides measurable without inventing a new serving model: TreeKV (openalex:W4414359384, arXiv 2025-09) shows that structured allocation can reduce regional bias but still uses a fixed-size retention representation, while KV Pareto (openalex:W7140130515, arXiv 2026-01) signals growing systems-level interest in joint cache/model trade-offs yet supplies no deployable selection mechanism in its retrieved abstract. ProMixed already exposes prompt-specific GQA score rows, modern allocators report physical extent sizes, and Qwen2.5-7B plus public LongBench/NIAH data make whole-category holdout and exact-byte evaluation possible; together these ingredients support a residual ladder and profile-transfer test that earlier fixed-format methods could not isolate.",
+  "motivation.why_prior_stopped[0].what_they_did": "DynamicKV used prefill attention to periodically renormalize layer-specific token-retention budgets under a global token count.",
+  "motivation.why_prior_stopped[0].what_they_did_not_do": "It did not choose among omit, P4, P8, and P16 representations for each block or enforce the decision against allocator-measured bytes.",
+  "motivation.why_prior_stopped[0].structural_reason_they_stopped": "Its decision variable remained retained-token count, so it lacked independently priced representation increments and a precision-promotion frontier.",
+  "motivation.why_prior_stopped[1].what_they_did": "Oaken combined offline outlier calibration, cheap online scale selection, and a co-designed accelerator to make a fixed low-bit KV format fast.",
+  "motivation.why_prior_stopped[1].what_they_did_not_do": "It did not vary the number of residual precision segments by prompt, layer, and block or permit omission under one request-level byte ceiling.",
+  "motivation.why_prior_stopped[1].structural_reason_they_stopped": "Its hardware format made low-bit execution efficient but treated the representation regime as fixed rather than an independently addressable allocation choice.",
+  "motivation.why_prior_stopped[2].what_they_did": "EMPIRIC framed KV compression through oracle accuracy, computation, storage, and latency bounds and quantified the shortfall of heuristic selection.",
+  "motivation.why_prior_stopped[2].what_they_did_not_do": "It did not turn those diagnostic bounds into a serving-time selector for heterogeneous block precision at measured per-request cost.",
+  "motivation.why_prior_stopped[2].structural_reason_they_stopped": "The work supplied a measurement framework rather than the codec, transferable gain substrate, and exact-byte routing mechanism needed for deployment.",
+  "motivation.why_prior_stopped[3].what_they_did": "ChunkKV grouped tokens into semantic chunks and reused selected indices across layers to preserve coherence with lower selector overhead.",
+  "motivation.why_prior_stopped[3].what_they_did_not_do": "It did not assign different precision prefixes to retained regions or condition those assignments on held-out-task profile evidence.",
+  "motivation.why_prior_stopped[3].structural_reason_they_stopped": "Changing the pruning unit preserved semantics, but the method retained a binary keep/drop action under one representation.",
+  "motivation.what_changes_when_gap_closes": "Closing the gap turns KV compression into a request-level allocation problem with a verifiable byte-feasibility invariant: every historical block can be omitted or promoted only as far as its measured marginal value justifies. It would provide a deployable bridge between DynamicKV-style prompt importance (openalex:W4416034925), Oaken-style efficient quantization (openalex:W4411487104), and EMPIRIC's joint-resource diagnosis (openalex:W4413014966), while exposing when profile transfer or additive gain accounting—not the codec—fails.",
+  "core_claim": "Prompt-conditioned allocation of independently addressable residual precision rungs can improve held-out LongBench and NIAH outcomes over uniform-format ProMixed at the same or lower measured KV bytes, without an action-value network or serving-time teacher pass.",
+  "sub_claims": [
+    {
+      "id": "c1",
+      "statement": "A Q4→Q4→Q8 successive-residual layout makes omission and each precision increment independently addressable and exactly chargeable, with a groupwise rounding bound at every accepted rung.",
+      "supports_which_aspect": "Replaces inherited method-wide representation uniformity with a concrete, auditable precision action space."
+    },
+    {
+      "id": "c2",
+      "statement": "A frozen category-profile bank and twelve-dimensional ProMixed fingerprint produce prompt-conditioned layer-by-rung gains for task categories absent from bank construction.",
+      "supports_which_aspect": "Bridges offline sensitivity and prompt-specific evidence without serving-time retraining."
+    },
+    {
+      "id": "c3",
+      "statement": "A deterministic precedence-respecting heap can pack only positive-value promotions while guaranteeing that mandatory bytes plus accepted independent extents never exceed the request ceiling.",
+      "supports_which_aspect": "Converts heterogeneous actions into an exact-byte-feasible serving decision."
+    },
+    {
+      "id": "c4",
+      "statement": "Residual-error, additive-gain, joint-replay, and profile-permutation accounts can distinguish a genuine conditioning mechanism from generic mixed precision.",
+      "supports_which_aspect": "Makes the differentiated treatment and its transfer mechanism falsifiable rather than proxy-only."
+    }
+  ],
+  "key_equations": [
+    {
+      "id": "E1",
+      "linked_step_id": "S1",
+      "latex": "s_g=\\begin{cases}0,&\\lVert r_g\\rVert_\\infty=0\\\\ \\operatorname{nextFP16}_{+}\\!\\left(\\dfrac{\\lVert r_g\\rVert_\\infty}{2^{q-1}-1}\\right),&\\text{otherwise}\\end{cases},\\quad Q_q(r_g)=s_g\\,\\operatorname{RNE}(r_g/s_g),\\quad \\lVert r_g-Q_q(r_g)\\rVert_\\infty\\le s_g/2",
+      "description": "For each 64-scalar residual group, choose the smallest finite positive FP16 scale that avoids clipping, use round-to-nearest-even codes, and retain an infinity-norm error bound of s_g/2.",
+      "description_zh": "对每个 64 标量残差组，选择不会发生截断的最小有限正 FP16 scale，以就近舍入到偶数编码，并保留 s_g/2 的无穷范数误差上界。"
+    },
+    {
+      "id": "E2",
+      "linked_step_id": "S1",
+      "latex": "G_{lb}=\\left\\lceil N_{lb}/64\\right\\rceil,\\quad c_{lb,1}=c_{lb,2}=\\operatorname{align}_{64}(16+34G_{lb}),\\quad c_{lb,3}=\\operatorname{align}_{64}(16+66G_{lb})",
+      "description": "The two Q4 extents and the Q8 extent are priced independently, including headers, scales, padding, and 64-byte alignment.",
+      "description_zh": "两个 Q4 extent 与一个 Q8 extent 分别计价，成本包含 header、scale、padding 与 64-byte alignment。"
+    },
+    {
+      "id": "E3",
+      "linked_step_id": "S5",
+      "latex": "d_j(z)=\\sum_{h=1}^{12}\\frac{(z_h-\\mu_{jh})^2}{\\max(\\sigma_{jh}^2,10^{-4})},\\quad w_j=\\frac{\\exp(-d_j/\\tau)}{\\sum_{k\\in\\mathcal R(z)}\\exp(-d_k/\\tau)},\\quad \\widehat g_{lu}(z)=\\sum_{j\\in\\mathcal R(z)}w_jg_{jlu}",
+      "description": "Retrieve up to three diagonal-whitened profile centroids and compose their offline promotion gains into the prompt-conditioned table ĝ_lu(z).",
+      "description_zh": "按对角白化距离检索至多三个 profile centroid，再把离线 promotion gain 组合成提示条件表 ĝ_lu(z)。"
+    },
+    {
+      "id": "E4",
+      "linked_step_id": "S5",
+      "latex": "v_{lbu}=s_{lb}\\widehat g_{lu}(z),\\quad \\rho_{lbu}=v_{lbu}/c_{lbu},\\quad \\mathcal I=\\{(l,b,u):v_{lbu}\\in(0,\\infty),\\ u\\ \\text{is the exposed frontier}\\}",
+      "description": "A promotion enters the heap only when its ProMixed-weighted conditioned gain is finite and positive; priority is marginal value per independent allocator byte.",
+      "description_zh": "仅当 ProMixed 加权后的条件 gain 为有限正值时，promotion 才进入 heap；priority 是每个独立 allocator byte 的边际价值。"
+    },
+    {
+      "id": "E5",
+      "linked_step_id": "S6",
+      "latex": "B_{\\mathrm{used}}=M+\\sum_{(l,b,u)\\in\\mathcal A}c_{lbu}\\le B",
+      "description": "After mandatory FP16 bytes M are charged, the accepted predecessor-closed promotion set A is constrained by the exact request byte ceiling B.",
+      "description_zh": "先计入 mandatory FP16 bytes M，再要求已接受且满足前缀依赖的 promotion 集合 A 不超过精确请求上限 B。"
+    },
+    {
+      "id": "E6",
+      "linked_step_id": "S9",
+      "latex": "E_{\\mathrm{req}}=\\sum_{l,b}e_{lb},\\quad G_{\\mathrm{add}}=\\sum_{(l,b,u)\\in\\mathcal A}\\widehat g_{lu},\\quad I=G_{\\mathrm{joint}}-G_{\\mathrm{add}}",
+      "description": "The request account separates conservative codec error, the additive predicted suffix-KL reduction, and the measured non-additive interaction residual.",
+      "description_zh": "请求级 account 分别记录保守 codec error、可加的预测 suffix-KL reduction，以及实测的非加性交互残差 I。"
+    }
+  ],
+  "method_flow.high_level_pipeline": "ByteLadder first defines a three-rung residual codec whose serialized extents are independently addressable and priced by the allocator. Offline, it measures category-level suffix-KL gains for individual promotions and stores them with centroids of a canonical ProMixed score fingerprint, using complete task-category holdouts. At serving time it fingerprints the prompt, composes gains from the three nearest profiles, multiplies them by block utility, and packs positive frontier promotions with a deterministic heap after charging mandatory FP16 bytes. It materializes and decodes only accepted prefixes, then reports physical bytes, serving outcomes, a request-level fidelity account, and controls that isolate whether the profile association caused any downstream gain.",
+  "method_flow.steps": [
+    {
+      "step_id": "S1",
+      "title": "Specify the residual ladder and byte layout",
+      "what_changes": "Replace one historical-block format with omit, P4={q1}, P8={q1,q2}, and lossy P16={q1,q2,q3}, where q1 and q2 are Q4 residual segments and q3 is Q8; define the zero-scale rule, round-to-nearest-even decoder, 64-scalar grouping, and independent allocator-aware costs c1,c2,c3 without materializing request segments yet.",
+      "why_this_step": "It makes the representation heterogeneity operational rather than a label: every precision increment has a physical extent, exact byte price, strict predecessor, and local s/2 error bound.",
+      "linked_component": "both",
+      "linked_falsification": "metric_specification",
+      "input": "FP16 contents and shape N_lb of each nonmandatory 16-token historical layer-block X_lb",
+      "output": "q1:int4, q2:int4, q3:int8 codec/decoder specification and independent aligned cost functions c1,c2,c3"
+    },
+    {
+      "step_id": "S2",
+      "title": "Build the offline promotion reference bank",
+      "what_changes": "For every LongBench training category, run full-cache and single-rung teacher-forced suffix replays on frozen Qwen2.5-7B, then store mean suffix-KL reductions g_jlu together with twelve-dimensional fingerprint centroids μ_j and diagonal variances.",
+      "why_this_step": "Measured single-promotion effects expose which layer/rung populations carry value and provide the transferred reference substrate required by conditioning rather than retraining.",
+      "linked_component": "engineering",
+      "linked_falsification": "mechanism_distinguisher",
+      "input": "Calibration prompts from bank-construction categories, frozen Qwen2.5-7B, and the S1 rung definitions",
+      "output": "Per-category g_jlu tables, fingerprint centroids μ_j, and diagonal variances"
+    },
+    {
+      "step_id": "S3",
+      "title": "Hold out categories and freeze profile selection",
+      "what_changes": "Split LongBench by complete task category, choose τ only from a finite positive grid on validation categories, fix the variance floor at 10⁻⁴, and serialize the bank as immutable serving data with no task-specific parameter update.",
+      "why_this_step": "Whole-category separation prevents the conditioning claim from collapsing into in-distribution calibration and makes profile transfer testable.",
+      "linked_component": "engineering",
+      "linked_falsification": "mechanism_distinguisher",
+      "input": "S2 profile statistics and category-level train/validation/evaluation partitions",
+      "output": "Immutable held-out-valid bank, selected τ, fixed variance floor, and split manifest"
+    },
+    {
+      "step_id": "S4",
+      "title": "Fingerprint the request from ProMixed evidence",
+      "what_changes": "During prefill, retain ProMixed GQA score rows and compute the twelve-dimensional fingerprint z plus nonnegative block utilities s_lb, applying defined conventions for n≤1, k=0, missing successors, empty top-k sets, and score ties; bypass profiling when no historical block exists.",
+      "why_this_step": "It extracts prompt-specific evidence already paid for by ProMixed, avoiding a new action-value network or counterfactual forward pass.",
+      "linked_component": "engineering",
+      "linked_falsification": "mechanism_distinguisher",
+      "input": "Prefill ProMixed GQA score rows, layer/block identities, and mandatory-cache state",
+      "output": "Canonical prompt fingerprint z, deterministic nonnegative s_lb values, or an empty-history bypass"
+    },
+    {
+      "step_id": "S5",
+      "title": "Compose gains and seed the promotion frontier",
+      "what_changes": "Require J>0, retrieve R=min(3,J) profiles by diagonal-whitened distance with category-id tie breaks, compute softmax weights and ĝ_lu(z), then emit only finite positive omit-to-P4 items with key (s_lb·ĝ_lu/c_lbu,−l,−b,−u_index).",
+      "why_this_step": "This is the load-bearing bridge from held-out prompt evidence to block-specific precision value; it makes the profile association, rather than generic mixed precision, causally testable.",
+      "linked_component": "engineering",
+      "linked_falsification": "mechanism_distinguisher",
+      "input": "S3 immutable bank, S4 fingerprint z and block utilities s_lb, and S1 independent rung costs",
+      "output": "Prompt-conditioned gain table ĝ_lu(z) and deterministic positive-valued initial heap items"
+    },
+    {
+      "step_id": "S6",
+      "title": "Pack promotions under the exact byte ceiling",
+      "what_changes": "Read mandatory allocator bytes M and ceiling B; return mandatory_budget_infeasible for M>B and the mandatory cache for M=B, otherwise pop by deterministic priority, skip nonfitting items while continuing the scan, and expose a block's next rung only after accepting its predecessor.",
+      "why_this_step": "Strict precedence plus independent charged extents yields one mode per block and the auditable invariant B_used=M+Σc_lbu≤B without falsely declaring a feasible cache when mandatory data already overflows.",
+      "linked_component": "both",
+      "linked_falsification": "metric_specification",
+      "input": "S5 heap, allocator-returned M and c_lbu values, and request ceiling B",
+      "output": "Accepted predecessor-closed rung set, one mode per block, B_used, or an explicit infeasibility status"
+    },
+    {
+      "step_id": "S7",
+      "title": "Materialize only accepted prefixes",
+      "what_changes": "Quantize the original prefill X_lb tensors only for accepted modes and write q1/q2/q3 prefixes into independently aligned extents, recording mode offsets and checking that physical allocator bytes equal the S6 charge.",
+      "why_this_step": "Lazy materialization prevents rejected candidates from consuming conversion time or memory and ties the routing abstraction to real storage.",
+      "linked_component": "engineering",
+      "linked_falsification": "metric_specification",
+      "input": "S6 accepted modes, S1 codec, and original FP16 prefill tensors X_lb",
+      "output": "Physical mixed-format KV extents, mode/offset metadata, and an allocator-byte consistency record"
+    },
+    {
+      "step_id": "S8",
+      "title": "Decode through fused residual-add attention",
+      "what_changes": "Decode P4, P8, or lossy P16 prefixes with fused residual-add kernels immediately before the existing attention dot product, while mandatory recent-window and sink entries remain FP16 and the remaining Qwen layers stay unchanged.",
+      "why_this_step": "The heterogeneous representation must be executable on the serving path; fusing residual addition limits avoidable decode traffic without making an unsupported latency guarantee.",
+      "linked_component": "engineering",
+      "linked_falsification": "metric_specification",
+      "input": "S7 mixed-format extents and mode/offset metadata plus ordinary attention queries",
+      "output": "Ordinary attention results and measured conversion/decode timing from the unchanged downstream model"
+    },
+    {
+      "step_id": "S9",
+      "title": "Audit deployment outcomes and fidelity",
+      "what_changes": "Log actual KV bytes, conversion time, TTFT, throughput, and downstream outputs for paired comparisons; compute E_req from terminal rung bounds and G_add from accepted conditioned gains, then on a preregistered calibration subset replay the joint set and accepted-rung leave-one-out sets to obtain G_joint, I=G_joint−G_add, and a one-sided 95% bootstrap upper bound on |I|.",
+      "why_this_step": "It supplies the C04 load-bearing artifact missing from a proxy-only partition: the method reports when its codec bound and additive value account are supported and labels the latter unsupported above a validation-fixed interaction tolerance.",
+      "linked_component": "both",
+      "linked_falsification": "metric_specification",
+      "input": "S6 route, S7/S8 physical execution records, downstream predictions, and calibration replays",
+      "output": "Paired outcome metrics plus E_req, G_add, G_joint, I, its uncertainty bound, and an additive-account support label"
+    },
+    {
+      "step_id": "S10",
+      "title": "Intervene on profile conditioning",
+      "what_changes": "At identical allocator bytes and ProMixed scores, randomly permute centroid-to-g_jlu associations for the negative control and use the oracle task-category profile for the positive control.",
+      "why_this_step": "If the downstream gain survives permutation, the claimed prompt-conditioned profile mechanism is not load-bearing; oracle recovery checks that useful category structure exists.",
+      "linked_component": "engineering",
+      "linked_falsification": "mechanism_distinguisher",
+      "input": "S3 bank, S4 request fingerprints, fixed ProMixed scores, and the same byte ceilings",
+      "output": "Held-out LongBench and NIAH outcomes for permuted-profile and oracle-profile causal controls"
+    }
+  ],
+  "method_flow.design_reasoning_echo": "The two gaps form a sequence rather than a monolithic predictor: offline category profiles condition layer-by-rung gains, existing ProMixed prompt scores localize those gains to blocks, and a deterministic exact-byte frontier decides which independently stored residuals become real. An action-specific counterfactual model was rejected because its inference and latency cost would require an unsupported online cost model; a fixed Oaken-style threshold would restore method-wide calibration. The design therefore spends complexity on an auditable codec, immutable profile substrate, exact allocator accounting, and interaction check while leaving wall-clock behavior as a measured deployment outcome.",
+  "plain_motivation_en": "Long-context language models keep a key-value (KV) cache so they do not have to recompute the whole prompt for every new token. When that cache must shrink, current methods usually answer only one of two questions: which tokens or blocks should stay, or how many bits should represent everything that stays. DynamicKV changes layer budgets from prompt attention, Oaken makes one low-bit format efficient, and EMPIRIC shows that these heuristics still leave a gap to joint accuracy and resource limits.\n\nThe missing choice is finer: one historical block may be safe to omit, another may need only a coarse residual, and a small sensitive minority may deserve more precision. Those choices must be priced in the bytes the allocator actually reserves, including headers, scales, and padding. They also should not require a new network or a teacher-model pass while a request is waiting.\n\nByteLadder uses the grouped-query attention (GQA) scores that ProMixed already computes. It stores each 16-token block as a ladder of independently addressable residual segments, learns how useful each promotion was for several training task categories, and uses a twelve-number prompt fingerprint to blend the three nearest category profiles. After mandatory full-precision bytes are charged, a deterministic heap buys the most promising next rung that fits; it never skips a required predecessor.\n\nThe key test is transfer, not reconstruction alone. Complete LongBench categories are absent from the reference bank, and permuting the link between prompt profiles and their gain tables should erase any downstream advantage if conditioning really causes the gain. Success would make exact-byte, prompt-specific precision allocation available without claiming that mixed precision itself is new or promising a TTFT reduction in advance.",
+  "plain_motivation_zh": "长上下文语言模型会保存键值缓存（key-value cache, KV Cache），这样生成每个新 token 时不必重新计算整段 prompt。缓存需要缩小时，现有方法往往只回答两个问题之一：哪些 token 或 block 要保留，或者所有已保留内容统一用多少 bit 表示。DynamicKV 根据 prompt 的 attention 调整各层预算，Oaken 让一种固定低 bit 格式更高效，EMPIRIC 则表明这类 heuristic 与 accuracy、computation、storage 的联合边界之间仍有明显距离。\n\n真正缺失的是更细的选择：某个历史 block 可以安全省略，另一个只需要粗粒度 residual，少数敏感 block 则值得提升到更高 precision。每个选择都必须按 allocator 实际占用的 byte 计价，包括 header、scale 与 padding；同时，在线决策不应再运行一个新 network，也不应额外调用 teacher model。\n\nByteLadder 复用 ProMixed 已经计算的分组查询注意力（grouped-query attention, GQA）score。它把每个 16-token block 保存为可独立寻址的 residual ladder，在若干训练 task category 上离线测量每次 promotion 的收益，再用一个 12 维 prompt fingerprint 混合最近的三个 category profile。系统先扣除 mandatory FP16 bytes，然后由 deterministic heap 选择仍能放入预算、且单位 byte 价值最高的下一 rung，并严格保证先接受前一 rung。\n\n关键检验不是 reconstruction 本身，而是能否 transfer 到完整留出的 LongBench category。若随机打乱 profile centroid 与 gain table 的对应关系后，下游优势没有消失，说明 prompt conditioning 并非真正原因。若该检验成立，系统便能提供精确 byte 约束下的 prompt-specific precision allocation，同时不把 mixed precision 本身包装成新意，也不预先承诺 TTFT 一定下降。",
+  "plain_method_steps_en": [
+    {
+      "step_id": "S1",
+      "what_to_do": "Define omit, P4, P8, and lossy P16 for each 16-token historical block using two Q4 residual segments followed by one Q8 segment. Include zero handling, rounding, headers, scales, padding, and the independent allocator byte cost of every rung.",
+      "why_this_makes_sense": "The router can make a real byte-by-byte precision decision only if every extra segment is separately stored, priced, and bounded."
+    },
+    {
+      "step_id": "S2",
+      "what_to_do": "On LongBench bank-construction categories, compare full-cache suffixes with one-rung promotions and store the average suffix-KL improvement g_jlu, the prompt-fingerprint centroid μ_j, and its diagonal variance.",
+      "why_this_makes_sense": "These measurements reveal which promotions matter for each category and become the evidence transferred to a new prompt."
+    },
+    {
+      "step_id": "S3",
+      "what_to_do": "Hold out complete task categories, choose τ only on validation categories from a finite positive grid, keep the variance floor at 10⁻⁴, and freeze the resulting profile bank.",
+      "why_this_makes_sense": "The method cannot claim task transfer if the evaluated category helped tune its profile or serving parameters."
+    },
+    {
+      "step_id": "S4",
+      "what_to_do": "During prefill, reuse ProMixed GQA score rows to compute the twelve-value fingerprint z and nonnegative block scores s_lb, including deterministic rules for empty sets, k=0, short strata, and ties.",
+      "why_this_makes_sense": "The request supplies prompt-specific evidence without paying for a new action-value model or counterfactual pass."
+    },
+    {
+      "step_id": "S5",
+      "what_to_do": "Retrieve at most three profiles, turn their distances into weights, form ĝ_lu(z), and place only finite positive omit→P4 promotions in a heap ordered by s_lb·ĝ_lu per independent byte.",
+      "why_this_makes_sense": "This converts a prompt's similarity to reference categories into a concrete marginal value for the next precision rung."
+    },
+    {
+      "step_id": "S6",
+      "what_to_do": "Charge mandatory bytes M first; fail explicitly when M>B, return only mandatory data when M=B, and otherwise accept fitting heap items while revealing a successor only after its predecessor.",
+      "why_this_makes_sense": "The procedure keeps every selected prefix decodable and guarantees B_used≤B even when a high-priority item does not fit."
+    },
+    {
+      "step_id": "S7",
+      "what_to_do": "Quantize and allocate only the accepted prefixes, then verify that the allocator's physical total matches the bytes charged by routing.",
+      "why_this_makes_sense": "Rejected options should consume neither memory nor conversion work, and a paper byte model must agree with the runtime."
+    },
+    {
+      "step_id": "S8",
+      "what_to_do": "Use fused residual-add kernels to decode P4, P8, or P16 immediately before the normal attention dot product; leave mandatory FP16 entries and later Qwen layers unchanged.",
+      "why_this_makes_sense": "The ladder becomes usable by the existing model while avoiding unnecessary intermediate memory traffic."
+    },
+    {
+      "step_id": "S9",
+      "what_to_do": "Record real KV bytes, conversion time, TTFT, throughput, and downstream outputs. Also report E_req, G_add, G_joint, the interaction residual I, and a one-sided 95% upper confidence bound on |I| from joint and leave-one-out replays.",
+      "why_this_makes_sense": "This checks both deployment behavior and whether adding individual promotion gains remains a defensible account after blocks interact."
+    },
+    {
+      "step_id": "S10",
+      "what_to_do": "At the same bytes and ProMixed scores, permute centroid-to-gain-table links for the negative control and use the true task-category profile for the positive control.",
+      "why_this_makes_sense": "Downstream gains should disappear when the claimed prompt-to-profile mechanism is broken and recover when its category signal is supplied."
+    }
+  ],
+  "plain_method_steps_zh": [
+    {
+      "step_id": "S1",
+      "what_to_do": "为每个 16-token 历史 block 定义 omit、P4、P8 和 lossy P16：先后使用两个 Q4 residual segment 与一个 Q8 segment，并明确 zero handling、rounding、header、scale、padding 以及每个 rung 的独立 allocator byte cost。",
+      "why_this_makes_sense": "只有每个新增 segment 都能独立保存、计价并给出误差上界，router 才能真正逐 byte 决定 precision。"
+    },
+    {
+      "step_id": "S2",
+      "what_to_do": "在用于建库的 LongBench category 上，对比 full-cache suffix 与单 rung promotion，保存平均 suffix-KL improvement g_jlu、prompt fingerprint centroid μ_j 和 diagonal variance。",
+      "why_this_makes_sense": "这些 measurement 揭示不同 category 中哪些 promotion 真正重要，并成为 transfer 到新 prompt 的依据。"
+    },
+    {
+      "step_id": "S3",
+      "what_to_do": "按完整 task category 留出数据，只在 validation category 上从有限正值 grid 选择 τ，把 variance floor 固定为 10⁻⁴，并冻结 profile bank。",
+      "why_this_makes_sense": "如果 evaluation category 参与过 profile 或 serving parameter 的调节，就不能把结果解释为 task transfer。"
+    },
+    {
+      "step_id": "S4",
+      "what_to_do": "prefill 时复用 ProMixed GQA score row，计算 12 维 fingerprint z 与非负 block score s_lb，并为 empty set、k=0、短 stratum 和 tie 给出 deterministic rule。",
+      "why_this_makes_sense": "这样能获得 prompt-specific evidence，而不增加 action-value model 或 counterfactual pass。"
+    },
+    {
+      "step_id": "S5",
+      "what_to_do": "检索至多三个 profile，把 distance 转成 weight，得到 ĝ_lu(z)，再把有限正值的 omit→P4 promotion 放入 heap，并按每个独立 byte 的 s_lb·ĝ_lu 排序。",
+      "why_this_makes_sense": "这一步把新 prompt 与 reference category 的相似性转成下一 precision rung 的具体边际价值。"
+    },
+    {
+      "step_id": "S6",
+      "what_to_do": "先扣除 mandatory bytes M；M>B 时明确返回 infeasible，M=B 时只返回 mandatory data，否则接受能够放入预算的 heap item，并且仅在 predecessor 已接受后暴露 successor。",
+      "why_this_makes_sense": "该流程保证每个 selected prefix 都可解码，即使高 priority item 放不下，也仍满足 B_used≤B。"
+    },
+    {
+      "step_id": "S7",
+      "what_to_do": "只 quantize 和 allocate 已接受的 prefix，并检查 allocator 的实际总量与 routing 计入的 bytes 完全一致。",
+      "why_this_makes_sense": "被拒绝的选项不应消耗 memory 或 conversion work，论文中的 byte model 也必须与 runtime 一致。"
+    },
+    {
+      "step_id": "S8",
+      "what_to_do": "在正常 attention dot product 前用 fused residual-add kernel 解码 P4、P8 或 P16；mandatory FP16 entry 与后续 Qwen layer 保持不变。",
+      "why_this_makes_sense": "这样 residual ladder 可以直接接入现有模型，同时减少不必要的 intermediate memory traffic。"
+    },
+    {
+      "step_id": "S9",
+      "what_to_do": "记录实际 KV bytes、conversion time、TTFT、throughput 和 downstream output；再通过 joint 与 leave-one-out replay 报告 E_req、G_add、G_joint、interaction residual I 及 |I| 的单侧 95% upper confidence bound。",
+      "why_this_makes_sense": "这同时检查 deployment behavior，以及多个 block 发生 interaction 后，单项 promotion gain 相加是否仍有可信解释。"
+    },
+    {
+      "step_id": "S10",
+      "what_to_do": "在 bytes 与 ProMixed score 不变时，随机打乱 centroid 与 gain table 的对应关系作为 negative control，并使用真实 task-category profile 作为 positive control。",
+      "why_this_makes_sense": "若 prompt-to-profile 机制确实关键，破坏这种对应关系后 downstream gain 应消失，提供正确 category signal 后则应恢复。"
+    }
+  ],
+  "plain_method_modules_en": [
+    {
+      "module_id": "M1",
+      "purpose_oneline": "Make each historical block an independently priced progressive residual representation that the existing attention path can execute.",
+      "step_ids": [
+        "S1",
+        "S7",
+        "S8"
+      ]
+    },
+    {
+      "module_id": "M2",
+      "purpose_oneline": "Transfer offline category-level promotion evidence to a new prompt without task-specific retraining.",
+      "step_ids": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "module_id": "M3",
+      "purpose_oneline": "Enforce the exact byte ceiling and audit both deployment behavior and the claimed conditioning mechanism.",
+      "step_ids": [
+        "S6",
+        "S9",
+        "S10"
+      ]
+    }
+  ],
+  "plain_method_modules_zh": [
+    {
+      "module_id": "M1",
+      "purpose_oneline": "把每个历史 block 变成可独立计价、并可由现有 attention path 执行的渐进 residual representation。",
+      "step_ids": [
+        "S1",
+        "S7",
+        "S8"
+      ]
+    },
+    {
+      "module_id": "M2",
+      "purpose_oneline": "无需 task-specific retraining，把离线 category-level promotion evidence transfer 到新 prompt。",
+      "step_ids": [
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "module_id": "M3",
+      "purpose_oneline": "执行精确 byte ceiling，并审计 deployment behavior 与所声称的 conditioning mechanism。",
+      "step_ids": [
+        "S6",
+        "S9",
+        "S10"
+      ]
+    }
+  ],
+  "feasibility_validation.data.verdict": "feasible",
+  "feasibility_validation.data.rationale": "Qwen2.5-7B, LongBench, and Needle-in-a-Haystack are public, while the required long-prefix serving traces and promotion replays can be generated locally without closed data.",
+  "feasibility_validation.theoretical.verdict": "feasible",
+  "feasibility_validation.theoretical.rationale": "The formal scope is limited to exact-byte feasibility, rung precedence, local s/2 rounding bounds, and an empirical interaction-support test, so it requires no unproven end-to-end accuracy theorem.",
+  "feasibility_validation.engineering.verdict": "tight",
+  "feasibility_validation.engineering.rationale": "The binding cost is implementing independently allocated residual extents plus correct fused Q4/Q4/Q8 residual-add attention kernels and making their physical byte accounting match the router.",
+  "feasibility_validation.falsification.verdict": "feasible",
+  "feasibility_validation.falsification.rationale": "The held-out-category LongBench/NIAH run, matched-byte profile permutation, oracle profile, and allocator/TTFT logging are concrete with the public model, benchmarks, and standard serving instrumentation.",
+  "feasibility_validation.overall": "tight",
+  "reviewer_concerns_and_responses[0].response": "The defense is anchored in core_mechanism and differentiation_from_lit, not in a claim that mixed precision itself is new: ByteLadder uses independently addressable successive-residual block prefixes, exact allocator-byte frontier packing, and gains transferred from held-out category profiles. Consistent with the Phase 3.2 verdict, SpectrumKV is a direct nonblocking competitor rather than an exact-mechanism collision, so the claim survives only if these three ingredients beat its per-token fixed-tier policy at matched bytes while actual TTFT is reported.",
+  "reviewer_concerns_and_responses[1].response": "The revised core_mechanism and Method S9 answer the Phase 3.2 borderline finding by adding a request-level fidelity artifact: E_req composes terminal codec bounds, while G_add is checked against joint and leave-one-out suffix-KL replays through I and a bootstrap upper bound. Thus the novelty surface is not the sensitivity proxy alone; it is the independently stored promotion ladder plus exact-byte routing and an explicit test of whether the heterogeneous value decomposition remains supported.",
+  "domain_landscape.position_note": "ByteLadder operates in the domain's saturated heterogeneous-decomposition pattern (7/11 papers) but pairs it with the less common adaptation-by-conditioning pattern (2/11) and locates its distinction in exact-byte successive-residual allocation rather than decomposition alone."
+}

@@ -1,0 +1,220 @@
+{
+  "gap_closure_reject_check": {
+    "entries": [
+      {
+        "gap": "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+        "main_pattern": "reframe_as_solvable_object",
+        "sub_pattern": "C00 (Reframe as a Solvable Object)",
+        "tactical_failure_mode_quoted": "The signature failure is treating the reframing as a mechanical wrapper: taking an established attribution, decomposition, or estimation tool and pointing it at a new input granularity, a new architecture, or a new domain without re-deriving why the resulting scores are faithful to the model. These papers supply the computation but not the justification — no causal validation that the identified components actually drive behavior (only correlation), no axiomatic or soundness argument for why the proposed definition is the 'real' importance, and no confound control, so a reviewer can point to a methodological artifact (a computation-granularity difference, a degenerate zero baseline, an off-manifold perturbation) that explains the result instead.",
+        "reject_lessons_evaluated": [
+          {
+            "lesson_quoted": "Pointing an off-the-shelf decomposition at a coarser input granularity without showing the coarser units preserve the signal reads as a wrapper, not a contribution.",
+            "candidate_match": "no",
+            "reasoning": "The 64-token layer-block/action units are evaluated by direct single-region interventions, and downstream gold-answer tests check whether their signal survives the chosen granularity."
+          },
+          {
+            "lesson_quoted": "Porting a known attribution technique to a new architecture or domain while ignoring that technique's documented failure modes — and omitting comparisons to alternatives — leaves reviewers unable to see any unique benefit.",
+            "candidate_match": "no",
+            "reasoning": "The candidate contrasts its intervention-derived tail bound with attention-point-score and fixed-precision alternatives and includes coverage and downstream comparisons."
+          },
+          {
+            "lesson_quoted": "Proposing a new attribution definition without an axiomatic or causal argument for why it should count as ground-truth collapses the moment a reviewer asks why this is the real importance.",
+            "candidate_match": "no",
+            "reasoning": "Action damage is defined by a causal single-region cache intervention against frozen full-cache logits, then checked against gold downstream answers."
+          },
+          {
+            "lesson_quoted": "Conflating a methodological artifact — a computation-granularity difference, a degenerate zero baseline — with genuine signal undermines the entire premise once the confound is identified.",
+            "candidate_match": "yes",
+            "reasoning": "The exact-TTFT premise treats additive per-kernel p99 lookup values as a deterministic feasibility certificate; an allowed joint tail realization can exceed the ceiling, and the wall-clock guard specifies neither bounded commit nor cancellation semantics."
+          },
+          {
+            "lesson_quoted": "Building a suppression or privacy method without formalizing the threat model leaves the central guarantee unverifiable regardless of strong empirical numbers.",
+            "candidate_match": "no",
+            "reasoning": "The proposal is neither a suppression nor privacy method."
+          },
+          {
+            "lesson_quoted": "Surveying or recombining fragmented methods without a unifying axis or a decisive controlled experiment yields a contribution reviewers dismiss as anecdotal.",
+            "candidate_match": "no",
+            "reasoning": "The conformal block-action certificate is a unifying object and the matched equal-median/unequal-tail experiment is decisive rather than anecdotal."
+          }
+        ],
+        "verdict": "triggered"
+      },
+      {
+        "gap": "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling.",
+        "main_pattern": "controlled_diagnostic_design",
+        "sub_pattern": "C02 (Design a Confound-Isolating Diagnostic)",
+        "tactical_failure_mode_quoted": "Papers attempting this tactic fail most often when the constructed instrument isolates the confound only inside an artificial regime and never demonstrates that the isolated signal transfers to real deployment conditions — the synthetic-to-real gap is asserted rather than shown. A second recurring shape is circularity: the diagnostic is validated against the same definition, assumption, or system population it was built to interrogate (using the evaluated models as their own oracle, or hardcoding a contested definition of the target property), so it cannot independently confirm what it claims.",
+        "reject_lessons_evaluated": [
+          {
+            "lesson_quoted": "A diagnostic that only re-confirms a shortcut already known in advance, surfacing no previously unmeasurable failure, is read as confirmatory rather than as a contribution.",
+            "candidate_match": "no",
+            "reasoning": "Equal-median/unequal-tail matched regions target a previously unmeasured failure of point-score routing under hard cache decisions."
+          },
+          {
+            "lesson_quoted": "Validating a synthetic-ground-truth instrument only on synthetic data, without demonstrating that the controlled finding transfers to real-world instances, leaves ecological validity unestablished and undermines the central claim.",
+            "candidate_match": "no",
+            "reasoning": "The controlled pairs are evaluated on LongBench and Needle-in-a-Haystack with downstream gold-answer metrics, not only synthetic predictor targets."
+          },
+          {
+            "lesson_quoted": "Building the instrument around one contested definition of the target property means it cannot independently confirm that the definition is correct, and reviewers flag the resulting circularity.",
+            "candidate_match": "no",
+            "reasoning": "The matching variables come from the router, but the diagnostic outcome is independently scored by gold downstream answers."
+          },
+          {
+            "lesson_quoted": "Resting an unsupervised evaluation on the unverified premise that the systems under test can reliably judge one another stakes the entire method on an assumption that collapses under scrutiny.",
+            "candidate_match": "no",
+            "reasoning": "Full-cache logits manufacture training damage, while the claimed diagnostic result is judged with benchmark gold answers rather than model self-judgment."
+          },
+          {
+            "lesson_quoted": "Pairing a single-task or small-sample instrument with broad capability claims triggers a scope-mismatch rejection, and assembling retrieval or engineering blocks without an isolating scientific insight reads as application rather than research.",
+            "candidate_match": "no",
+            "reasoning": "The claim is scoped to KV routing on two named long-context suites, and the matched-tail intervention supplies the isolating insight."
+          }
+        ],
+        "verdict": "clear"
+      },
+      {
+        "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+        "main_pattern": "heterogeneous_decomposition",
+        "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+        "tactical_failure_mode_quoted": "The recurring failure is treating the partition criterion itself as the contribution while leaving its value unproven. Papers propose a sensitivity or redundancy discriminator — roundtrip distortion, weight magnitude, activation overlap, double-rounding, subspace projection — and reviewers immediately map it onto an established technique (PCA/SVD on activations, a layer-norm-equivalent rescaling, structured dropout, classical feature distillation), so the differentiated treatment reads as a relabeling rather than a new mechanism.",
+        "reject_lessons_evaluated": [
+          {
+            "lesson_quoted": "Presenting a sensitivity or redundancy proxy as the novelty invites the verdict that it rediscovers known mixed-precision or low-rank results unless it is sharply differentiated from the obvious prior criterion.",
+            "candidate_match": "no",
+            "reasoning": "The proposal differentiates counterfactual action-specific upper-tail damage from attention, magnitude, and fixed-calibration criteria and tests that distinction directly."
+          },
+          {
+            "lesson_quoted": "Omitting comparison against both the strongest uniform baseline and the obvious cheap alternative (SVD/PCA, structured dropout, a natively trained smaller model) leaves reviewers unable to tell whether the partition buys anything at all.",
+            "candidate_match": "no",
+            "reasoning": "The experiment includes fixed/point-score mixed-precision and simple contiguous/dynamic cache alternatives at matched resource limits."
+          },
+          {
+            "lesson_quoted": "Validating a storage or throughput claim only on toy-scale models — where the compression bottleneck does not actually bite — undermines the entire motivation no matter how clean the method is.",
+            "candidate_match": "no",
+            "reasoning": "Qwen2.5-7B at 25% historical-KV bytes on LongBench/NIAH is a regime where KV compression is material rather than toy-scale."
+          },
+          {
+            "lesson_quoted": "A clever partition with no measured real-world deployment metric (no inference latency or memory speedup) reads as a proxy-only contribution and stalls at borderline.",
+            "candidate_match": "no",
+            "reasoning": "The protocol measures actual KV bytes, TTFT, and violation counts in addition to quality, although its exact-feasibility interpretation is separately unsound."
+          },
+          {
+            "lesson_quoted": "Skipping any analysis of why the heterogeneity exists — the data or value distribution that drives the partition — makes the technical novelty and the potential impact impossible to assess.",
+            "candidate_match": "no",
+            "reasoning": "The matched equal-median/unequal-tail analysis explicitly tests the distributional heterogeneity that drives different block actions."
+          },
+          {
+            "lesson_quoted": "Bolting together established components (distillation plus pruning plus calibration) without an error bound or artifact specific to the new setting reads as incremental even when the target application is timely and important.",
+            "candidate_match": "no",
+            "reasoning": "The action-conditioned conformal certificate and separately measured joint-action coverage are setting-specific fidelity artifacts."
+          }
+        ],
+        "verdict": "clear"
+      },
+      {
+        "gap": "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+        "main_pattern": "self_supervised_signal_engineering",
+        "sub_pattern": "C26 (Manufacture the Supervisory Signal)",
+        "tactical_failure_mode_quoted": "The dominant failure is the single-component swap: the paper takes the established preference pipeline (reward model → contrastive optimization) and changes exactly one slot — human labels to an AI judge, offline data to online sampling, response-level to step-level granularity — then presents that swap as the contribution. Reviewers read this as incremental because the swap is a predictable synthesis of two already-known ideas and unlocks no behavior that was previously unreachable.",
+        "reject_lessons_evaluated": [
+          {
+            "lesson_quoted": "Swapping the preference-label source (human → AI judge, offline → online) without showing the swap unlocks a behavior previously unreachable reads as a one-component substitution and draws novelty rejections.",
+            "candidate_match": "no",
+            "reasoning": "The counterfactual teacher signal enables action-tail estimation consumed by a constrained router rather than merely swapping one preference annotator for another."
+          },
+          {
+            "lesson_quoted": "Stopping at the preference dataset, benchmark, or reward model without demonstrating the downstream optimization it is meant to feed leaves the contribution looking like infrastructure rather than method.",
+            "candidate_match": "no",
+            "reasoning": "The learned quantiles and rankings directly parameterize the per-request multiple-choice allocation and physical KV rewrite."
+          },
+          {
+            "lesson_quoted": "Changing only the granularity of an established contrastive objective (response-level → step-level) is judged incremental unless paired with a clearly demonstrated practical unlock.",
+            "candidate_match": "no",
+            "reasoning": "The paired loss is combined with quantile calibration and exact action-cost routing to target zero-violation heterogeneous KV decisions."
+          },
+          {
+            "lesson_quoted": "Borrowing a structurally related proxy domain to synthesize preference data, without validating that the proxy's regularities transfer to the target's end-goal metric, invites rigor and generalization concerns.",
+            "candidate_match": "no",
+            "reasoning": "Training damage uses the same frozen target model, and transfer is evaluated on downstream LongBench/NIAH answer metrics."
+          },
+          {
+            "lesson_quoted": "Combining off-the-shelf components (parameter-efficient adaptation plus self-distillation) for a known problem fails the novelty bar when concurrent work performs the same combination.",
+            "candidate_match": "no",
+            "reasoning": "The method is neither parameter-efficient adaptation nor a self-distillation combination; its signal is integrated into a new action-certificate routing object."
+          }
+        ],
+        "verdict": "clear"
+      }
+    ],
+    "verdict": "triggered",
+    "reasoning": "The anchor exact-feasibility gap under reframe_as_solvable_object drives the aggregate: its per-kernel p99-to-exact-TTFT conversion matches the quoted methodological-artifact Reject lesson, because the metric's granularity does not certify the wall-clock deadline. The other three entries avoid their documented Reject lessons."
+  },
+  "recipe_application_check": {
+    "entries": [
+      {
+        "gap": "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+        "sub_pattern": "C00 (Reframe as a Solvable Object)",
+        "tactical_pattern_quoted": "This cluster recasts an opaque transparency question about an already-trained model or dataset — which feature/datum/internal component is responsible, how uncertain a prediction is, what a hidden representation encodes — as a concrete measurement over a well-studied object: a manifold-constrained counterfactual optimization, a submodular subset selection, an expectation/estimator over marginal statistics, an additive decomposition into a (often sparse) basis, or an influence/Shapley score accumulated along the optimization trajectory. The decisive move is choosing the right unit of analysis and the right faithfulness constraint so the resulting scores reflect the model's actual computation rather than an off-distribution or post-hoc artifact — e.g., searching counterfactuals only on the learned data manifold, decomposing into monosemantic sparse directions before causal tracing, or embedding the explanatory predictors as the primary decision representation.",
+        "instantiation_in_core_mechanism": "The mechanism defines each region-action's causal damage by a frozen-model counterfactual intervention, calibrates it as U_{i,a}, and uses that measurement as the primary multiple-choice-knapsack representation; Steps 2–4 construct and calibrate this object.",
+        "verdict": "applied"
+      },
+      {
+        "gap": "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling.",
+        "sub_pattern": "C02 (Design a Confound-Isolating Diagnostic)",
+        "tactical_pattern_quoted": "The shared move is to construct a controlled set of evaluation instances in which exactly one named confound is either structurally blocked or independently varied, then report the divergence between apparent and de-confounded performance as the primary result rather than an aggregate leaderboard score. Concretely the authors do one of: parameterize instances as templates with typed slots and consistency constraints so surface form varies independently of reasoning structure; generate instances from a formal specification so intermediate steps are verifiable; gate instances by provenance timestamp relative to each system's training cutoff; stratify instances by realism (pedagogical versus production); suppress one input cue or withhold one modality at a time; randomize answer-option order; or build same-source positive/negative pairs with controlled defect injection.",
+        "instantiation_in_core_mechanism": "Step 10 builds matched pairs with equal predicted medians and independently varied calibrated q0.9 damage, then scores the divergence using gold LongBench/NIAH outcomes.",
+        "verdict": "applied"
+      },
+      {
+        "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+        "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+        "tactical_pattern_quoted": "This cluster compresses an over-provisioned trained artifact — model weights, intermediate activations, the KV/state buffer, the sampling trajectory, or a dataset — by exploiting heterogeneity in its components rather than applying one uniform lossy operation. The concrete move: discriminate components by a magnitude-, sensitivity-, influence-, or redundancy-based criterion into a high-impact minority and a near-redundant bulk, then preserve, migrate, residually correct, or retain-at-full-precision the minority while aggressively quantizing, pruning, factorizing, or distilling the bulk.",
+        "instantiation_in_core_mechanism": "Steps 6–8 score every layer-block/action by calibrated counterfactual damage and assign FP16, INT8, INT4, or omit under coupled costs, with the joint certificate and empirical coverage supplying the fidelity artifact.",
+        "verdict": "applied"
+      },
+      {
+        "gap": "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+        "sub_pattern": "C26 (Manufacture the Supervisory Signal)",
+        "tactical_pattern_quoted": "This cluster manufactures a comparative or scalar reward signal — pairwise preference pairs, typed dense rewards, or quality scores — from a non-human source, then optimizes the target model against it with a contrastive/preference objective (DPO-style ranking, reward-model backprop, or score-conditioning) rather than label-fitting. The recurring moves are concrete: extract preference pairs from structures that already encode an ordering (pruned search-tree branches as dispreferred against the surviving path, the policy's own internal output scores, strong-versus-weak model contrasts, execution-verified versus failed trajectories); re-granularize the comparison to match where credit assignment fails (a single end-of-sequence scalar → step-level or error-typed signals); and convert noisy absolute scores into reliable relative orderings via pairwise ranking loss.",
+        "instantiation_in_core_mechanism": "Steps 2–3 manufacture minimally differing action pairs from frozen full-cache teacher interventions and train q_theta with Bradley–Terry ranking plus pinball quantile loss before the signal is consumed by routing.",
+        "verdict": "applied"
+      }
+    ],
+    "verdict": "applied",
+    "reasoning": "All four entries instantiate their cited cluster's signature move; the hard failure lies in C00's faithfulness of the TTFT cost certificate, not in bypassing the counterfactual-measurement recipe."
+  },
+  "anti_pattern_check": {
+    "composition_set": [
+      "reframe_as_solvable_object",
+      "controlled_diagnostic_design",
+      "heterogeneous_decomposition",
+      "self_supervised_signal_engineering"
+    ],
+    "matched_pattern_id": "audit_decomp_supervisor",
+    "required_mitigation_quoted": "The decomposition criterion must be derivable from observed structure or task-level supervision (not just intuition), AND the manufactured signal must be the unique signal the decomposition implies. An ablation that holds the decomposition fixed and varies the signal (or vice versa) must show the two are not conflated.",
+    "mitigation_substantively_delivered": "true",
+    "reasoning": "Layer-block/action units come from the model and storage operations, counterfactual suffix KL is action-specific supervision, and the equal-median/unequal-tail plus within-layer U-permutation controls hold the decomposition and costs fixed while varying the signal."
+  },
+  "paper_pointed_threat": {
+    "threat_paper_id": "arxiv:2607.28699v3",
+    "threat_source": "collision_hits",
+    "threat_channel": "signature",
+    "subsumption_argument": "WitCert already constructs a provably sound per-(layer, head, step) upper bound on KV-quantization-induced attention error and uses that meter for live-serving risk gating. The candidate's broad claim that a calibrated upper-tail certificate protects uncertain KV regions therefore stands or falls on demonstrating that request-specific multi-action allocation under joint byte and TTFT constraints yields value beyond WitCert's sound risk meter and gating; WitCert does not, from the retrieved abstract, subsume the candidate's joint FP16/INT8/INT4/omit assignment or two-resource solver.",
+    "addressable_via": "differentiation_from_lit must add WitCert and state the measured advantage of request-level multi-action byte/TTFT allocation over its sound runtime risk meter and gating.",
+    "parametric_family_concern": "Firm-deadline real-time scheduling with worst-case execution-time and non-preemptive GPU-kernel analysis; scoop-check vocabulary: 'GPU kernel WCET admission control' and 'deadline commit cancellation semantics'."
+  },
+  "falsification_structure_check": {
+    "minimal_experiment_named": "yes",
+    "outcome_metric_named": "yes",
+    "load_bearing_variable": "the conformal upper damage bound U_{i,a}",
+    "negative_control_target": "outcome_metric",
+    "verdict": "sound",
+    "reasoning": "The paragraph names Qwen2.5-7B on LongBench/NIAH with matched baselines and predicts higher LongBench score/NIAH accuracy at zero violations. Permuting U_{i,a} while preserving costs predicts those downstream gains return toward the point-score baseline, so the control is non-tautological."
+  },
+  "verdict": "abandon",
+  "verdict_layer": "hard_floor",
+  "verdict_rationale": "gap_closure_reject_check.entries[0].reject_lessons_evaluated[3].lesson_quoted is triggered: additive per-kernel p99 conversion times are a computation-granularity artifact, not an exact wall-clock feasibility certificate. The supplied unrepaired blocking finding confirms an allowed tail realization can miss the TTFT ceiling and the guard lacks bounded commit/cancel semantics, so the anchor zero-violation claim requires gap-level redesign and cannot be repaired by a permitted tactical, sub-pattern, or falsification patch. paper_pointed_threat.subsumption_argument also requires a direct WitCert comparison, but it is not the hard-floor driver.",
+  "revision_targets": []
+}

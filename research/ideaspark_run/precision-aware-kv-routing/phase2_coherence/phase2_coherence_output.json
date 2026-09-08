@@ -1,0 +1,371 @@
+{
+  "trace_report": {
+    "formalized_procedure": [
+      {
+        "step": "S1",
+        "consumes": [
+          "FP16 KV block X_lb flattened to N_lb scalars",
+          "group size 64",
+          "codec layout constants"
+        ],
+        "produces": [
+          "three successive residual code streams q1:int4, q2:int4, q3:int8",
+          "one scale per 64-scalar group and rung",
+          "independent aligned extent cost c_lbu in bytes"
+        ],
+        "note": "The original prose does not define whether Qq returns codes or decoded values, the stored scale type/zero branch, header width, alignment unit, or whether costs are additive. The patch makes these explicit and distinguishes lossy P16 (16 code bits/scalar) from FP16."
+      },
+      {
+        "step": "S2",
+        "consumes": [
+          "calibration prompts grouped by category j",
+          "frozen Qwen2.5-7B",
+          "full-cache and single-rung replays"
+        ],
+        "produces": [
+          "g[j,l,u]: float promotion-gain table",
+          "mu[j,12]: fingerprint centroids",
+          "var[j,12]: diagonal variances"
+        ],
+        "note": "Every runtime profile quantity has an offline producer."
+      },
+      {
+        "step": "S3",
+        "consumes": [
+          "training-category bank",
+          "held-out validation categories",
+          "finite positive tau grid"
+        ],
+        "produces": [
+          "immutable bank",
+          "tau>0"
+        ],
+        "note": "The variance floor remains the fixed 1e-4 in the written distance; the original Step 3 inconsistently said to tune the already-fixed 1e-4 value."
+      },
+      {
+        "step": "S4",
+        "consumes": [
+          "ProMixed GQA score rows with shape [L,H,A]",
+          "zero-based layer ids 0..L-1",
+          "configured top-k"
+        ],
+        "produces": [
+          "z: float[12]",
+          "s: nonnegative float[L,H]"
+        ],
+        "note": "The patch defines entropy/Jaccard/margin for n<=1, k=0, missing successor, and score ties."
+      },
+      {
+        "step": "S5",
+        "consumes": [
+          "z",
+          "bank {g,mu,var}",
+          "tau>0",
+          "s_lb",
+          "independent rung costs"
+        ],
+        "produces": [
+          "R=min(3,J) weights w: float[R] summing to 1",
+          "ghat: float[L,3]",
+          "initial positive-value omit-to-P4 heap items"
+        ],
+        "note": "J=0 is an explicit configuration error; centroid ties use category id."
+      },
+      {
+        "step": "S6",
+        "consumes": [
+          "mandatory allocator bytes M",
+          "ceiling B",
+          "heap frontier with predecessor relation",
+          "rung costs"
+        ],
+        "produces": [
+          "status in {feasible,mandatory_budget_infeasible}",
+          "mode map in {omit,P4,P8,P16}",
+          "B_used=M+sum(accepted costs) when feasible"
+        ],
+        "note": "If M>B the request is declared infeasible. Otherwise nonfitting items are discarded and scanning continues, successors appear only after predecessor acceptance, and finite deterministic tie keys guarantee termination."
+      },
+      {
+        "step": "S7",
+        "consumes": [
+          "prefill X_lb tensors",
+          "mode map",
+          "codec/layout from S1"
+        ],
+        "produces": [
+          "only the accepted independently allocated residual extents",
+          "mode offsets",
+          "allocator byte total equal to S6 accounting"
+        ],
+        "note": "S1 defines the codec and sizes; S7 is the sole serving-time materializer, removing the original apparent double production of all segments."
+      },
+      {
+        "step": "S8",
+        "consumes": [
+          "mixed-format extents",
+          "decode query tensors"
+        ],
+        "produces": [
+          "ordinary attention results"
+        ],
+        "note": "The decoder dequantizes each stored segment and sums the accepted prefix before the unchanged dot product."
+      },
+      {
+        "step": "S9",
+        "consumes": [
+          "serving traces",
+          "benchmark labels",
+          "baseline outputs"
+        ],
+        "produces": [
+          "paired KV-byte, conversion, TTFT, throughput, and downstream metrics"
+        ],
+        "note": "Evaluation only; it does not feed the router."
+      },
+      {
+        "step": "S10",
+        "consumes": [
+          "same requests and byte budgets",
+          "permuted centroid-to-g tables or oracle category table"
+        ],
+        "produces": [
+          "negative- and positive-control downstream metrics"
+        ],
+        "note": "Evaluation-only causal probe."
+      }
+    ],
+    "dry_run": {
+      "instance": "Four layers (one per depth stratum), three historical blocks per layer, two GQA score rows [0.6,0.3,0.1] and [0.5,0.4,0.1], k=1. Only layer 0 has positive promotion gains; layers 1-3 have zero gains. The three profile centroids have squared distances 0,1,4 with unit whitened coordinates, tau=1. Layer-0 category gains for P4/P8/P16 increments are A=(0.03,0.02,0.01), B=(0.02,0.01,-0.01), C=(-0.01,0,0); block utilities are (1,0.5,0.2). One 64-scalar codec group has first values [1,0.3,0.11,0.07,0] and the rest zero. Mandatory bytes M=128 and ceiling B=384.",
+      "computed_quantities": [
+        {
+          "quantity": "normalized entropy feature",
+          "value": "row values 0.8173 and 0.8587; layer average 0.8380",
+          "arithmetic": "[-(0.6 ln0.6+0.3 ln0.3+0.1 ln0.1)/ln3]=0.8173; [-(0.5 ln0.5+0.4 ln0.4+0.1 ln0.1)/ln3]=0.8587; mean=0.8380"
+        },
+        {
+          "quantity": "agreement, margin, and fingerprint",
+          "value": "Jaccard=1, boundary margin=0.2, z=[0.8380,1,0.2] repeated four times",
+          "arithmetic": "top-1 sets are both {b0}, so |intersection|/|union|=1; mean kept-next margin=((0.6-0.3)+(0.5-0.4))/2=0.2; one layer per stratum preserves the triplet"
+        },
+        {
+          "quantity": "profile weights",
+          "value": "w=(0.7214,0.2654,0.0132)",
+          "arithmetic": "softmax(0,-1,-4)=(1,0.367879,0.018316)/1.386195"
+        },
+        {
+          "quantity": "conditioned layer-0 rung gains",
+          "value": "ghat=(0.02682,0.01708,0.00456)",
+          "arithmetic": "0.7214*A+0.2654*B+0.0132*C gives (0.021642+0.005308-0.000132, 0.014428+0.002654+0, 0.007214-0.002654+0)"
+        },
+        {
+          "quantity": "successive residual arithmetic under the original ideal-scale formula",
+          "value": "s1=1/7; s2=0.07/7=0.01; s3=(3/700)/127=3/88900. For x=[1,0.3,0.11,0.07,0], codes are q1=[7,2,1,0,0], q2=[0,1,-3,7,0], q3=[0,127,-85,0,0].",
+          "arithmetic": "After q1, r1=[0,1/70,-23/700,0.07,0]. After q2, r2=[0,3/700,-1/350,0,0]. After q3, r3=[0,0,1/88900,0,0], so the nominal P16 prefix still has error 1/88900=1.1249e-5 on x=0.11."
+        },
+        {
+          "quantity": "fixed segment extents in the repair",
+          "value": "P4 increment=64 B, P4-to-P8 increment=64 B, P8-to-P16 increment=128 B for G=1",
+          "arithmetic": "int4 payload=64*4/8=32 B and int8 payload=64 B; with 2-B scale/group and 16-B segment header, align64(16+32+2)=64 and align64(16+64+2)=128"
+        },
+        {
+          "quantity": "heap priorities",
+          "value": "initial P4 priorities b0=4.190e-4, b1=2.095e-4, b2=8.381e-5; exposed b0-P8=2.669e-4, b1-P8=1.335e-4, b0-P16=3.563e-5",
+          "arithmetic": "priority=s_lb*ghat_u/c_u; e.g. b0-P4=0.02682/64, b0-P8=0.01708/64, b0-P16=0.00456/128"
+        },
+        {
+          "quantity": "accepted order and exact budget",
+          "value": "b0-P4, b0-P8, b1-P4, b1-P8; final modes (P8,P8,omit), B_used=384 B",
+          "arithmetic": "remaining starts 384-128=256 B; four 64-B accepted extents consume 256 B; B_used=128+4*64=384<=B. The 128-B b0-P16 item never fits after the higher-priority accepted prefixes."
+        },
+        {
+          "quantity": "original exact-byte denominator",
+          "value": "underdetermined: at least 32/32/64 payload bytes per group, but 34/34/66 with FP16 scales and 36/36/68 with FP32 scales before unknown headers/alignment",
+          "arithmetic": "64*4/8=32 and 64*8/8=64; adding one scale gives +2 or +4 bytes. Because the current text gives neither scale storage nor header/alignment widths, its claimed exact incremental bytes cannot be computed as written."
+        }
+      ],
+      "anomalies": [
+        "The computed P16 reconstruction error is 1/88900, so P16 cannot coherently be read as lossless FP16; it denotes only 4+4+8=16 dense code bits per scalar and needs an explicit disclaimer.",
+        "The original priority denominator is not numeric: the same one-group rung is 34 B with a 2-B scale or 36 B with a 4-B scale before unspecified header and alignment, contradicting the claim of auditable exact-byte routing.",
+        "Qq is used both as a stored code segment and as a tensor subtracted from X; without a dequantization symbol and stored-scale rule, q2 and q3 do not have a unique numeric value.",
+        "The initial Step 1 says it outputs all three segments, while Step 7 materializes accepted segments again; executed literally this either duplicates production or temporarily allocates rejected data. The patch makes S1 a codec/layout definition and S7 the only runtime materialization."
+      ]
+    },
+    "degenerate_probes": [
+      {
+        "probe": "empty historical-block set",
+        "behavior": "Original entropy/agreement/margin inputs are empty. Patched S6 returns the mandatory cache immediately when M<=B, with B_used=M and no profile lookup or heap.",
+        "finding": "Empty-input behavior was undefined and could emit NaNs before an otherwise trivial empty heap."
+      },
+      {
+        "probe": "k=0",
+        "behavior": "Patched S4 defines normalized entropy as 0 for n<=1, Jaccard(empty,empty)=1, and boundary margin=0 when k=0 or k>=n; block-id tie sorting is deterministic.",
+        "finding": "The original Jaccard and kept-versus-next margin have 0/0 or missing-index cases."
+      },
+      {
+        "probe": "all-zero or exactly reconstructed residual",
+        "behavior": "Patched Qq stores scale=0 and all-zero codes when max(abs(r))=0, with decoded segment zero and no division.",
+        "finding": "The original scale=0 followed by round(r/scale) divides 0 by 0; this occurs routinely in q2/q3 even for nonzero constant groups."
+      },
+      {
+        "probe": "single scored block",
+        "behavior": "Patched normalized entropy is 0 (avoids division by ln1), pairwise identical top-k agreement is 1, and boundary margin is 0 because there is no next block.",
+        "finding": "The original normalized entropy and boundary margin are undefined for one element."
+      },
+      {
+        "probe": "ties at score, centroid, and heap thresholds",
+        "behavior": "Patched score ranks break ties by block id, centroid ranks by category id, and heap ranks by (priority,-layer,-block,-rung_index) in a max heap.",
+        "finding": "The original procedure can produce non-reproducible fingerprints, selected profiles, and mode maps under ties."
+      },
+      {
+        "probe": "top heap item costs 128 B, a lower-priority frontier item costs 64 B, and 64 B remains",
+        "behavior": "Patched S6 discards the nonfitting 128-B item for this request, continues scanning, and accepts the fitting 64-B item; no successor of the discarded item is exposed.",
+        "finding": "Stopping when the maximum-priority item fails would leave usable bytes even though another frontier item fits; the original wording does not specify heap precedence here."
+      },
+      {
+        "probe": "all conditioned values are zero or negative",
+        "behavior": "Patched S5 enqueues only finite v_lbu>0. The heap is empty and slack is retained rather than spending bytes on a promotion predicted to be harmful.",
+        "finding": "The original loop would accept negative-value promotions merely because bytes remain."
+      },
+      {
+        "probe": "profile bank has J=1, J=2, or J=0 categories",
+        "behavior": "Patched S5 uses R=min(3,J) for J>0; J=0 is an explicit configuration error before serving. Tau is selected only from a finite positive grid.",
+        "finding": "The original top-R=3 and softmax are undefined for an empty/undersized bank or tau=0."
+      },
+      {
+        "probe": "mandatory footprint equals or exceeds the ceiling",
+        "behavior": "If M=B, patched S6 returns only mandatory FP16 data with B_used=B. If M>B, it emits mandatory_budget_infeasible and no feasible-mode claim.",
+        "finding": "Originally M>B makes residual budget negative while the text still asserts B_used<=B; for example M=192,B=128 yields B_used>=192>128 before any heap pop."
+      },
+      {
+        "probe": "maximum instance with every positive rung accepted",
+        "behavior": "At most three rung items per historical block can be accepted or discarded, successors are exposed only once, and remaining bytes never increase; the patched loop halts after at most 3|H| pops with B_used<=B on feasible requests.",
+        "finding": null
+      }
+    ],
+    "claim_step_map": [
+      {
+        "claim": "independently addressable residual segments",
+        "established_by": "S1 and S7"
+      },
+      {
+        "claim": "successive-prefix reconstruction with a per-stage infinity-norm rounding bound",
+        "established_by": "S1 and S8"
+      },
+      {
+        "claim": "P16 is a 16-code-bit residual mode, not lossless FP16",
+        "established_by": "S1 and S8"
+      },
+      {
+        "claim": "prompt-conditioned layer-by-rung gains from existing ProMixed readouts",
+        "established_by": "S4 and S5"
+      },
+      {
+        "claim": "held-out category transfer with no per-task parameter update",
+        "established_by": "S2, S3, and S5"
+      },
+      {
+        "claim": "exact allocator-byte ceiling",
+        "established_by": "S1, S6, and S7, conditional on M<=B; M>B produces an explicit infeasible status"
+      },
+      {
+        "claim": "strict predecessor order omit->P4->P8->P16",
+        "established_by": "S5 and S6"
+      },
+      {
+        "claim": "no action-value network or serving-time counterfactual forward pass",
+        "established_by": "S2, S4, S5, and S6"
+      },
+      {
+        "claim": "profile conditioning is the causal variable tested downstream",
+        "established_by": "S10"
+      }
+    ]
+  },
+  "verdict": "patched",
+  "unrepaired": [],
+  "applied_revisions": [
+    {
+      "scope": "coherence",
+      "op": "replace",
+      "field": "core_mechanism",
+      "value": "ByteLadder is a sequential pipeline over the same nonmandatory 16-token historical layer-blocks already scored by ProMixed. Let M be the allocator-reported bytes of mandatory FP16 recent-window and sink entries and B the request ceiling. If M>B, routing returns mandatory_budget_infeasible and makes no feasible-cache claim; if the historical set is empty or M=B, it returns the mandatory cache with B_used=M. Otherwise each FP16 key/value block X_lb is flattened to N_lb scalars and padded only in its final 64-scalar group. A successive codec maintains an FP32 residual r. For Qq(r), q in {4,8}, each group uses symmetric codes [-(2^(q-1)-1), 2^(q-1)-1]; if max(abs(r))=0 it stores a zero FP16 scale and zero codes, otherwise it stores the smallest finite positive FP16 scale s not below max(abs(r))/(2^(q-1)-1), applies round-to-nearest-even to r/s, and needs no clipping. The decoded segment is s times its code and the next residual is formed in FP32. Apply q1=Q4(X_lb), q2=Q4(X_lb-decode(q1)), and q3=Q8(X_lb-decode(q1)-decode(q2)). Modes are omit, P4={q1}, P8={q1,q2}, and P16={q1,q2,q3}; P16 means 16 dense code bits per scalar and remains lossy, so it is distinct from mandatory FP16. Each stage has the auditable groupwise infinity-norm rounding bound s/2. Every rung is an independent 64-byte-aligned extent with a 16-byte header and one 2-byte FP16 scale per 64-scalar group. For G=ceil(N_lb/64), incremental extent bytes are c1=c2=align64(16+34G) and c3=align64(16+66G); padding and headers are included, and a backend with larger extents substitutes its allocator-returned independent extent sizes before routing. Offline, each task category j, zero-based layer l, and rung u stores g_jlu, the mean full-cache teacher-forced suffix-KL reduction from that single promotion, plus centroid mu_j and diagonal variance. The twelve-value fingerprint averages, within zero-based strata floor(4l/L), normalized score entropy, pairwise top-k Jaccard, and kept-next margin. Entropy is zero for at most one scored block, Jaccard of two empty top-k sets is one, margin is zero when k=0 or no next block exists, and score ties break by block id. With J>0 profiles, retrieve R=min(3,J) centroids by (diagonal-whitened squared distance, category id), use the fixed 1e-4 variance floor, and compute softmax(-d/tau) with tau chosen from a finite positive validation grid; J=0 is a configuration error. The conditioned gain is ghat_lu=sum_j w_j g_jlu. For nonnegative ProMixed utility s_lb, create a rung item only when v_lbu=s_lb*ghat_lu is finite and positive, with priority v_lbu/c_lbu and deterministic max-heap key (priority,-l,-b,-u_index). Start with omit-to-P4. On each pop, discard an item whose independent extent exceeds remaining bytes and continue scanning; otherwise accept it, subtract its bytes, and expose only that block's next positive-valued rung. Thus precedence is strict, every fitting frontier is considered, the loop halts after at most three pops per block, and feasible B_used=M+sum(accepted c_lbu)<=B. After routing, materialize only accepted prefixes into their independent extents and decode them with fused residual-add attention kernels. Report actual KV allocation, conversion time, TTFT, throughput, and downstream outcomes end to end; no wall-clock hard guarantee is asserted.",
+      "outcome": "applied",
+      "delta_summary": "Repairs the T1 undefined code-versus-reconstruction dataflow, T2 indeterminate byte denominator and lossy-P16 ambiguity, and T3 zero-scale, k=0/tie, undersized-bank, negative-gain, nonfitting-heap, and mandatory-overfull failures without changing the novelty surface or kill switches."
+    },
+    {
+      "scope": "coherence",
+      "op": "replace",
+      "field": "core_mechanism_steps",
+      "value": "1. Define the progressive codec and serialized layout beside the Qwen2.5-7B Re-Prefill path: input is the shape of each FP16 16-token layer-block X_lb; output is the q1:int4, q2:int4, q3:int8 residual-prefix specification, zero-scale rule, decoder, and independent aligned rung-cost functions c1,c2,c3. This step defines sizes but does not materialize all request segments.\n2. Build the offline reference bank from LongBench training categories by running full-cache and single-rung promotion replays over teacher-forced suffixes; inputs are calibration prompts and frozen Qwen2.5-7B, and outputs are g_jlu tables, fingerprint centroids mu_j, and diagonal variances.\n3. Split LongBench by entire task category, select tau only from a finite positive grid on validation categories, keep the variance floor fixed at 1e-4, and serialize the immutable bank; no task-specific weights are updated at serving time.\n4. During prefill, retain ProMixed GQA score rows and compute the twelve-dimensional z and nonnegative s_lb using the specified n<=1, k=0, no-successor, and deterministic-tie conventions; if there are no historical blocks, bypass profiling and return the mandatory cache when feasible.\n5. Require a nonempty bank, retrieve R=min(3,J) profiles with deterministic category-id tie breaks, compute w_j and ghat_lu, and emit positive finite omit-to-P4 items keyed by gain per independent exact incremental byte.\n6. Read mandatory allocator bytes M and ceiling B. Return mandatory_budget_infeasible when M>B; return only mandatory data when M=B; otherwise run the deterministic heap, discarding a nonfitting frontier item but continuing to smaller items, and expose a successor only after predecessor acceptance. Output one mode per block and B_used=M+sum accepted bytes<=B.\n7. Quantize from the prefill X_lb tensors and materialize only each accepted prefix into its independently aligned extents; output physical mixed-format KV pages and mode offsets whose allocator total equals the bytes charged in Step 6.\n8. Decode P4, P8, or lossy 16-code-bit P16 prefixes with fused residual-add kernels before the existing attention dot product; output the ordinary attention result through unchanged remaining Qwen layers.\n9. Log actual KV bytes, conversion time, TTFT, decode throughput, and downstream predictions for paired comparisons against uniform-format ProMixed, DynamicKV-style layer budgets, Oaken-style fixed calibration, and global-profile ByteLadder.\n10. Run the profile-permutation negative control and oracle-category positive control at identical bytes and ProMixed scores; output the downstream causal test of profile conditioning.",
+      "outcome": "applied",
+      "delta_summary": "Repairs the T1 double-producer ambiguity between codec construction and runtime materialization, the fixed-versus-tuned variance-floor contradiction, and the T3 heap/budget halting branches in the executable step list."
+    },
+    {
+      "scope": "coherence",
+      "op": "replace",
+      "field": "gap_closure[0].how_closed",
+      "value": "Closed by encoding every nonmandatory historical layer-block as an omittable prefix of independently aligned, exactly charged residual extents and promoting different blocks through P4, P8, or lossy 16-code-bit P16 according to task-conditioned positive value per allocator byte. Mandatory FP16 recent-window and sink bytes are charged first; requests whose mandatory footprint already exceeds the ceiling are reported infeasible rather than claimed feasible.",
+      "outcome": "applied",
+      "delta_summary": "Aligns the T4 gap-closure claim with the repaired exact-byte construction, the non-lossless meaning of P16, and the mandatory-overfull branch."
+    }
+  ],
+  "final_candidate": {
+    "title": "ByteLadder: Prompt-Conditioned Progressive Precision for ProMixed KV Caches",
+    "hook": "ByteLadder adds no action-value network and no counterfactual forward pass at serving time: it reuses ProMixed GQA scores to place independently addressable residual segments under the same exact KV-byte ceiling. The claim is that this strictly leaner runtime axis can outperform uniform-format ProMixed on held-out task categories because precision becomes a byte-by-byte promotion decision rather than a method-wide setting.",
+    "hook_shape_rationale": "This is counter-intuitive minimalism: relative to a learned per-action router, ByteLadder adds zero model parameters and zero serving-time teacher passes while retaining a fixed three-profile lookup and one heap traversal. A surprising-empirical hook was also viable, but it was rejected because the direction of the held-out LongBench gain is the falsifiable result, whereas the sharper admission-test fact is the strict reduction in online learned machinery.",
+    "gap_closure": [
+      {
+        "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+        "main_pattern": "heterogeneous_decomposition",
+        "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+        "companion_pattern": null,
+        "how_closed": "Closed by encoding every nonmandatory historical layer-block as an omittable prefix of independently aligned, exactly charged residual extents and promoting different blocks through P4, P8, or lossy 16-code-bit P16 according to task-conditioned positive value per allocator byte. Mandatory FP16 recent-window and sink bytes are charged first; requests whose mandatory footprint already exceeds the ceiling are reported infeasible rather than claimed feasible."
+      },
+      {
+        "gap": "No retrieved frontier leaf closes the gap between offline model-level sensitivity and prompt-specific evidence strongly enough to preserve accuracy across task shifts while keeping selection overhead inside the serving deadline.",
+        "main_pattern": "adapt_via_conditioning",
+        "sub_pattern": "C03 (Adapt by Conditioning, Not Retraining)",
+        "companion_pattern": null,
+        "how_closed": "Closed by retrieving three offline task-category promotion profiles from a canonical ProMixed prompt fingerprint and composing their layer-by-rung gains at inference, with entire task categories held out and no per-task parameter update."
+      }
+    ],
+    "core_mechanism": "ByteLadder is a sequential pipeline over the same nonmandatory 16-token historical layer-blocks already scored by ProMixed. Let M be the allocator-reported bytes of mandatory FP16 recent-window and sink entries and B the request ceiling. If M>B, routing returns mandatory_budget_infeasible and makes no feasible-cache claim; if the historical set is empty or M=B, it returns the mandatory cache with B_used=M. Otherwise each FP16 key/value block X_lb is flattened to N_lb scalars and padded only in its final 64-scalar group. A successive codec maintains an FP32 residual r. For Qq(r), q in {4,8}, each group uses symmetric codes [-(2^(q-1)-1), 2^(q-1)-1]; if max(abs(r))=0 it stores a zero FP16 scale and zero codes, otherwise it stores the smallest finite positive FP16 scale s not below max(abs(r))/(2^(q-1)-1), applies round-to-nearest-even to r/s, and needs no clipping. The decoded segment is s times its code and the next residual is formed in FP32. Apply q1=Q4(X_lb), q2=Q4(X_lb-decode(q1)), and q3=Q8(X_lb-decode(q1)-decode(q2)). Modes are omit, P4={q1}, P8={q1,q2}, and P16={q1,q2,q3}; P16 means 16 dense code bits per scalar and remains lossy, so it is distinct from mandatory FP16. Each stage has the auditable groupwise infinity-norm rounding bound s/2. Every rung is an independent 64-byte-aligned extent with a 16-byte header and one 2-byte FP16 scale per 64-scalar group. For G=ceil(N_lb/64), incremental extent bytes are c1=c2=align64(16+34G) and c3=align64(16+66G); padding and headers are included, and a backend with larger extents substitutes its allocator-returned independent extent sizes before routing. Offline, each task category j, zero-based layer l, and rung u stores g_jlu, the mean full-cache teacher-forced suffix-KL reduction from that single promotion, plus centroid mu_j and diagonal variance. The twelve-value fingerprint averages, within zero-based strata floor(4l/L), normalized score entropy, pairwise top-k Jaccard, and kept-next margin. Entropy is zero for at most one scored block, Jaccard of two empty top-k sets is one, margin is zero when k=0 or no next block exists, and score ties break by block id. With J>0 profiles, retrieve R=min(3,J) centroids by (diagonal-whitened squared distance, category id), use the fixed 1e-4 variance floor, and compute softmax(-d/tau) with tau chosen from a finite positive validation grid; J=0 is a configuration error. The conditioned gain is ghat_lu=sum_j w_j g_jlu. For nonnegative ProMixed utility s_lb, create a rung item only when v_lbu=s_lb*ghat_lu is finite and positive, with priority v_lbu/c_lbu and deterministic max-heap key (priority,-l,-b,-u_index). Start with omit-to-P4. On each pop, discard an item whose independent extent exceeds remaining bytes and continue scanning; otherwise accept it, subtract its bytes, and expose only that block's next positive-valued rung. Thus precedence is strict, every fitting frontier is considered, the loop halts after at most three pops per block, and feasible B_used=M+sum(accepted c_lbu)<=B. After routing, materialize only accepted prefixes into their independent extents and decode them with fused residual-add attention kernels. Report actual KV allocation, conversion time, TTFT, throughput, and downstream outcomes end to end; no wall-clock hard guarantee is asserted.",
+    "core_mechanism_reasoning": "The two gaps share a sequential dependency rather than one predictor: task-category profiles first condition layer-level promotion gains, and ProMixed prompt scores then place the resulting residual segments under the byte ceiling. An action-specific counterfactual predictor plus a two-resource program was rejected because it would need an unsupported hard latency cost model; a fixed Oaken-style threshold was rejected because it regresses to method-wide calibration, while fixed positional windows, attention-mass-only eviction, head sharing, paging, and offloading are occupied lineage nodes that do not supply prompt-conditioned precision promotion.",
+    "core_mechanism_steps": "1. Define the progressive codec and serialized layout beside the Qwen2.5-7B Re-Prefill path: input is the shape of each FP16 16-token layer-block X_lb; output is the q1:int4, q2:int4, q3:int8 residual-prefix specification, zero-scale rule, decoder, and independent aligned rung-cost functions c1,c2,c3. This step defines sizes but does not materialize all request segments.\n2. Build the offline reference bank from LongBench training categories by running full-cache and single-rung promotion replays over teacher-forced suffixes; inputs are calibration prompts and frozen Qwen2.5-7B, and outputs are g_jlu tables, fingerprint centroids mu_j, and diagonal variances.\n3. Split LongBench by entire task category, select tau only from a finite positive grid on validation categories, keep the variance floor fixed at 1e-4, and serialize the immutable bank; no task-specific weights are updated at serving time.\n4. During prefill, retain ProMixed GQA score rows and compute the twelve-dimensional z and nonnegative s_lb using the specified n<=1, k=0, no-successor, and deterministic-tie conventions; if there are no historical blocks, bypass profiling and return the mandatory cache when feasible.\n5. Require a nonempty bank, retrieve R=min(3,J) profiles with deterministic category-id tie breaks, compute w_j and ghat_lu, and emit positive finite omit-to-P4 items keyed by gain per independent exact incremental byte.\n6. Read mandatory allocator bytes M and ceiling B. Return mandatory_budget_infeasible when M>B; return only mandatory data when M=B; otherwise run the deterministic heap, discarding a nonfitting frontier item but continuing to smaller items, and expose a successor only after predecessor acceptance. Output one mode per block and B_used=M+sum accepted bytes<=B.\n7. Quantize from the prefill X_lb tensors and materialize only each accepted prefix into its independently aligned extents; output physical mixed-format KV pages and mode offsets whose allocator total equals the bytes charged in Step 6.\n8. Decode P4, P8, or lossy 16-code-bit P16 prefixes with fused residual-add kernels before the existing attention dot product; output the ordinary attention result through unchanged remaining Qwen layers.\n9. Log actual KV bytes, conversion time, TTFT, decode throughput, and downstream predictions for paired comparisons against uniform-format ProMixed, DynamicKV-style layer budgets, Oaken-style fixed calibration, and global-profile ByteLadder.\n10. Run the profile-permutation negative control and oracle-category positive control at identical bytes and ProMixed scores; output the downstream causal test of profile conditioning.",
+    "falsification_prediction": "On Qwen2.5-7B, hold out complete LongBench task categories from the reference bank and evaluate those categories plus Needle-in-a-Haystack at 5%, 10%, and 25% allocator-measured historical-KV byte ceilings against uniform-format ProMixed and global-profile ByteLadder, while reporting actual TTFT rather than enforcing a wall-clock claim. If ByteLadder works, held-out LongBench score and NIAH exact-match increase at the same or lower measured KV bytes, with the largest gain at 5% and 10%; P95 TTFT is a separately reported deployment outcome and may rise or fall. The single load-bearing variable is the prompt-conditioned promotion-gain table ghat_lu(z). As a negative control, randomly permute the association between profile centroids and their g_jlu tables while leaving ProMixed scores, residual codec, and exact byte packing unchanged; the downstream LongBench and NIAH gains should return toward the global-profile ByteLadder or uniform-format ProMixed baseline, while an oracle task-category profile should recover most of the gain as a positive control.",
+    "compute_budget": "Approximately 42 GPU-days on 80GB-class A100/H100 GPUs (about 24 for offline promotion profiling and 18 for held-out LongBench/NIAH serving, baselines, controls, and two implementation iterations) + $0 paid API inference; comfortable within the stated ~150 GPU-day and ~$10k envelope.",
+    "differentiation_from_lit": [
+      {
+        "paper_id": "openalex:W4416034925",
+        "delta": "DynamicKV periodically renormalizes layer-specific retained-token counts from prefill attention under a token budget, whereas ByteLadder allocates independently addressable precision residuals and omission at 16-token block granularity under allocator-measured bytes, conditioned by profiles learned with entire task categories held out."
+      },
+      {
+        "paper_id": "openalex:W4411487104",
+        "delta": "Oaken calibrates data-agnostic outlier thresholds offline and selects quantization scales online inside a fixed low-bit hardware format, whereas ByteLadder retrieves a request-conditioned layer-by-rung promotion table and chooses how many residual segments each block receives."
+      },
+      {
+        "paper_id": "openalex:W4411486323",
+        "delta": "Ecco fixes a 64-byte compressed block and power-of-two compression ratio with shared k-means and Huffman structures, whereas ByteLadder exposes fixed-width residual segments as separately allocatable units so a request can mix omit, P4, P8, and P16 modes without exceeding its exact byte ceiling."
+      },
+      {
+        "paper_id": "openalex:W4407123430",
+        "delta": "ChunkKV changes the pruning unit to semantic chunks and reuses selected indices across layers but still makes retain-or-drop decisions under one representation, while ByteLadder keeps the existing ProMixed block unit and promotes block representations to different precision prefixes."
+      }
+    ],
+    "almost_prior_paper_id": "openalex:W4411487104",
+    "what_step_was_missed": "Oaken would have needed to replace its fixed online-offline low-bit format with independently addressable successive-residual segments and bind their per-request promotion order to a held-out-task profile retrieved from prompt-specific GQA evidence.",
+    "signature_terms": [
+      "prompt-conditioned KV precision ladder",
+      "successive-refinement KV residual segments",
+      "exact-byte block promotion routing",
+      "held-out task profile transfer"
+    ],
+    "alias_terms": [
+      "scalable coding with side information",
+      "contextual resource allocation policy",
+      "coarse-to-fine residual quantization"
+    ]
+  },
+  "falsification_rewritten": false
+}

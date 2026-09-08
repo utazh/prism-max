@@ -1,0 +1,1612 @@
+[
+ {
+  "title": "COBRA: Contextual Bandit Algorithm for Ensuring Truthful Strategic Agents",
+  "title_norm": "cobra contextual bandit algorithm for ensuring truthful strategic agents",
+  "abstract": "This paper considers a contextual bandit problem involving multiple agents, where a learner sequentially observes the contexts and the agent's reported arms, and then selects the arm that maximizes the system's overall reward. Existing work in contextual bandits assumes that agents truthfully report their arms, which is unrealistic in many real-life applications. For instance, consider an online platform with multiple sellers; some sellers may misrepresent product quality to gain an advantage, such as having the platform preferentially recommend their products to online users. To address this challenge, we propose an algorithm, COBRA, for contextual bandit problems involving strategic agents that disincentivize their strategic behavior without using any monetary incentives, while having incentive compatibility and a sub-linear regret guarantee. Our experimental results also validate the different performance aspects of our proposed algorithm.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Arun Verma",
+   "Indrajit Saha",
+   "Makoto Yokoo",
+   "Bryan Kian Hsiang Low"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2505.23720v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2505.23720v1",
+  "published_iso": "2025-05-29T17:53:12Z"
+ },
+ {
+  "title": "Stochastic Graph Bandit Learning with Side-Observations",
+  "title_norm": "stochastic graph bandit learning with side observations",
+  "abstract": "In this paper, we investigate the stochastic contextual bandit with general function space and graph feedback. We propose an algorithm that addresses this problem by adapting to both the underlying graph structures and reward gaps. To the best of our knowledge, our algorithm is the first to provide a gap-dependent upper bound in this stochastic setting, bridging the research gap left by the work in [35]. In comparison to [31,33,35], our method offers improved regret upper bounds and does not require knowledge of graphical quantities. We conduct numerical experiments to demonstrate the computational efficiency and effectiveness of our approach in terms of regret upper bounds. These findings highlight the significance of our algorithm in advancing the field of stochastic contextual bandits with graph feedback, opening up avenues for practical applications in various domains.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Xueping Gong",
+   "Jiheng Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2308.15107v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2308.15107v2",
+  "published_iso": "2023-08-29T08:14:19Z"
+ },
+ {
+  "title": "Corruption-Robust Algorithms with Uncertainty Weighting for Nonlinear Contextual Bandits and Markov Decision Processes",
+  "title_norm": "corruption robust algorithms with uncertainty weighting for nonlinear contextual",
+  "abstract": "Despite the significant interest and progress in reinforcement learning (RL) problems with adversarial corruption, current works are either confined to the linear setting or lead to an undesired $\\tilde{O}(\\sqrt{T}ζ)$ regret bound, where $T$ is the number of rounds and $ζ$ is the total amount of corruption. In this paper, we consider the contextual bandit with general function approximation and propose a computationally efficient algorithm to achieve a regret of $\\tilde{O}(\\sqrt{T}+ζ)$. The proposed algorithm relies on the recently developed uncertainty-weighted least-squares regression from linear contextual bandit and a new weighted estimator of uncertainty for the general function class. In contrast to the existing analysis that heavily relies on the linear structure, we develop a novel technique to control the sum of weighted uncertainty, thus establishing the final regret bounds. We then generalize our algorithm to the episodic MDP setting and first achieve an additive dependence on the corruption level $ζ$ in the scenario of general function approximation. Notably, our algorithms achieve regret bounds either nearly match the performance lower bound or improve the existing methods for all the corruption levels and in both known and unknown $ζ$ cases.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Chenlu Ye",
+   "Wei Xiong",
+   "Quanquan Gu",
+   "Tong Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2212.05949v4",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2212.05949v4",
+  "published_iso": "2022-12-12T15:04:56Z"
+ },
+ {
+  "title": "Constrained Contextual Bandits with Adversarial Contexts",
+  "title_norm": "constrained contextual bandits with adversarial contexts",
+  "abstract": "We study budget-constrained contextual bandits with adversarial contexts, where each action yields a random reward and incurs a random cost. We adopt the standard realizability assumption: conditioned on the observed context, rewards and costs are drawn independently from fixed distributions whose expectations belong to known function classes. We focus on the continuing setting, in which the algorithm operates over the entire horizon even after the budget for cumulative cost is exhausted. In this setting, the objective is to simultaneously control regret and the violation of the budget constraint. Building on the seminal $\\mathsf{SquareCB}$ framework of Foster et al. [2018], we propose a simple and modular framework that leverages online regression oracles to reduce the constrained problem to a standard unconstrained contextual bandit problem with adaptively defined surrogate reward functions. In contrast to prior works, which focus on stochastic contexts, our reduction yields improved guarantees for more general adversarial contexts, together with an efficient algorithm with a compact and transparent analysis.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Dhruv Sarkar",
+   "Abhishek Sinha"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.06190v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.06190v1",
+  "published_iso": "2026-05-07T13:04:49Z"
+ },
+ {
+  "title": "Dataless Neural Networks for Resource-Constrained Project Scheduling",
+  "title_norm": "dataless neural networks for resource constrained project scheduling",
+  "abstract": "Dataless neural networks represent a paradigm shift in applying neural architectures to combinatorial optimization problems, eliminating the need for training datasets by encoding problem instances directly into network parameters. Despite the pioneering work of Alkhouri et al. (2022) demonstrating the viability of dataless approaches for the Maximum Independent Set problem, our comprehensive literature review reveals that no published work has extended these methods to the Resource-Constrained Project Scheduling Problem (RCPSP). This paper addresses this gap by presenting the first dataless neural network approach for RCPSP, providing a complete mathematical framework that transforms discrete scheduling constraints into differentiable objectives suitable for gradient-based optimization. Our approach leverages smooth relaxations and automatic differentiation to unlock GPU parallelization for project scheduling, traditionally a domain of sequential algorithms. We detail the mathematical formulation for both precedence and renewable resource constraints, including a memory-efficient dense time-grid representation. Implementation and comprehensive experiments on PSPLIB benchmark instances (J30, J60, and J120) are currently underway, with empirical results to be reported in an updated version of this paper.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Marc Bara"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2507.05322v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2507.05322v1",
+  "published_iso": "2025-07-07T15:59:57Z"
+ },
+ {
+  "title": "Improving the FAIRness and Sustainability of the NHGRI Resources Ecosystem",
+  "title_norm": "improving the fairness and sustainability of the nhgri resources ecosystem",
+  "abstract": "In 2024, NHGRI-funded genomic resource projects completed a Self-Assessment Tool (SAT) and interviews to evaluate their application of FAIR (Findable, Accessible, Interoperable, Reusable) principles and sustainability. Key challenges were identified in metadata tools, data curation, variant identifiers, and data processing. Addressing these needs, we engaged the community through webinars and discussions, leading to a two-day workshop in March 2025. The workshop developed targeted recommendations, including improving transparency, standardizing identifiers, enhancing usability, implementing APIs, leveraging AI/ML for curation, and evaluating impact. These outcomes provide a framework for advancing FAIR practices, fostering collaboration, and strengthening the sustainability of NHGRI resources.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Larry Babb",
+   "Carol Bult",
+   "Vincent J. Carey",
+   "Robert J. Carroll",
+   "Benjamin C. Hitz",
+   "Chris J. Mungall",
+   "Heidi L. Rehm",
+   "Michael C. Schatz",
+   "Alex Wagner",
+   "NHGRI Resource Workshop Community"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2508.13498v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2508.13498v1",
+  "published_iso": "2025-08-19T04:17:24Z"
+ },
+ {
+  "title": "Ksurf-Drone: Attention Kalman Filter for Contextual Bandit Optimization in Cloud Resource Allocation",
+  "title_norm": "ksurf drone attention kalman filter for contextual bandit optimization in cloud ",
+  "abstract": "Resource orchestration and configuration parameter search are key concerns for container-based infrastructure in cloud data centers. Large configuration search space and cloud uncertainties are often mitigated using contextual bandit techniques for resource orchestration including the state-of-the-art Drone orchestrator. Complexity in the cloud provider environment due to varying numbers of virtual machines introduces variability in workloads and resource metrics, making orchestration decisions less accurate due to increased nonlinearity and noise. Ksurf, a state-of-the-art variance-minimizing estimator method ideal for highly variable cloud data, enables optimal resource estimation under conditions of high cloud variability.\n  This work evaluates the performance of Ksurf on estimation-based resource orchestration tasks involving highly variable workloads when employed as a contextual multi-armed bandit objective function model for cloud scenarios using Drone. Ksurf enables significantly lower latency variance of $41\\%$ at p95 and $47\\%$ at p99, demonstrates a $4\\%$ reduction in CPU usage and 7 MB reduction in master node memory usage on Kubernetes, resulting in a $7\\%$ cost savings in average worker pod count on VarBench Kubernetes benchmark.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Michael Dang'ana",
+   "Yuqiu Zhang",
+   "Hans-Arno Jacobsen"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2511.09766v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2511.09766v1",
+  "published_iso": "2025-11-12T22:00:14Z"
+ },
+ {
+  "title": "Contextual Bandits for Resource-Constrained Devices using Probabilistic Learning",
+  "title_norm": "contextual bandits for resource constrained devices using probabilistic learning",
+  "abstract": "Contextual bandits (CB) are online sequential decision-making problems under partial feedback that underpin many adaptive services. There is a growing demand to deploy CB agents directly on-device, under strict constraints on memory, compute, and energy. However, standard linear CB algorithms are often impractical for resource-constrained devices with their unfavorable scaling in computational and memory costs. Recently, HD-CB, a CB approach based on hyperdimensional computing principles, has been proposed to model and solve CB problems by moving into high-dimensional spaces. HD-CB offers faster convergence, favorable scalability, and improves memory efficiency compared to linear CB algorithms. However, its learning rule is accumulation-based: the values of action vectors grow over time, requiring high precision. While periodic binarization can prevent overflow in low-precision components, it may discard important information about magnitudes and degrade decision quality. This paper introduces probabilistic HD-CB, a low-precision variant that replaces deterministic accumulation with a probabilistic update rule. At each step, only a random subset of vector components is updated, with a time-decaying update probability, and component values are constrained to a predefined range [-k,+k]. This approach enables low-precision components, prevents overflow without periodic binarization, and reduces the expected update cost in proportion to the fraction of updated components. Off-policy evaluation on standardized synthetic CB benchmarks using the Open Bandit Pipeline shows that probabilistic HD-CB consistently outperforms binarized HD-CB at equal precision, while approaching the performance of HD-CB with as few as 3 bits per component.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Marco Angioli",
+   "Kevin Johansson",
+   "Antonello Rosato",
+   "Amy Loutfi",
+   "Denis Kleyko"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.13346v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.13346v1",
+  "published_iso": "2026-05-13T11:04:47Z"
+ },
+ {
+  "title": "Recovering Diagnostic Value: Super-Resolution-Aided Echocardiographic Classification in Resource-Constrained Imaging",
+  "title_norm": "recovering diagnostic value super resolution aided echocardiographic classificat",
+  "abstract": "Automated cardiac interpretation in resource-constrained settings (RCS) is often hindered by poor-quality echocardiographic imaging, limiting the effectiveness of downstream diagnostic models. While super-resolution (SR) techniques have shown promise in enhancing magnetic resonance imaging (MRI) and computed tomography (CT) scans, their application to echocardiography-a widely accessible but noise-prone modality-remains underexplored. In this work, we investigate the potential of deep learning-based SR to improve classification accuracy on low-quality 2D echocardiograms. Using the publicly available CAMUS dataset, we stratify samples by image quality and evaluate two clinically relevant tasks of varying complexity: a relatively simple Two-Chamber vs. Four-Chamber (2CH vs. 4CH) view classification and a more complex End-Diastole vs. End-Systole (ED vs. ES) phase classification. We apply two widely used SR models-Super-Resolution Generative Adversarial Network (SRGAN) and Super-Resolution Residual Network (SRResNet), to enhance poor-quality images and observe significant gains in performance metric-particularly with SRResNet, which also offers computational efficiency. Our findings demonstrate that SR can effectively recover diagnostic value in degraded echo scans, making it a viable tool for AI-assisted care in RCS, achieving more with less.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Krishan Agyakari Raja Babu",
+   "Om Prabhu",
+   " Annu",
+   "Mohanasankar Sivaprakasam"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2507.23027v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2507.23027v1",
+  "published_iso": "2025-07-30T18:45:31Z"
+ },
+ {
+  "title": "From Development to Deployment of AI-assisted Telehealth and Screening for Vision- and Hearing-threatening diseases in resource-constrained settings: Field Observations, Challenges and Way Forward",
+  "title_norm": "from development to deployment of ai assisted telehealth and screening for visio",
+  "abstract": "Vision- and hearing-threatening diseases cause preventable disability, especially in resource-constrained settings(RCS) with few specialists and limited screening setup. Large scale AI-assisted screening and telehealth has potential to expand early detection, but practical deployment is challenging in paper-based workflows and limited documented field experience exist to build upon. We provide insights on challenges and ways forward in development to adoption of scalable AI-assisted Telehealth and screening in such settings. Specifically, we find that iterative, interdisciplinary collaboration through early prototyping, shadow deployment and continuous feedback is important to build shared understanding as well as reduce usability hurdles when transitioning from paper-based to AI-ready workflows. We find public datasets and AI models highly useful despite poor performance due to domain shift. In addition, we find the need for automated AI-based image quality check to capture gradable images for robust screening in high-volume camps.\n  Our field learning stress the importance of treating AI development and workflow digitization as an end-to-end, iterative co-design process. By documenting these practical challenges and lessons learned, we aim to address the gap in contextual, actionable field knowledge for building real-world AI-assisted telehealth and mass-screening programs in RCS.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Mahesh Shakya",
+   "Bijay Adhikari",
+   "Nirsara Shrestha",
+   "Bipin Koirala",
+   "Arun Adhikari",
+   "Prasanta Poudyal",
+   "Luna Mathema",
+   "Sarbagya Buddhacharya",
+   "Bijay Khatri",
+   "Bishesh Khanal"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2509.15558v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2509.15558v1",
+  "published_iso": "2025-09-19T03:42:11Z"
+ },
+ {
+  "title": "A Simple Reduction Scheme for Constrained Contextual Bandits with Adversarial Contexts via Regression",
+  "title_norm": "a simple reduction scheme for constrained contextual bandits with adversarial co",
+  "abstract": "We study constrained contextual bandits (CCB) with adversarially chosen contexts, where each action yields a random reward and incurs a random cost. We adopt the standard realizability assumption: conditioned on the observed context, rewards and costs are drawn independently from fixed distributions whose expectations belong to known function classes. We consider the continuing setting, in which the algorithm operates over the entire horizon even after the budget is exhausted. In this setting, the objective is to simultaneously control regret and cumulative constraint violation. Building on the seminal SquareCB framework of Foster et al. (2018), we propose a simple and modular algorithmic scheme that leverages online regression oracles to reduce the constrained problem to a standard unconstrained contextual bandit problem with adaptively defined surrogate reward functions. In contrast to most prior work on CCB, which focuses on stochastic contexts, our reduction yields improved guarantees for the more general adversarial context setting, together with a compact and transparent analysis.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Dhruv Sarkar",
+   "Abhishek Sinha"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.05019v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.05019v1",
+  "published_iso": "2026-02-04T20:19:55Z"
+ },
+ {
+  "title": "LLMs-augmented Contextual Bandit",
+  "title_norm": "llms augmented contextual bandit",
+  "abstract": "Contextual bandits have emerged as a cornerstone in reinforcement learning, enabling systems to make decisions with partial feedback. However, as contexts grow in complexity, traditional bandit algorithms can face challenges in adequately capturing and utilizing such contexts. In this paper, we propose a novel integration of large language models (LLMs) with the contextual bandit framework. By leveraging LLMs as an encoder, we enrich the representation of the context, providing the bandit with a denser and more informative view. Preliminary results on synthetic datasets demonstrate the potential of this approach, showing notable improvements in cumulative rewards and reductions in regret compared to traditional bandit algorithms. This integration not only showcases the capabilities of LLMs in reinforcement learning but also opens the door to a new era of contextually-aware decision systems.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Ali Baheri",
+   "Cecilia O. Alm"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2311.02268v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2311.02268v1",
+  "published_iso": "2023-11-03T23:12:57Z"
+ },
+ {
+  "title": "Contexts can be Cheap: Solving Stochastic Contextual Bandits with Linear Bandit Algorithms",
+  "title_norm": "contexts can be cheap solving stochastic contextual bandits with linear bandit a",
+  "abstract": "In this paper, we address the stochastic contextual linear bandit problem, where a decision maker is provided a context (a random set of actions drawn from a distribution). The expected reward of each action is specified by the inner product of the action and an unknown parameter. The goal is to design an algorithm that learns to play as close as possible to the unknown optimal policy after a number of action plays. This problem is considered more challenging than the linear bandit problem, which can be viewed as a contextual bandit problem with a \\emph{fixed} context. Surprisingly, in this paper, we show that the stochastic contextual problem can be solved as if it is a linear bandit problem. In particular, we establish a novel reduction framework that converts every stochastic contextual linear bandit instance to a linear bandit instance, when the context distribution is known. When the context distribution is unknown, we establish an algorithm that reduces the stochastic contextual instance to a sequence of linear bandit instances with small misspecifications and achieves nearly the same worst-case regret bound as the algorithm that solves the misspecified linear bandit instances.\n  As a consequence, our results imply a $O(d\\sqrt{T\\log T})$ high-probability regret bound for contextual linear bandits, making progress in resolving an open problem in (Li et al., 2019), (Li et al., 2021).\n  Our reduction framework opens up a new way to approach stochastic contextual linear bandit problems, and enables improved regret bounds in a number of instances including the batch setting, contextual bandits with misspecifications, contextual bandits with sparse unknown parameters, and contextual bandits with adversarial corruption.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Osama A. Hanna",
+   "Lin F. Yang",
+   "Christina Fragouli"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2211.05632v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2211.05632v2",
+  "published_iso": "2022-11-08T22:18:53Z"
+ },
+ {
+  "title": "Uncertainty of Joint Neural Contextual Bandit",
+  "title_norm": "uncertainty of joint neural contextual bandit",
+  "abstract": "Contextual bandit learning is increasingly favored in modern large-scale recommendation systems. To better utlize the contextual information and available user or item features, the integration of neural networks have been introduced to enhance contextual bandit learning and has triggered significant interest from both academia and industry. However, a major challenge arises when implementing a disjoint neural contextual bandit solution in large-scale recommendation systems, where each item or user may correspond to a separate bandit arm. The huge number of items to recommend poses a significant hurdle for real world production deployment. This paper focuses on a joint neural contextual bandit solution which serves all recommending items in one single model. The output consists of a predicted reward $μ$, an uncertainty $σ$ and a hyper-parameter $α$ which balances exploitation and exploration, e.g., $μ+ ασ$.\n  The tuning of the parameter $α$ is typically heuristic and complex in practice due to its stochastic nature. To address this challenge, we provide both theoretical analysis and experimental findings regarding the uncertainty $σ$ of the joint neural contextual bandit model. Our analysis reveals that $α$ demonstrates an approximate square root relationship with the size of the last hidden layer $F$ and inverse square root relationship with the amount of training data $N$, i.e., $σ\\propto \\sqrt{\\frac{F}{N}}$. The experiments, conducted with real industrial data, align with the theoretical analysis, help understanding model behaviors and assist the hyper-parameter tuning during both offline training and online deployment.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Hongbo Guo",
+   "Zheqing Zhu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2406.02515v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2406.02515v1",
+  "published_iso": "2024-06-04T17:38:24Z"
+ },
+ {
+  "title": "Non-stationary Delayed Online Convex Optimization: From Full-information to Bandit Setting",
+  "title_norm": "non stationary delayed online convex optimization from full information to bandi",
+  "abstract": "Although online convex optimization (OCO) under arbitrary delays has received increasing attention recently, previous studies focus on stationary environments with the goal of minimizing static regret. In this paper, we investigate the delayed OCO in non-stationary environments, and choose dynamic regret with respect to any sequence of comparators as the performance metric. To this end, we first propose an algorithm called Mild-OGD for the full-information case, where delayed gradients are available. The basic idea is to maintain multiple experts in parallel, each performing a gradient descent step with different learning rates for every delayed gradient according to their arrival order, and utilize a meta-algorithm to track the best one based on their delayed performance. Despite the simplicity of this idea, our novel analysis shows that the dynamic regret of Mild-OGD can be automatically bounded by $O(\\sqrt{\\bar{d}T(P_T+1)})$ under the in-order assumption and $O(\\sqrt{dT(P_T+1)})$ in the worst case, where $\\bar{d}$ and $d$ denote the average and maximum delay respectively, $T$ is the time horizon, and $P_T$ is the path-length of comparators. Moreover, we demonstrate that the result in the worst case is optimal by deriving a matching lower bound. Finally, we develop a bandit variant of Mild-OGD for a more challenging case with only delayed loss values. Interestingly, we prove that under a relatively large amount of delay, our bandit algorithm even enjoys the best dynamic regret bound of existing non-delayed bandit algorithms.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Yuanyu Wan",
+   "Chang Yao",
+   "Yitao Ma",
+   "Mingli Song",
+   "Lijun Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2305.12131v4",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2305.12131v4",
+  "published_iso": "2023-05-20T07:54:07Z"
+ },
+ {
+  "title": "$α$-Fair Contextual Bandits",
+  "title_norm": "α fair contextual bandits",
+  "abstract": "Contextual bandit algorithms are at the core of many applications, including recommender systems, clinical trials, and optimal portfolio selection. One of the most popular problems studied in the contextual bandit literature is to maximize the sum of the rewards in each round by ensuring a sublinear regret against the best-fixed context-dependent policy. However, in many applications, the cumulative reward is not the right objective - the bandit algorithm must be fair in order to avoid the echo-chamber effect and comply with the regulatory requirements. In this paper, we consider the $α$-Fair Contextual Bandits problem, where the objective is to maximize the global $α$-fair utility function - a non-decreasing concave function of the cumulative rewards in the adversarial setting. The problem is challenging due to the non-separability of the objective across rounds. We design an efficient algorithm that guarantees an approximately sublinear regret in the full-information and bandit feedback settings.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Siddhant Chaudhary",
+   "Abhishek Sinha"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2310.14164v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2310.14164v1",
+  "published_iso": "2023-10-22T03:42:59Z"
+ },
+ {
+  "title": "Gotta be SAFE: A New Framework for Molecular Design",
+  "title_norm": "gotta be safe a new framework for molecular design",
+  "abstract": "Traditional molecular string representations, such as SMILES, often pose challenges for AI-driven molecular design due to their non-sequential depiction of molecular substructures. To address this issue, we introduce Sequential Attachment-based Fragment Embedding (SAFE), a novel line notation for chemical structures. SAFE reimagines SMILES strings as an unordered sequence of interconnected fragment blocks while maintaining compatibility with existing SMILES parsers. It streamlines complex generative tasks, including scaffold decoration, fragment linking, polymer generation, and scaffold hopping, while facilitating autoregressive generation for fragment-constrained design, thereby eliminating the need for intricate decoding or graph-based models. We demonstrate the effectiveness of SAFE by training an 87-million-parameter GPT2-like model on a dataset containing 1.1 billion SAFE representations. Through targeted experimentation, we show that our SAFE-GPT model exhibits versatile and robust optimization performance. SAFE opens up new avenues for the rapid exploration of chemical space under various constraints, promising breakthroughs in AI-driven molecular design.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Emmanuel Noutahi",
+   "Cristian Gabellini",
+   "Michael Craig",
+   "Jonathan S. C Lim",
+   "Prudencio Tossou"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2310.10773v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2310.10773v2",
+  "published_iso": "2023-10-16T19:12:56Z"
+ },
+ {
+  "title": "Towards Domain Adaptive Neural Contextual Bandits",
+  "title_norm": "towards domain adaptive neural contextual bandits",
+  "abstract": "Contextual bandit algorithms are essential for solving real-world decision making problems. In practice, collecting a contextual bandit's feedback from different domains may involve different costs. For example, measuring drug reaction from mice (as a source domain) and humans (as a target domain). Unfortunately, adapting a contextual bandit algorithm from a source domain to a target domain with distribution shift still remains a major challenge and largely unexplored. In this paper, we introduce the first general domain adaptation method for contextual bandits. Our approach learns a bandit model for the target domain by collecting feedback from the source domain. Our theoretical analysis shows that our algorithm maintains a sub-linear regret bound even adapting across domains. Empirical results show that our approach outperforms the state-of-the-art contextual bandit algorithms on real-world datasets.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Ziyan Wang",
+   "Xiaoming Huo",
+   "Hao Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2406.09564v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2406.09564v3",
+  "published_iso": "2024-06-13T20:12:46Z"
+ },
+ {
+  "title": "Bandit Social Learning: Exploration under Myopic Behavior",
+  "title_norm": "bandit social learning exploration under myopic behavior",
+  "abstract": "We study social learning dynamics motivated by reviews on online platforms. The agents collectively follow a simple multi-armed bandit protocol, but each agent acts myopically, without regards to exploration. We allow the greedy (exploitation-only) algorithm, as well as a wide range of behavioral biases. Specifically, we allow myopic behaviors that are consistent with (parameterized) confidence intervals for the arms' expected rewards. We derive stark learning failures for any such behavior, and provide matching positive results. The learning-failure results extend to Bayesian agents and Bayesian bandit environments.\n  In particular, we obtain general, quantitatively strong results on failure of the greedy bandit algorithm, both for ``frequentist\" and ``Bayesian\" versions. Failure results known previously are quantitatively weak, and either trivial or very specialized. Thus, we provide a theoretical foundation for designing non-trivial bandit algorithms, \\ie algorithms that intentionally explore, which has been missing from the literature.\n  Our general behavioral model can be interpreted as agents' optimism or pessimism. The matching positive results entail a maximal allowed amount of optimism. Moreover, we find that no amount of pessimism helps against the learning failures, whereas even a small-but-constant fraction of extreme optimists avoids the failures and leads to near-optimal regret rates.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Kiarash Banihashem",
+   "MohammadTaghi Hajiaghayi",
+   "Suho Shin",
+   "Aleksandrs Slivkins"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2302.07425v5",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2302.07425v5",
+  "published_iso": "2023-02-15T01:57:57Z"
+ },
+ {
+  "title": "Low-Rank Prune-And-Factorize for Language Model Compression",
+  "title_norm": "low rank prune and factorize for language model compression",
+  "abstract": "The components underpinning PLMs -- large weight matrices -- were shown to bear considerable redundancy. Matrix factorization, a well-established technique from matrix theory, has been utilized to reduce the number of parameters in PLM. However, it fails to retain satisfactory performance under moderate to high compression rate. In this paper, we identify the \\textit{full-rankness} of fine-tuned PLM as the fundamental bottleneck for the failure of matrix factorization and explore the use of network pruning to extract low-rank sparsity pattern desirable to matrix factorization. We find such low-rank sparsity pattern exclusively exists in models generated by first-order pruning, which motivates us to unite the two approaches and achieve more effective model compression. We further propose two techniques: sparsity-aware SVD and mixed-rank fine-tuning, which improve the initialization and training of the compression procedure, respectively. Experiments on GLUE and question-answering tasks show that the proposed method has superior compression-performance trade-off compared to existing approaches.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Siyu Ren",
+   "Kenny Q. Zhu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2306.14152v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2306.14152v1",
+  "published_iso": "2023-06-25T07:38:43Z"
+ },
+ {
+  "title": "Modified Levenberg-Marquardt Algorithm For Tensor CP Decomposition in Image Compression",
+  "title_norm": "modified levenberg marquardt algorithm for tensor cp decomposition in image comp",
+  "abstract": "This paper explores a new version of the Levenberg-Marquardt algorithm used for Tensor Canonical Polyadic (CP) decomposition with an emphasis on image compression and reconstruction. Tensor computation, especially CP decomposition, holds significant applications in data compression and analysis. In this study, we formulate CP as a nonlinear least squares optimization problem. Then, we present an iterative Levenberg-Marquardt (LM) based algorithm for computing the CP decomposition. Ultimately, we test the algorithm on various datasets, including randomly generated tensors and RGB images. The proposed method proves to be both efficient and effective, offering a reduced computational burden when compared to the traditional Levenberg-Marquardt technique.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Ramin Goudarzi Karim",
+   "Dipak Dulal",
+   "Carmeliza Navasca"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2401.04670v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2401.04670v1",
+  "published_iso": "2024-01-09T16:53:47Z"
+ },
+ {
+  "title": "A Survey on Transformer Compression",
+  "title_norm": "a survey on transformer compression",
+  "abstract": "Transformer plays a vital role in the realms of natural language processing (NLP) and computer vision (CV), specially for constructing large language models (LLM) and large vision models (LVM). Model compression methods reduce the memory and computational cost of Transformer, which is a necessary step to implement large language/vision models on practical devices. Given the unique architecture of Transformer, featuring alternative attention and feedforward neural network (FFN) modules, specific compression techniques are usually required. The efficiency of these compression methods is also paramount, as retraining large models on the entire training dataset is usually impractical. This survey provides a comprehensive review of recent compression methods, with a specific focus on their application to Transformer-based models. The compression methods are primarily categorized into pruning, quantization, knowledge distillation, and efficient architecture design (Mamba, RetNet, RWKV, etc.). In each category, we discuss compression methods for both language and vision tasks, highlighting common underlying principles. Finally, we delve into the relation between various compression methods, and discuss further directions in this domain.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yehui Tang",
+   "Yunhe Wang",
+   "Jianyuan Guo",
+   "Zhijun Tu",
+   "Kai Han",
+   "Hailin Hu",
+   "Dacheng Tao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2402.05964v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2402.05964v2",
+  "published_iso": "2024-02-05T12:16:28Z"
+ },
+ {
+  "title": "Shifting AI Efficiency From Model-Centric to Data-Centric Compression",
+  "title_norm": "shifting ai efficiency from model centric to data centric compression",
+  "abstract": "The advancement of large language models (LLMs) and multi-modal LLMs (MLLMs) has historically relied on scaling model parameters. However, as hardware limits constrain further model growth, the primary computational bottleneck has shifted to the quadratic cost of self-attention over increasingly long sequences by ultra-long text contexts, high-resolution images, and extended videos. In this position paper, \\textbf{we argue that the focus of research for efficient artificial intelligence (AI) is shifting from model-centric compression to data-centric compression}. We position data-centric compression as the emerging paradigm, which improves AI efficiency by directly compressing the volume of data processed during model training or inference. To formalize this shift, we establish a unified framework for existing efficiency strategies and demonstrate why it constitutes a crucial paradigm change for long-context AI. We then systematically review the landscape of data-centric compression methods, analyzing their benefits across diverse scenarios. Finally, we outline key challenges and promising future research directions. Our work aims to provide a novel perspective on AI efficiency, synthesize existing efforts, and catalyze innovation to address the challenges posed by ever-increasing context lengths.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Xuyang Liu",
+   "Zichen Wen",
+   "Shaobo Wang",
+   "Junjie Chen",
+   "Zhishan Tao",
+   "Yubo Wang",
+   "Tailai Chen",
+   "Xiangqi Jin",
+   "Chang Zou",
+   "Yiyu Wang",
+   "Chenfei Liao",
+   "Xu Zheng",
+   "Honggang Chen",
+   "Weijia Li",
+   "Xuming Hu",
+   "Conghui He",
+   "Linfeng Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2505.19147v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2505.19147v3",
+  "published_iso": "2025-05-25T13:51:17Z"
+ },
+ {
+  "title": "Extreme Image Compression using Fine-tuned VQGANs",
+  "title_norm": "extreme image compression using fine tuned vqgans",
+  "abstract": "Recent advances in generative compression methods have demonstrated remarkable progress in enhancing the perceptual quality of compressed data, especially in scenarios with low bitrates. However, their efficacy and applicability to achieve extreme compression ratios ($<0.05$ bpp) remain constrained. In this work, we propose a simple yet effective coding framework by introducing vector quantization (VQ)--based generative models into the image compression domain. The main insight is that the codebook learned by the VQGAN model yields a strong expressive capacity, facilitating efficient compression of continuous information in the latent space while maintaining reconstruction quality. Specifically, an image can be represented as VQ-indices by finding the nearest codeword, which can be encoded using lossless compression methods into bitstreams. We propose clustering a pre-trained large-scale codebook into smaller codebooks through the K-means algorithm, yielding variable bitrates and different levels of reconstruction quality within the coding framework. Furthermore, we introduce a transformer to predict lost indices and restore images in unstable environments. Extensive qualitative and quantitative experiments on various benchmark datasets demonstrate that the proposed framework outperforms state-of-the-art codecs in terms of perceptual quality-oriented metrics and human perception at extremely low bitrates ($\\le 0.04$ bpp). Remarkably, even with the loss of up to $20\\%$ of indices, the images can be effectively restored with minimal perceptual loss.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Qi Mao",
+   "Tinghan Yang",
+   "Yinuo Zhang",
+   "Zijian Wang",
+   "Meng Wang",
+   "Shiqi Wang",
+   "Siwei Ma"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2307.08265v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2307.08265v3",
+  "published_iso": "2023-07-17T06:14:19Z"
+ },
+ {
+  "title": "Chance constrained directional models in stochastic data envelopment analysis",
+  "title_norm": "chance constrained directional models in stochastic data envelopment analysis",
+  "abstract": "We construct a new family of chance constrained directional models in stochastic data envelopment analysis, generalizing the deterministic directional models and the chance constrained radial models. We prove that chance constrained directional models define the same concept of stochastic efficiency as the one given by chance constrained radial models and, as a particular case, we obtain a stochastic version of the generalized Farrell measure. Finally, we give some examples of application of chance constrained directional models with stochastic and deterministic directions, showing that inefficiency scores obtained with stochastic directions are less or equal than those obtained considering deterministic directions whose values are the means of the stochastic ones.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Vicente J. Bolos",
+   "Rafael Benitez",
+   "Vicente Coll-Serrano"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2410.14295v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2410.14295v1",
+  "published_iso": "2024-10-18T08:53:12Z"
+ },
+ {
+  "title": "Accelerating Chance-constrained SCED via Scenario Compression",
+  "title_norm": "accelerating chance constrained sced via scenario compression",
+  "abstract": "This paper studies some compression methods to accelerate the scenario-based chance-constrained security-constrained economic dispatch (SCED) problem. In particular, we show that by exclusively employing the vertices after convex hull compression, an equivalent solution can be obtained compared to utilizing the entire scenario set. For other compression methods that might relax the original solution, such as box compression, this paper presents the compression risk validation scheme to assess the risk arising from the sample space. By quantifying the risk associated with compression, decision-makers are empowered to select either solution risk or compression risk as the risk metric, depending on the complexity of specific problems. Numerical examples based on the 118-bus system and synthetic Texas grids compare these two risk metrics. The results also demonstrate the efficiency of compression methods in both problem formulation and solving processes.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Qian Zhang",
+   "Le Xie"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2408.09245v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2408.09245v1",
+  "published_iso": "2024-08-17T16:30:08Z"
+ },
+ {
+  "title": "ED: Perceptually tuned Enhanced Compression Model",
+  "title_norm": "ed perceptually tuned enhanced compression model",
+  "abstract": "This paper summarises the design of the candidate ED for the Challenge on Learned Image Compression 2024. This candidate aims at providing an anchor based on conventional coding technologies to the learning-based approaches mostly targeted in the challenge.\n  The proposed candidate is based on the Enhanced Compression Model (ECM) developed at JVET, the Joint Video Experts Team of ITU-T VCEG and ISO/IEC MPEG.\n  Here, ECM is adapted to the challenge objective: to maximise the perceived quality, the encoding is performed according to a perceptual metric, also the sequence selection is performed in a perceptual manner to fit the target bit per pixel objectives.\n  The primary objective of this candidate is to assess the recent developments in video coding standardisation and in parallel to evaluate the progress made by learning-based techniques. To this end, this paper explains how to generate coded images fulfilling the challenge requirements, in a reproducible way, targeting the maximum performance.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Pierrick Philippe",
+   "Théo Ladune",
+   "Stéphane Davenet",
+   "Thomas Leguay"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2401.02145v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2401.02145v1",
+  "published_iso": "2024-01-04T08:51:16Z"
+ },
+ {
+  "title": "Learned Compression for Compressed Learning",
+  "title_norm": "learned compression for compressed learning",
+  "abstract": "Modern sensors produce increasingly rich streams of high-resolution data. Due to resource constraints, machine learning systems discard the vast majority of this information via resolution reduction. Compressed-domain learning allows models to operate on compact latent representations, allowing higher effective resolution for the same budget. However, existing compression systems are not ideal for compressed learning. Linear transform coding and end-to-end learned compression systems reduce bitrate, but do not uniformly reduce dimensionality; thus, they do not meaningfully increase efficiency. Generative autoencoders reduce dimensionality, but their adversarial or perceptual objectives lead to significant information loss. To address these limitations, we introduce WaLLoC (Wavelet Learned Lossy Compression), a neural codec architecture that combines linear transform coding with nonlinear dimensionality-reducing autoencoders. WaLLoC sandwiches a shallow, asymmetric autoencoder and entropy bottleneck between an invertible wavelet packet transform. Across several key metrics, WaLLoC outperforms the autoencoders used in state-of-the-art latent diffusion models. WaLLoC does not require perceptual or adversarial losses to represent high-frequency detail, providing compatibility with modalities beyond RGB images and stereo audio. WaLLoC's encoder consists almost entirely of linear operations, making it exceptionally efficient and suitable for mobile computing, remote sensing, and learning directly from compressed data. We demonstrate WaLLoC's capability for compressed-domain learning across several tasks, including image classification, colorization, document understanding, and music source separation. Our code, experiments, and pre-trained audio and image codecs are available at https://ut-sysml.org/walloc",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Dan Jacobellis",
+   "Neeraja J. Yadwadkar"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2412.09405v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2412.09405v1",
+  "published_iso": "2024-12-12T16:09:57Z"
+ },
+ {
+  "title": "Embedding Compression for Teacher-to-Student Knowledge Transfer",
+  "title_norm": "embedding compression for teacher to student knowledge transfer",
+  "abstract": "Common knowledge distillation methods require the teacher model and the student model to be trained on the same task. However, the usage of embeddings as teachers has also been proposed for different source tasks and target tasks. Prior work that uses embeddings as teachers ignores the fact that the teacher embeddings are likely to contain irrelevant knowledge for the target task. To address this problem, we propose to use an embedding compression module with a trainable teacher transformation to obtain a compact teacher embedding. Results show that adding the embedding compression module improves the classification performance, especially for unsupervised teacher embeddings. Moreover, student models trained with the guidance of embeddings show stronger generalizability.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yiwei Ding",
+   "Alexander Lerch"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2402.06761v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2402.06761v1",
+  "published_iso": "2024-02-09T19:47:31Z"
+ },
+ {
+  "title": "Compressed BC-LISTA via Low-Rank Convolutional Decomposition",
+  "title_norm": "compressed bc lista via low rank convolutional decomposition",
+  "abstract": "We study Sparse Signal Recovery (SSR) methods for multichannel imaging with compressed {forward and backward} operators that preserve reconstruction accuracy. We propose a Compressed Block-Convolutional (C-BC) measurement model based on a low-rank Convolutional Neural Network (CNN) decomposition that is analytically initialized from a low-rank factorization of physics-derived forward/backward operators in time delay-based measurements. We use Orthogonal Matching Pursuit (OMP) to select a compact set of basis filters from the analytic model and compute linear mixing coefficients to approximate the full model. We consider the Learned Iterative Shrinkage-Thresholding Algorithm (LISTA) network as a representative example for which the C-BC-LISTA extension is presented. In simulated multichannel ultrasound imaging across multiple Signal-to-Noise Ratios (SNRs), C-BC-LISTA requires substantially fewer parameters and smaller model size than other state-of-the-art (SOTA) methods while improving reconstruction accuracy. In ablations over OMP, Singular Value Decomposition (SVD)-based, and random initializations, OMP-initialized structured compression performs best, yielding the most efficient training and the best performance.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Han Wang",
+   "Yhonatan Kvich",
+   "Eduardo Pérez",
+   "Florian Römer",
+   "Yonina C. Eldar"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2601.23148v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2601.23148v1",
+  "published_iso": "2026-01-30T16:33:51Z"
+ },
+ {
+  "title": "3D Point Cloud Compression with Recurrent Neural Network and Image Compression Methods",
+  "title_norm": "3d point cloud compression with recurrent neural network and image compression m",
+  "abstract": "Storing and transmitting LiDAR point cloud data is essential for many AV applications, such as training data collection, remote control, cloud services or SLAM. However, due to the sparsity and unordered structure of the data, it is difficult to compress point cloud data to a low volume. Transforming the raw point cloud data into a dense 2D matrix structure is a promising way for applying compression algorithms. We propose a new lossless and calibrated 3D-to-2D transformation which allows compression algorithms to efficiently exploit spatial correlations within the 2D representation. To compress the structured representation, we use common image compression methods and also a self-supervised deep compression approach using a recurrent neural network. We also rearrange the LiDAR's intensity measurements to a dense 2D representation and propose a new metric to evaluate the compression performance of the intensity. Compared to approaches that are based on generic octree point cloud compression or based on raw point cloud data compression, our approach achieves the best quantitative and visual performance. Source code and dataset are available at https://github.com/ika-rwth-aachen/Point-Cloud-Compression.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Till Beemelmanns",
+   "Yuchen Tao",
+   "Bastian Lampe",
+   "Lennart Reiher",
+   "Raphael van Kempen",
+   "Timo Woopen",
+   "Lutz Eckstein"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2402.11680v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2402.11680v1",
+  "published_iso": "2024-02-18T19:08:19Z"
+ },
+ {
+  "title": "Neural Normalized Compression Distance and the Disconnect Between Compression and Classification",
+  "title_norm": "neural normalized compression distance and the disconnect between compression an",
+  "abstract": "It is generally well understood that predictive classification and compression are intrinsically related concepts in information theory. Indeed, many deep learning methods are explained as learning a kind of compression, and that better compression leads to better performance. We interrogate this hypothesis via the Normalized Compression Distance (NCD), which explicitly relies on compression as the means of measuring similarity between sequences and thus enables nearest-neighbor classification. By turning popular large language models (LLMs) into lossless compressors, we develop a Neural NCD and compare LLMs to classic general-purpose algorithms like gzip. In doing so, we find that classification accuracy is not predictable by compression rate alone, among other empirical aberrations not predicted by current understanding. Our results imply that our intuition on what it means for a neural network to ``compress'' and what is needed for effective classification are not yet well understood.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "John Hurwitz",
+   "Charles Nicholas",
+   "Edward Raff"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2410.15280v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2410.15280v1",
+  "published_iso": "2024-10-20T04:31:56Z"
+ },
+ {
+  "title": "On Learning for Ambiguous Chance Constrained Problems",
+  "title_norm": "on learning for ambiguous chance constrained problems",
+  "abstract": "We study chance constrained optimization problems $\\min_x f(x)$ s.t. $P(\\left\\{ θ: g(x,θ)\\le 0 \\right\\})\\ge 1-ε$ where $ε\\in (0,1)$ is the violation probability, when the distribution $P$ is not known to the decision maker (DM). When the DM has access to a set of distributions $\\mathcal{U}$ such that $P$ is contained in $\\mathcal{U}$, then the problem is known as the ambiguous chance-constrained problem \\cite{erdougan2006ambiguous}. We study ambiguous chance-constrained problem for the case when $\\mathcal{U}$ is of the form $\\left\\{μ:\\frac{μ(y)}{ν(y)}\\leq C, \\forall y\\inΘ, μ(y)\\ge 0\\right\\}$, where $ν$ is a ``reference distribution.'' We show that in this case the original problem can be ``well-approximated'' by a sampled problem in which $N$ i.i.d. samples of $θ$ are drawn from $ν$, and the original constraint is replaced with $g(x,θ_i)\\le 0,~i=1,2,\\ldots,N$. We also derive the sample complexity associated with this approximation, i.e., for $ε,δ>0$ the number of samples which must be drawn from $ν$ so that with a probability greater than $1-δ$ (over the randomness of $ν$), the solution obtained by solving the sampled program yields an $ε$-feasible solution for the original chance constrained problem.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "A Ch Madhusudanarao",
+   "Rahul Singh"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2401.00547v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2401.00547v2",
+  "published_iso": "2023-12-31T17:25:43Z"
+ },
+ {
+  "title": "Learning to Compress: Local Rank and Information Compression in Deep Neural Networks",
+  "title_norm": "learning to compress local rank and information compression in deep neural netwo",
+  "abstract": "Deep neural networks tend to exhibit a bias toward low-rank solutions during training, implicitly learning low-dimensional feature representations. This paper investigates how deep multilayer perceptrons (MLPs) encode these feature manifolds and connects this behavior to the Information Bottleneck (IB) theory. We introduce the concept of local rank as a measure of feature manifold dimensionality and demonstrate, both theoretically and empirically, that this rank decreases during the final phase of training. We argue that networks that reduce the rank of their learned representations also compress mutual information between inputs and intermediate layers. This work bridges the gap between feature manifold rank and information compression, offering new insights into the interplay between information bottlenecks and representation learning.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Niket Patel",
+   "Ravid Shwartz-Ziv"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2410.07687v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2410.07687v1",
+  "published_iso": "2024-10-10T07:53:34Z"
+ },
+ {
+  "title": "HAMP-LIC: Hessian-Aware Mixed-Precision Post-Training Quantization for Learned Image Compression",
+  "title_norm": "hamp lic hessian aware mixed precision post training quantization for learned im",
+  "abstract": "Use this plain-text version for the arXiv abstract field: Learned image compression (LIC) models achieve strong rate-distortion performance but are hindered by high computational complexity and encoding-decoding mismatches across heterogeneous hardware platforms. Uniform fixed-precision quantization alleviates these issues but suffers severe quality degradation at low bit widths because it ignores differences in the quantization sensitivities of individual layers. To enable efficient and accurate low-bit deployment of pretrained LIC models, we propose HAMP-LIC, a Hessian-aware mixed-precision post-training quantization (PTQ) framework with a four-stage optimization strategy. First, block-wise sensitivity is estimated from the Hessian trace to capture second-order importance. Second, a task-aware refinement module adjusts these sensitivities by jointly considering quantization distortion and rate-distortion performance. Third, guided by the refined sensitivity profile, bit widths are allocated under a global model-size constraint to balance efficiency and reconstruction quality. Finally, block-wise reconstruction using a small calibration set further suppresses quantization error. Experiments on representative LIC models, including Minnen2018 and Cheng2020, demonstrate that HAMP-LIC achieves up to 4.85x model compression with as little as 0.59% BD-rate loss. It consistently outperforms existing fixed- and mixed-precision PTQ methods across multiple datasets while completely eliminating cross-platform encoding-decoding errors.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yuefeng Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.12239v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.12239v1",
+  "published_iso": "2026-08-12T16:41:33Z"
+ },
+ {
+  "title": "Chance constrained nonlinear fractional programming with random benchmark",
+  "title_norm": "chance constrained nonlinear fractional programming with random benchmark",
+  "abstract": "This paper studies the chance constrained fractional programming with a random benchmark. We assume that the random variables on the numerator follow the Gaussian distribution, and the random variables on the denominator and the benchmark follow a joint discrete distribution. Under some mild assumptions, we derive a convex reformulation of chance constrained fractional programming. For practical use, we apply piecewise linear and tangent approximations to the quantile function. We conduct numerical experiments on a main economic application problem.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Tian Xia",
+   "Jia Liu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2312.15315v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2312.15315v1",
+  "published_iso": "2023-12-23T18:12:19Z"
+ },
+ {
+  "title": "Compression Represents Intelligence Linearly",
+  "title_norm": "compression represents intelligence linearly",
+  "abstract": "There is a belief that learning to compress well will lead to intelligence. Recently, language modeling has been shown to be equivalent to compression, which offers a compelling rationale for the success of large language models (LLMs): the development of more advanced language models is essentially enhancing compression which facilitates intelligence. Despite such appealing discussions, little empirical evidence is present for the interplay between compression and intelligence. In this work, we examine their relationship in the context of LLMs, treating LLMs as data compressors. Given the abstract concept of \"intelligence\", we adopt the average downstream benchmark scores as a surrogate, specifically targeting intelligence related to knowledge and commonsense, coding, and mathematical reasoning. Across 12 benchmarks, our study brings together 31 public LLMs that originate from diverse organizations. Remarkably, we find that LLMs' intelligence -- reflected by average benchmark scores -- almost linearly correlates with their ability to compress external text corpora. These results provide concrete evidence supporting the belief that superior compression indicates greater intelligence. Furthermore, our findings suggest that compression efficiency, as an unsupervised metric derived from raw text corpora, serves as a reliable evaluation measure that is linearly associated with the model capabilities. We open-source our compression datasets as well as our data collection pipelines to facilitate future researchers to assess compression properly.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yuzhen Huang",
+   "Jinghan Zhang",
+   "Zifei Shan",
+   "Junxian He"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2404.09937v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2404.09937v2",
+  "published_iso": "2024-04-15T17:03:41Z"
+ },
+ {
+  "title": "3DGS.zip: A survey on 3D Gaussian Splatting Compression Methods",
+  "title_norm": "3dgs zip a survey on 3d gaussian splatting compression methods",
+  "abstract": "3D Gaussian Splatting (3DGS) has emerged as a cutting-edge technique for real-time radiance field rendering, offering state-of-the-art performance in terms of both quality and speed. 3DGS models a scene as a collection of three-dimensional Gaussians, with additional attributes optimized to conform to the scene's geometric and visual properties. Despite its advantages in rendering speed and image fidelity, 3DGS is limited by its significant storage and memory demands. These high demands make 3DGS impractical for mobile devices or headsets, reducing its applicability in important areas of computer graphics. To address these challenges and advance the practicality of 3DGS, this survey provides a comprehensive and detailed examination of compression and compaction techniques developed to make 3DGS more efficient. We classify existing methods into two categories: compression, which focuses on reducing file size, and compaction, which aims to minimize the number of Gaussians. Both methods aim to maintain or improve quality, each by minimizing its respective attribute: file size for compression and Gaussian count for compaction. We introduce the basic mathematical concepts underlying the analyzed methods, as well as key implementation details and design choices. Our report thoroughly discusses similarities and differences among the methods, as well as their respective advantages and disadvantages. We establish a consistent framework for comparing the surveyed methods based on key performance metrics and datasets. Specifically, since these methods have been developed in parallel and over a short period of time, currently, no comprehensive comparison exists. This survey, for the first time, presents a unified framework to evaluate 3DGS compression techniques. We maintain a website that will be regularly updated with emerging methods: https://w-m.github.io/3dgs-compression-survey/ .",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Milena T. Bagdasarian",
+   "Paul Knoll",
+   "Yi-Hsin Li",
+   "Florian Barthel",
+   "Anna Hilsmann",
+   "Peter Eisert",
+   "Wieland Morgenstern"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.09510v5",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.09510v5",
+  "published_iso": "2024-06-17T11:43:38Z"
+ },
+ {
+  "title": "RNA secondary structures: from ab initio prediction to better compression, and back",
+  "title_norm": "rna secondary structures from ab initio prediction to better compression and bac",
+  "abstract": "In this paper, we use the biological domain knowledge incorporated into stochastic models for ab initio RNA secondary-structure prediction to improve the state of the art in joint compression of RNA sequence and structure data (Liu et al., BMC Bioinformatics, 2008). Moreover, we show that, conversely, compression ratio can serve as a cheap and robust proxy for comparing the prediction quality of different stochastic models, which may help guide the search for better RNA structure prediction models.\n  Our results build on expert stochastic context-free grammar models of RNA secondary structures (Dowell & Eddy, BMC Bioinformatics, 2004; Nebel & Scheid, Theory in Biosciences, 2011) combined with different (static and adaptive) models for rule probabilities and arithmetic coding. We provide a prototype implementation and an extensive empirical evaluation, where we illustrate how grammar features and probability models affect compression ratios.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Evarista Onokpasa",
+   "Sebastian Wild",
+   "Prudence W. H. Wong"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2302.11669v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2302.11669v1",
+  "published_iso": "2023-02-22T21:45:33Z"
+ },
+ {
+  "title": "Machine Perceptual Quality: Evaluating the Impact of Severe Lossy Compression on Audio and Image Models",
+  "title_norm": "machine perceptual quality evaluating the impact of severe lossy compression on ",
+  "abstract": "In the field of neural data compression, the prevailing focus has been on optimizing algorithms for either classical distortion metrics, such as PSNR or SSIM, or human perceptual quality. With increasing amounts of data consumed by machines rather than humans, a new paradigm of machine-oriented compression$\\unicode{x2013}$which prioritizes the retention of features salient for machine perception over traditional human-centric criteria$\\unicode{x2013}$has emerged, creating several new challenges to the development, evaluation, and deployment of systems utilizing lossy compression. In particular, it is unclear how different approaches to lossy compression will affect the performance of downstream machine perception tasks. To address this under-explored area, we evaluate various perception models$\\unicode{x2013}$including image classification, image segmentation, speech recognition, and music source separation$\\unicode{x2013}$under severe lossy compression. We utilize several popular codecs spanning conventional, neural, and generative compression architectures. Our results indicate three key findings: (1) using generative compression, it is feasible to leverage highly compressed data while incurring a negligible impact on machine perceptual quality; (2) machine perceptual quality correlates strongly with deep similarity metrics, indicating a crucial role of these metrics in the development of machine-oriented codecs; and (3) using lossy compressed datasets, (e.g. ImageNet) for pre-training can lead to counter-intuitive scenarios where lossy compression increases machine perceptual quality rather than degrading it. To encourage engagement on this growing area of research, our code and experiments are available at: https://github.com/danjacobellis/MPQ.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Dan Jacobellis",
+   "Daniel Cummings",
+   "Neeraja J. Yadwadkar"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2401.07957v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2401.07957v1",
+  "published_iso": "2024-01-15T20:47:24Z"
+ },
+ {
+  "title": "Text + Sketch: Image Compression at Ultra Low Rates",
+  "title_norm": "text sketch image compression at ultra low rates",
+  "abstract": "Recent advances in text-to-image generative models provide the ability to generate high-quality images from short text descriptions. These foundation models, when pre-trained on billion-scale datasets, are effective for various downstream tasks with little or no further training. A natural question to ask is how such models may be adapted for image compression. We investigate several techniques in which the pre-trained models can be directly used to implement compression schemes targeting novel low rate regimes. We show how text descriptions can be used in conjunction with side information to generate high-fidelity reconstructions that preserve both semantics and spatial structure of the original. We demonstrate that at very low bit-rates, our method can significantly improve upon learned compressors in terms of perceptual and semantic fidelity, despite no end-to-end training.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Eric Lei",
+   "Yiğit Berkay Uslu",
+   "Hamed Hassani",
+   "Shirin Saeedi Bidokhti"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2307.01944v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2307.01944v1",
+  "published_iso": "2023-07-04T22:26:20Z"
+ },
+ {
+  "title": "A generic nonparametric value-at-risk estimator for high dimensions",
+  "title_norm": "a generic nonparametric value at risk estimator for high dimensions",
+  "abstract": "We present in this article a non-parametric value-at-risk (VaR+CVaR) algorithm that remains accurate for an arbitrarily large number of underlying positions. The algorithm solves the two inherent problems of VaR estimation. First, past history is not directly applicable to the future, but all predictions of the future are based on the past. Second, VaR estimation is equivalent to modeling a single corner of a high-dimensional space (the corner where all bets lose simultaneously). The algorithm only uses mathematical methods that strictly do not degrade in accuracy at high-dimensions. Historical data are then directly incorporated with all high-dimensional relationships present, without manipulation. We test the algorithm with an ensemble of 500 portfolios with random positions across 49 distinct liquid futures of different expiries (VIX, equity indexes, gov. bonds, rates, energy, metals, livestock, agriculture, and softs). All VaR estimations are performed strictly blind to the future. The median portfolio rate of loss exceeding the 99% confidence daily VaR estimate is between $1.0\\pm0.1$% depending on algorithm input parameters. 68% of portfolios have a rate of loss exceeding 99% VaR between $1.0\\pm0.3$%, and 95% of portfolios between $1.0\\pm0.5$%.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Siyuan Sun"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.17481v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.17481v1",
+  "published_iso": "2026-08-18T08:10:34Z"
+ },
+ {
+  "title": "Robust blue-green urban flood risk management optimised with a genetic algorithm for multiple rainstorm return periods",
+  "title_norm": "robust blue green urban flood risk management optimised with a genetic algorithm",
+  "abstract": "Flood risk managers seek to optimise Blue-Green Infrastructure (BGI) designs to maximise return on investment. Current systems often use optimisation algorithms and detailed flood models to maximise benefit-cost ratios for single rainstorm return periods. However, these schemes may lack robustness in mitigating flood risks across different storm magnitudes. For example, a BGI scheme optimised for a 100-year return period may differ from one optimised for a 10-year return period. This study introduces a novel methodology incorporating five return periods (T = 10, 20, 30, 50, and 100 years) into a multi-objective BGI optimisation framework. The framework combines a Non-dominated Sorting Genetic Algorithm II (NSGA-II) with a fully distributed hydrodynamic model to optimise the spatial placement and combined size of BGI features. For the first time, direct damage cost (DDC) and expected annual damage (EAD), calculated for various building types, are used as risk objective functions, transforming a many-objective problem into a multi-objective one. Performance metrics such as Median Risk Difference (MedRD), Maximum Risk Difference (MaxRD), and Area Under Pareto Front (AUPF) reveal that a 100-year optimised BGI design performs poorly when evaluated for other return periods, particularly shorter ones. In contrast, a BGI design optimised using composite return periods enhances performance metrics across all return periods, with the greatest improvements observed in MedRD (22%) and AUPF (73%) for the 20-year return period, and MaxRD (23%) for the 50-year return period. Furthermore, climate uplift stress testing confirms the robustness of the proposed design to future rainfall extremes. This study advocates a paradigm shift in flood risk management, moving from single maximum to multiple rainstorm return period-based designs to enhance resilience and adaptability to future climate extremes.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Asid Ur Rehman",
+   "Vassilis Glenis",
+   "Elizabeth Lewis",
+   "Chris Kilsby",
+   "Claire Walsh"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2502.12174v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2502.12174v2",
+  "published_iso": "2025-02-13T21:42:08Z"
+ },
+ {
+  "title": "Optimal risk sharing, equilibria, and welfare with empirically realistic risk attitudes",
+  "title_norm": "optimal risk sharing equilibria and welfare with empirically realistic risk atti",
+  "abstract": "This paper examines optimal risk sharing. It brings in empirical realism, reckoning with the risk seeking found empirically. We provide results on Pareto optimality, competitive equilibria, utility frontiers, and the first and second theorems of welfare. Empirical studies have found prevailing risk seeking in several subdomains. Thus, as a first step to increase empirical realism, we allow for some risk-seeking agents, still assuming expected utility. Yet more empirical realism is obtained by generalizing expected utility and allowing agents' attitudes to combine risk aversion in some domains with risk seeking in others. We provide results and show directions for future research.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Jean-Gabriel Lauzier",
+   "Liyuan Lin",
+   "Peter Wakker",
+   "Ruodu Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2401.03328v6",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2401.03328v6",
+  "published_iso": "2024-01-06T23:13:49Z"
+ },
+ {
+  "title": "Distributed Kaplan-Meier Analysis via the Influence Function with Application to COVID-19 and COVID-19 Vaccine Adverse Events",
+  "title_norm": "distributed kaplan meier analysis via the influence function with application to",
+  "abstract": "During the COVID-19 pandemic, regulatory decision-making was hampered by a lack of timely and high-quality data on rare outcomes. Studying rare outcomes following infection and vaccination requires conducting multi-center observational studies, where sharing individual-level data is a privacy concern. In this paper, we conduct a multi-center observational study of thromboembolic events following COVID-19 and COVID-19 vaccination without sharing individual-level data. We accomplish this by developing a novel distributed learning method for constructing Kaplan-Meier (KM) curves and inverse propensity weighted KM curves with statistical inference. We sequentially update curves site-by-site using the KM influence function, which is a measure of the direction in which an observation should shift our estimate and so can be used to incorporate new observations without access to previous data. We show in simulations that our distributed estimator is unbiased and achieves equal efficiency to the combined data estimator. Applying our method to Beaumont Health, Spectrum Health, and Michigan Medicine data, we find a much higher covariate-adjusted incidence of blood clots after SARS-CoV-2 infection (3.13%, 95% CI: [2.93, 3.35]) compared to first COVID-19 vaccine (0.08%, 95% CI: [0.08, 0.09]). This suggests that the protection vaccines provide against COVID-19-related clots outweighs the risk of vaccine-related adverse events, and shows the potential of distributed survival analysis to provide actionable evidence for time-sensitive decision making.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Malcolm Risk",
+   "Xu Shi",
+   "Lili Zhao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2507.14351v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2507.14351v1",
+  "published_iso": "2025-07-18T20:03:33Z"
+ },
+ {
+  "title": "CVA Sensitivities, Hedging and Risk",
+  "title_norm": "cva sensitivities hedging and risk",
+  "abstract": "We present a unified framework for computing CVA sensitivities, hedging the CVA, and assessing CVA risk, using probabilistic machine learning meant as refined regression tools on simulated data, validatable by low-cost companion Monte Carlo procedures. Various notions of sensitivities  are introduced  and benchmarked numerically.  We identify the sensitivities representing the best practical trade-offs in downstream tasks including CVA hedging and risk assessment.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Stéphane Crépey",
+   "Botao Li",
+   "Hoang Nguyen",
+   "Bouazza Saadeddine"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.18583v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.18583v1",
+  "published_iso": "2024-07-26T08:03:44Z"
+ },
+ {
+  "title": "World Knowledge in Multiple Choice Reading Comprehension",
+  "title_norm": "world knowledge in multiple choice reading comprehension",
+  "abstract": "Recently it has been shown that without any access to the contextual passage, multiple choice reading comprehension (MCRC) systems are able to answer questions significantly better than random on average. These systems use their accumulated \"world knowledge\" to directly answer questions, rather than using information from the passage. This paper examines the possibility of exploiting this observation as a tool for test designers to ensure that the use of \"world knowledge\" is acceptable for a particular set of questions. We propose information-theory based metrics that enable the level of \"world knowledge\" exploited by systems to be assessed. Two metrics are described: the expected number of options, which measures whether a passage-free system can identify the answer a question using world knowledge; and the contextual mutual information, which measures the importance of context for a given question. We demonstrate that questions with low expected number of options, and hence answerable by the shortcut system, are often similarly answerable by humans without context. This highlights that the general knowledge 'shortcuts' could be equally used by exam candidates, and that our proposed metrics may be helpful for future test designers to monitor the quality of questions.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Adian Liusie",
+   "Vatsal Raina",
+   "Mark Gales"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2211.07040v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2211.07040v2",
+  "published_iso": "2022-11-13T23:02:09Z"
+ },
+ {
+  "title": "Congressional Districting: \"Rocks-Pebbles-Sand\"",
+  "title_norm": "congressional districting rocks pebbles sand",
+  "abstract": "As a case study into an algorithmic approach to congressional districting, North Carolina provides a lot to explore. Statistical modeling has called into question whether recent North Carolina district plans are unbiased. In particular, the literature suggests that the district plan used in the 2016 U.S. House of Representatives election yields outlier results that are statistically unlikely to be obtained without the application of bias. Therefore, methods for creating strong and fair district plans are needed. Informed by previous districting models and algorithms, we build a model and algorithm to produce an ensemble of viable Congressional district plans. Our work contributes a ``Rocks-Pebbles-Sand'' concept and procedure facilitating reasonable population equity with a small overall number of county splits among districts. Additionally, our methodology minimizes the initial need for granular, precinct-level data, thereby reducing the risk of covert gerrymandering. This case study indicates plausibility of an approach built upon an easy-to-understand intuition.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Jimmy Risk",
+   "Jennifer Switkes",
+   "Ann Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2311.11834v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2311.11834v1",
+  "published_iso": "2023-11-20T15:09:57Z"
+ },
+ {
+  "title": "Value-at-Risk- and Expectile-based Systemic Risk Measures and Second-order Asymptotics: With Applications to Diversification",
+  "title_norm": "value at risk and expectile based systemic risk measures and second order asympt",
+  "abstract": "Systemic risk measures play a crucial role in analyzing individual losses conditional on extreme system-wide disasters. In this paper, we provide a unified asymptotic treatment for systemic risk measures. First, we classify them into two families of Value-at-Risk- (VaR-) and expectile-based systemic risk measures. While VaR-based risk measures have been extensively studied, in the latter family, we propose two new systemic risk measures named the Individual Conditional Expectile (ICE) and the Systemic Individual Conditional Expectile (SICE), as alternatives to Marginal Expected Shortfall (MES) and Systemic Expected Shortfall (SES). Second, to characterize general mutually dependent and heavy-tailed risks, we consider a multivariate loss system following a multivariate Sarmanov distribution with common marginal distributions exhibiting second-order regular variation. Third, within this setting, we provide second-order asymptotic results for both families of systemic risk measures. These results extend standard first-order asymptotics and allow for more accurate tail approximations. Through numerical and analytical examples, we demonstrate the superiority of second-order asymptotics in accurately assessing systemic risk. We further conduct a comprehensive comparison between expectile-based and VaR-based systemic risk measures. The results indicate that expectile-based measures often yield higher asymptotic accuracy than VaR-based ones, emphasizing the former's potential advantages in reporting extreme events and tail risk. As a financial application, we use the asymptotic treatment to discuss the diversification benefits associated with various risk measures. Finally, we extend and obtain the second-order asymptotic formulas for generalized-quantile-based systemic risk measures with power functions.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Bingzhen Geng",
+   "Yang Liu",
+   "Yimiao Zhao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2404.18029v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2404.18029v2",
+  "published_iso": "2024-04-27T23:42:19Z"
+ },
+ {
+  "title": "Risk-Sensitive Markov Decision Processes with Long-Run CVaR Criterion",
+  "title_norm": "risk sensitive markov decision processes with long run cvar criterion",
+  "abstract": "CVaR (Conditional Value at Risk) is a risk metric widely used in finance. However, dynamically optimizing CVaR is difficult since it is not a standard Markov decision process (MDP) and the principle of dynamic programming fails. In this paper, we study the infinite-horizon discrete-time MDP with a long-run CVaR criterion, from the view of sensitivity-based optimization. By introducing a pseudo CVaR metric, we derive a CVaR difference formula which quantifies the difference of long-run CVaR under any two policies. The optimality of deterministic policies is derived. We obtain a so-called Bellman local optimality equation for CVaR, which is a necessary and sufficient condition for local optimal policies and only necessary for global optimal policies. A CVaR derivative formula is also derived for providing more sensitivity information. Then we develop a policy iteration type algorithm to efficiently optimize CVaR, which is shown to converge to local optima in the mixed policy space. We further discuss some extensions including the mean-CVaR optimization and the maximization of CVaR. Finally, we conduct numerical experiments relating to portfolio management to demonstrate the main results. Our work may shed light on dynamically optimizing CVaR from a sensitivity viewpoint.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Li Xia",
+   "Peter W. Glynn"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2210.08740v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2210.08740v1",
+  "published_iso": "2022-10-17T04:29:14Z"
+ },
+ {
+  "title": "Frictive Policy Optimization for LLMs: Epistemic Intervention, Risk-Sensitive Control, and Reflective Alignment",
+  "title_norm": "frictive policy optimization for llms epistemic intervention risk sensitive cont",
+  "abstract": "We propose Frictive Policy Optimization (FPO), a framework for learning language model policies that regulate not only what to say, but when and how to intervene in order to manage epistemic and normative risk. Unlike standard alignment methods that optimize surface-level preference or task utility, FPO treats clarification, verification, challenge, redirection, and refusal as explicit control actions whose purpose is to shape the evolution of belief, commitment, and uncertainty over time. We formalize alignment as a risk-sensitive epistemic control problem in which intervention decisions are selected based on their expected effect on downstream epistemic quality rather than on immediate reward alone. We introduce a compact taxonomy of frictive interventions, a structured friction functional that operationalizes multiple alignment failure modes, and a unified family of FPO methods spanning reward shaping, preference pairing, group-relative ranking, and risk-conditioned trust regions. We further propose an evaluation framework that measures epistemic competence directly through clarification behavior, calibration, contradiction repair, refusal proportionality, and information efficiency. Together, these results provide a formal and algorithmic foundation for learning agents that are aligned not only in outcome, but in epistemic conduct.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "James Pustejovsky",
+   "Nikhil Krishnaswamy"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.25136v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.25136v1",
+  "published_iso": "2026-04-28T02:24:51Z"
+ },
+ {
+  "title": "Studying Competing Events with Federated Cumulative Incidence Curves",
+  "title_norm": "studying competing events with federated cumulative incidence curves",
+  "abstract": "Combining electronic health record (EHR) data from multiple institutions is a valuable strategy for conducting post-market safety surveillance of medical products, but privacy concerns limit sharing individual-level data. We develop a novel federated learning (FL) method for multi-site post-market safety surveillance of medical products using competing risks data. We apply this method to study immune-related adverse events (irAEs) following treatment with immune checkpoint inhibitors (ICIs) in patients with auto-immune disease (AID). We provide an algorithm for constructing non-parametric cumulative incidence curves for competing event types, which can be used to compare exposure groups (e.g. treated and untreated) with no sharing of patient-level data across institutions. We incorporate covariate adjustment via inverse propensity weighting, and informative causal comparison using the area under cumulative incidence curves, known as restricted mean time lost. We apply our method to $N=10,281$ cancer patients with no pre-existing endocrine-related AID receiving ICIs across $K=10$ sites from the OneFlorida+ network, comparing patients with a pre-existing non-endocrine AID to those with no pre-existing AID. After covariate adjustment, we found that patients with a pre-existing non-endocrine AID lost 4.8 [95% CI: 4.3,5.2] months of event-free survival time to endocrine irAEs in the first 18 months following treatment, compared to 3.2 [95% CI: 3.1,3.3] months in the group without prior AID. As patients with prior AID were initially excluded from clinical trials of ICIs, our findings provide important new information to clinicians and patients receiving or considering ICI treatment. Our proposed non-parametric federated algorithm is the first to allow investigators to use some of the most crucial non-parametric tools for conducting postmarket safety surveillance across multiple institutions.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Malcolm Risk",
+   "Shuang Yang",
+   "Jiang Bian",
+   "Yi Guo",
+   "Hyojung Jang",
+   " Jingchuan",
+   " Guo",
+   "Xu Shi",
+   "Lili Zhao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.26287v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.26287v1",
+  "published_iso": "2026-07-28T21:26:41Z"
+ },
+ {
+  "title": "Augmented Quantization: Mixture Models for Risk-Oriented Sensitivity Analysis",
+  "title_norm": "augmented quantization mixture models for risk oriented sensitivity analysis",
+  "abstract": "A central question in risk analysis is to identify the factors that drive the system toward a specific hazardous outcome, such as the exceedance of a given threshold. When relying on numerical simulators, we propose to study the distribution of the inputs, transformed into uniform variables via their cumulative distributions, conditionally on the occurrence of the hazardous event. To represent this multivariate conditional distribution for sensitivity analysis, we introduce an original quantization approach based on estimating a mixture of Dirac and local uniform distributions. For each marginal of this mixture, a Dirac component indicates a strong influence of the corresponding variable, whereas a uniform component with wide support reflects weak influence. A notable advantage of this method is its ability to identify the regions of the input space that most strongly influence the occurrence of the risk event, while also capturing the joint effects of multiple variables. However, learning mixture models typically relies on likelihood-based methods, which are not well suited to mixtures involving singular or Dirac components. To address this, we propose an \\emph{Augmented Quantization} method, a reformulation of the classical quantization problem based on the p-Wasserstein distance, which can be computed in very general distribution spaces. The performance of Augmented Quantization in estimating such mixture models is first demonstrated on analytical toy problems, and then applied to sensitivity analysis of both an analytical function and a practical flooding case study on a section of the Loire River.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Charlie Sire",
+   "Didier Rullière",
+   "Rodolphe Le Riche",
+   "Jérémy Rohmer",
+   "Yann Richet",
+   "Lucie Pheulpin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2309.08389v7",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2309.08389v7",
+  "published_iso": "2023-09-15T13:31:27Z"
+ },
+ {
+  "title": "Approximate solutions to the multiple-choice knapsack problem by multiobjectivization and Chebyshev scalarization",
+  "title_norm": "approximate solutions to the multiple choice knapsack problem by multiobjectiviz",
+  "abstract": "The method BISSA, proposed by Bednarczuk, Miroforidis, and Pyzel, provides approximate solutions to the multiple-choice knapsack problem. To fathom the optimality gap that is left by BISSA, we present a method that starts from the BISSA solution and it is able to provide a better approximation and in consequence a tighter optimality gap. Like BISSA, the new method is based on the multiobjectivization of the multiple-choice knapsack but instead of the linear scalarization used in BISSA, it makes use of the Chebyshev scalarization. We validate the new method on the same set of problems used to validate BISSA.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "E. M. Bednarczuk",
+   "I. Kaliszewski",
+   "J. Miroforidis"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2311.08839v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2311.08839v1",
+  "published_iso": "2023-11-15T10:25:39Z"
+ },
+ {
+  "title": "FinPT: Financial Risk Prediction with Profile Tuning on Pretrained Foundation Models",
+  "title_norm": "finpt financial risk prediction with profile tuning on pretrained foundation mod",
+  "abstract": "Financial risk prediction plays a crucial role in the financial sector. Machine learning methods have been widely applied for automatically detecting potential risks and thus saving the cost of labor. However, the development in this field is lagging behind in recent years by the following two facts: 1) the algorithms used are somewhat outdated, especially in the context of the fast advance of generative AI and large language models (LLMs); 2) the lack of a unified and open-sourced financial benchmark has impeded the related research for years. To tackle these issues, we propose FinPT and FinBench: the former is a novel approach for financial risk prediction that conduct Profile Tuning on large pretrained foundation models, and the latter is a set of high-quality datasets on financial risks such as default, fraud, and churn. In FinPT, we fill the financial tabular data into the pre-defined instruction template, obtain natural-language customer profiles by prompting LLMs, and fine-tune large foundation models with the profile text to make predictions. We demonstrate the effectiveness of the proposed FinPT by experimenting with a range of representative strong baselines on FinBench. The analytical studies further deepen the understanding of LLMs for financial risk prediction.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Yuwei Yin",
+   "Yazheng Yang",
+   "Jian Yang",
+   "Qi Liu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2308.00065v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2308.00065v1",
+  "published_iso": "2023-07-22T09:27:05Z"
+ },
+ {
+  "title": "Answer, Assemble, Ace: Understanding How LMs Answer Multiple Choice Questions",
+  "title_norm": "answer assemble ace understanding how lms answer multiple choice questions",
+  "abstract": "Multiple-choice question answering (MCQA) is a key competence of performant transformer language models that is tested by mainstream benchmarks. However, recent evidence shows that models can have quite a range of performance, particularly when the task format is diversified slightly (such as by shuffling answer choice order). In this work we ask: how do successful models perform formatted MCQA? We employ vocabulary projection and activation patching methods to localize key hidden states that encode relevant information for predicting the correct answer. We find that the prediction of a specific answer symbol is causally attributed to a few middle layers, and specifically their multi-head self-attention mechanisms. We show that subsequent layers increase the probability of the predicted answer symbol in vocabulary space, and that this probability increase is associated with a sparse set of attention heads with unique roles. We additionally uncover differences in how different models adjust to alternative symbols. Finally, we demonstrate that a synthetic task can disentangle sources of model error to pinpoint when a model has learned formatted MCQA, and show that logit differences between answer choice tokens continue to grow over the course of training.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Sarah Wiegreffe",
+   "Oyvind Tafjord",
+   "Yonatan Belinkov",
+   "Hannaneh Hajishirzi",
+   "Ashish Sabharwal"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.15018v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.15018v2",
+  "published_iso": "2024-07-21T00:10:23Z"
+ },
+ {
+  "title": "Risk, utility and sensitivity to large losses",
+  "title_norm": "risk utility and sensitivity to large losses",
+  "abstract": "Risk and utility functionals are fundamental building blocks in economics and finance. In this paper we investigate under which conditions a risk or utility functional is sensitive to the accumulation of losses in the sense that any sufficiently large multiple of a position that exposes an agent to future losses has positive risk or negative utility. We call this property sensitivity to large losses and provide necessary and sufficient conditions thereof that are easy to check for a very large class of risk and utility functionals. In particular, our results do not rely on convexity and can therefore also be applied to most examples discussed in the recent literature, including (non-convex) star-shaped risk measures or S-shaped utility functions encountered in prospect theory. As expected, Value at Risk generally fails to be sensitive to large losses. More surprisingly, this is also true of Expected Shortfall. By contrast, expected utility functionals as well as (optimized) certainty equivalents are proved to be sensitive to large losses for many standard choices of concave and nonconcave utility functions, including $S$-shaped utility functions. We also show that Value at Risk and Expected Shortfall become sensitive to large losses if they are either properly adjusted or if the property is suitably localized.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Martin Herdegen",
+   "Nazem Khan",
+   "Cosimo Munari"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2405.12154v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2405.12154v1",
+  "published_iso": "2024-05-20T16:31:54Z"
+ },
+ {
+  "title": "Climate Risk Stress Testing in California: A Geospatial Framework for Banking and Climate-Exposed Sectors",
+  "title_norm": "climate risk stress testing in california a geospatial framework for banking and",
+  "abstract": "This paper develops a geospatial framework for climate risk stress testing in California with applications to banking and climate-exposed sectors such as agriculture, real estate, and tourism. The study integrates physical hazard mapping, sector-specific exposure analysis, and scenario-based financial risk assessment to evaluate how wildfires, drought, flooding, extreme heat, and transition risks may affect regional economic activity and financial stability. The framework is intended to support portfolio monitoring, climate scenario analysis, and institutional readiness under emerging disclosure and risk-management standards. In addition, the paper provides a survey-based implementation guide for benchmarking current climate-risk practices and data needs across industry and academic stakeholders.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Satya Narayana Panda",
+   "Aishworzo Saha"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.16716v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.16716v1",
+  "published_iso": "2026-04-17T21:32:23Z"
+ },
+ {
+  "title": "An Advanced Two-Stage Model with High Sensitivity and Generalizability for Prediction of Hip Fracture Risk Using Multiple Datasets",
+  "title_norm": "an advanced two stage model with high sensitivity and generalizability for predi",
+  "abstract": "Hip fractures are a major cause of disability, mortality, and healthcare burden in older adults, underscoring the need for early risk assessment. However, commonly used tools such as the DXA T-score and FRAX often lack sensitivity and miss individuals at high risk, particularly those without prior fractures or with osteopenia. To address this limitation, we propose a sequential two-stage model that integrates clinical and imaging information to improve prediction accuracy. Using data from the Osteoporotic Fractures in Men Study (MrOS), the Study of Osteoporotic Fractures (SOF), and the UK Biobank, Stage 1 (Screening) employs clinical, demographic, and functional variables to estimate baseline risk, while Stage 2 (Imaging) incorporates DXA-derived features for refinement. The model was rigorously validated through internal and external testing, showing consistent performance and adaptability across cohorts. Compared to T-score and FRAX, the two-stage framework achieved higher sensitivity and reduced missed cases, offering a cost-effective and personalized approach for early hip fracture risk assessment.\n  Keywords: Hip Fracture, Two-Stage Model, Risk Prediction, Sensitivity, DXA, FRAX",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Shuo Sun",
+   "Meiling Zhou",
+   "Chen Zhao",
+   "Joyce H. Keyak",
+   "Nancy E. Lane",
+   "Jeffrey D. Deng",
+   "Kuan-Jui Su",
+   "Hui Shen",
+   "Hong-Wen Deng",
+   "Kui Zhang",
+   "Weihua Zhou"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2510.15179v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2510.15179v1",
+  "published_iso": "2025-10-16T22:44:51Z"
+ },
+ {
+  "title": "Determining Insolvency Regions in Banks: A Stochastic Dynamic Approach Integrating Liquidity and Credit Risk",
+  "title_norm": "determining insolvency regions in banks a stochastic dynamic approach integratin",
+  "abstract": "We develop a continuous-time structural dynamic model to determine the exact insolvency regions of banks arising from the non-linear interaction between liquidity and credit risk. While existing literature predominantly treats these risks in isolation or via reduced-form specifications, we explicitly model the feedback loop where funding shocks and regulatory constraints force balance-sheet adjustments that can lead to endogenous insolvency. By incorporating Basel III regulatory requirements (LCR and NSFR) into a stochastic optimal control framework, we solve for the exact insolvency boundary using the Hamilton-Jacobi-Bellman (HJB) equation. To bridge the gap between theoretical complexity and supervisory practice, we derive and validate a surrogate analytical approximation function that allows for real-time monitoring. Calibrated using granular balance-sheet data from the Iranian banking sector, our model reveals significant non-linear threshold effects: the joint occurrence of liquidity stress and credit portfolio defaults disproportionately accelerates the transition toward insolvency compared to their individual effects. The proposed surrogate function offers supervisors a computationally efficient tool for stress testing and early warning systems. Our findings provide novel insights into financial frictions in emerging markets and offer a rigorous framework for integrated risk management.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Nader Karimi",
+   "Davood Ahmadian"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.17381v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.17381v1",
+  "published_iso": "2026-07-19T18:48:00Z"
+ },
+ {
+  "title": "Explicit Abstention Knobs for Predictable Reliability in Video Question Answering",
+  "title_norm": "explicit abstention knobs for predictable reliability in video question answerin",
+  "abstract": "High-stakes deployment of vision-language models (VLMs) requires selective prediction, where systems abstain when uncertain rather than risk costly errors. We investigate whether confidence-based abstention provides reliable control over error rates in video question answering, and whether that control remains robust under distribution shift. Using NExT-QA and Gemini 2.0 Flash, we establish two findings. First, confidence thresholding provides mechanistic control in-distribution. Sweeping threshold epsilon produces smooth risk-coverage tradeoffs, reducing error rates f",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Jorge Ortiz"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2601.00138v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2601.00138v2",
+  "published_iso": "2025-12-31T23:27:32Z"
+ },
+ {
+  "title": "An Explainable Agentic AI Framework for Uncertainty-Aware and Abstention-Enabled Acute Ischemic Stroke Imaging Decisions",
+  "title_norm": "an explainable agentic ai framework for uncertainty aware and abstention enabled",
+  "abstract": "Artificial intelligence models have shown strong potential in acute ischemic stroke imaging, particularly for lesion detection and segmentation using computed tomography and magnetic resonance imaging. However, most existing approaches operate as black box predictors, producing deterministic outputs without explicit uncertainty awareness or structured mechanisms to abstain under ambiguous conditions. This limitation raises serious safety and trust concerns in high risk emergency radiology settings. In this paper, we propose an explainable agentic AI framework for uncertainty aware and abstention enabled decision support in acute ischemic stroke imaging. The framework follows a modular agentic pipeline in which a perception agent performs lesion aware image analysis, an uncertainty estimation agent computes slice level predictive reliability, and a decision agent determines whether to issue a prediction or abstain based on predefined uncertainty thresholds. Unlike prior stroke imaging systems that primarily focus on improving segmentation or classification accuracy, the proposed framework explicitly prioritizes clinical safety, transparency, and clinician aligned decision behavior. Qualitative and case based analyses across representative stroke imaging scenarios demonstrate that uncertainty driven abstention naturally emerges in diagnostically ambiguous regions and low information slices. The framework further integrates visual explanation mechanisms to support both predictive and abstention decisions, addressing a key limitation of existing uncertainty aware medical imaging systems. Rather than introducing a new performance benchmark, this work presents agentic control, uncertainty awareness, and selective abstention as essential design principles for developing safe and trustworthy medical imaging AI systems.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Md Rashadul Islam"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2601.01008v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2601.01008v1",
+  "published_iso": "2026-01-03T00:10:08Z"
+ },
+ {
+  "title": "Policy Learning with Abstention",
+  "title_norm": "policy learning with abstention",
+  "abstract": "Policy learning algorithms are widely used in areas such as personalized medicine and advertising to develop individualized treatment regimes. However, most methods force a decision even when predictions are uncertain, which is risky in high-stakes settings. We study policy learning with abstention, where a policy may defer to a safe default or an expert. When a policy abstains, it receives a small additive reward on top of the value of a random guess. We propose a two-stage learner that first identifies a set of near-optimal policies and then constructs an abstention rule from their disagreements. We establish fast O(1/n)-type regret guarantees when propensities are known, and extend these guarantees to the unknown-propensity case via a doubly robust (DR) objective. We further show that abstention is a versatile tool with direct applications to other core problems in policy learning: it yields improved guarantees under margin conditions without the common realizability assumption, connects to distributionally robust policy learning by hedging against small data shifts, and supports safe policy improvement by ensuring improvement over a baseline policy with high probability.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Ayush Sawarni",
+   "Jikai Jin",
+   "Justin Whitehouse",
+   "Vasilis Syrgkanis"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2510.19672v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2510.19672v3",
+  "published_iso": "2025-10-22T15:18:29Z"
+ },
+ {
+  "title": "Budgeted Embedding Table For Recommender Systems",
+  "title_norm": "budgeted embedding table for recommender systems",
+  "abstract": "At the heart of contemporary recommender systems (RSs) are latent factor models that provide quality recommendation experience to users. These models use embedding vectors, which are typically of a uniform and fixed size, to represent users and items. As the number of users and items continues to grow, this design becomes inefficient and hard to scale. Recent lightweight embedding methods have enabled different users and items to have diverse embedding sizes, but are commonly subject to two major drawbacks. Firstly, they limit the embedding size search to optimizing a heuristic balancing the recommendation quality and the memory complexity, where the trade-off coefficient needs to be manually tuned for every memory budget requested. The implicitly enforced memory complexity term can even fail to cap the parameter usage, making the resultant embedding table fail to meet the memory budget strictly. Secondly, most solutions, especially reinforcement learning based ones derive and optimize the embedding size for each each user/item on an instance-by-instance basis, which impedes the search efficiency. In this paper, we propose Budgeted Embedding Table (BET), a novel method that generates table-level actions (i.e., embedding sizes for all users and items) that is guaranteed to meet pre-specified memory budgets. Furthermore, by leveraging a set-based action formulation and engaging set representation learning, we present an innovative action search strategy powered by an action fitness predictor that efficiently evaluates each table-level action. Experiments have shown state-of-the-art performance on two real-world datasets when BET is paired with three popular recommender models under different memory budgets.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Yunke Qu",
+   "Tong Chen",
+   "Quoc Viet Hung Nguyen",
+   "Hongzhi Yin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2310.14884v8",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2310.14884v8",
+  "published_iso": "2023-10-23T12:53:22Z"
+ },
+ {
+  "title": "Policy as Code, Policy as Type",
+  "title_norm": "policy as code policy as type",
+  "abstract": "Policies are designed to distinguish between correct and incorrect actions; they are types. But badly typed actions may cause not compile errors, but financial and reputational harm We demonstrate how even the most complex ABAC policies can be expressed as types in dependently typed languages such as Agda and Lean, providing a single framework to express, analyze, and implement policies. We then go head-to-head with Rego, the popular and powerful open-source ABAC policy language. We show the superior safety that comes with a powerful type system and built-in proof assistant. In passing, we discuss various access control models, sketch how to integrate in a future when attributes are distributed and signed (as discussed at the W3C), and show how policies can be communicated using just the syntax of the language. Our examples are in Agda.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Matthew D. Fuchs"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2506.01446v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2506.01446v1",
+  "published_iso": "2025-06-02T09:04:48Z"
+ },
+ {
+  "title": "How Much Does Correctness Cost? Budgeted Placement of Strong Correctors in a Weak Multi-Agent Swarm",
+  "title_norm": "how much does correctness cost budgeted placement of strong correctors in a weak",
+  "abstract": "A cheap swarm of unreliable agents can be steered to a correct consensus by a few strong, expensive \"oracle\" correctors. We ask how much one must spend, and where to place the oracles. We model the swarm as a consensus on a graph in which each oracle pins one node toward the truth at a cost-coupled, concave strength, and measure quality by the coherence H(R)=tr M(R)^{-1}. Our first result is that H stays submodular (each added oracle helps less than the last) even when the oracles differ in strength, so a cost-benefit greedy comes within 1-1/e of the best placement at any budget. Inverting the budget gives the budget-correctness frontier B*(eps), the least spend that guarantees an eps-correct consensus: closed-form on the complete graph, and a minimal oracle count k* when oracles cost the same. Whether a budget then buys a few strong oracles or many medium onese curvature of the cost-quality law: diminishing returns favour spreadsharply increasion. Measured onthe Qwen3 ladder (0.6-32B), the law is concave for math verificatio convex foremergent code tracing, so the verdict is genuinely task-dependent.https://github.com/YehudaItkin/budgeted-oracle-placemen",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Igor Itkin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.09765v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.09765v1",
+  "published_iso": "2026-07-07T05:48:17Z"
+ },
+ {
+  "title": "Conformal Policy Learning for Sensorimotor Control Under Distribution Shifts",
+  "title_norm": "conformal policy learning for sensorimotor control under distribution shifts",
+  "abstract": "This paper focuses on the problem of detecting and reacting to changes in the distribution of a sensorimotor controller's observables. The key idea is the design of switching policies that can take conformal quantiles as input, which we define as conformal policy learning, that allows robots to detect distribution shifts with formal statistical guarantees. We show how to design such policies by using conformal quantiles to switch between base policies with different characteristics, e.g. safety or speed, or directly augmenting a policy observation with a quantile and training it with reinforcement learning. Theoretically, we show that such policies achieve the formal convergence guarantees in finite time. In addition, we thoroughly evaluate their advantages and limitations on two compelling use cases: simulated autonomous driving and active perception with a physical quadruped. Empirical results demonstrate that our approach outperforms five baselines. It is also the simplest of the baseline strategies besides one ablation. Being easy to use, flexible, and with formal guarantees, our work demonstrates how conformal prediction can be an effective tool for sensorimotor learning under uncertainty.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Huang Huang",
+   "Satvik Sharma",
+   "Antonio Loquercio",
+   "Anastasios Angelopoulos",
+   "Ken Goldberg",
+   "Jitendra Malik"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2311.01457v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2311.01457v1",
+  "published_iso": "2023-11-02T17:59:30Z"
+ },
+ {
+  "title": "Combinatorial Civic Crowdfunding with Budgeted Agents: Welfare Optimality at Equilibrium and Optimal Deviation",
+  "title_norm": "combinatorial civic crowdfunding with budgeted agents welfare optimality at equi",
+  "abstract": "Civic Crowdfunding (CC) uses the ``power of the crowd'' to garner contributions towards public projects. As these projects are non-excludable, agents may prefer to ``free-ride,'' resulting in the project not being funded. For single project CC, researchers propose to provide refunds to incentivize agents to contribute, thereby guaranteeing the project's funding. These funding guarantees are applicable only when agents have an unlimited budget. This work focuses on a combinatorial setting, where multiple projects are available for CC and agents have a limited budget. We study certain specific conditions where funding can be guaranteed. Further, funding the optimal social welfare subset of projects is desirable when every available project cannot be funded due to budget restrictions. We prove the impossibility of achieving optimal welfare at equilibrium for any monotone refund scheme. We then study different heuristics that the agents can use to contribute to the projects in practice. Through simulations, we demonstrate the heuristics' performance as the average-case trade-off between welfare obtained and agent utility.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Sankarshan Damle",
+   "Manisha Padala",
+   "Sujit Gujar"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2211.13941v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2211.13941v1",
+  "published_iso": "2022-11-25T07:53:23Z"
+ },
+ {
+  "title": "TIAR: Trajectory-Informed Advantage Reweighting for LLM Abstention Learning",
+  "title_norm": "tiar trajectory informed advantage reweighting for llm abstention learning",
+  "abstract": "This paper investigates large language model (LLM) abstention learning, specifically using ternary reward, which incentivize truthfulness in large language models. This paper extends that idea by moving from a ternary reward to a Trajectory-Informed advantage reweighting, dynamically re-weights the abstention reward during Group Relative Policy Optimization (GRPO) training. The objective of this work focuses on abstention learning instead of improving truthfulness, serving as an exploration into hallucination reduction. The novelty of this paper lies in methodological innovation, advantage re-weighting, and benchmark selection. Leveraging GRPO's multiple trajectories as a natural abstention signal, this method uses a reward signal to explore knowledge boundaries and encourage consistency. By demonstrating that trajectories can be used as a confidence indicator of the policy relative to the query, they are then used to dynamically calculate the abstention advantage. AbstentionBench is used as the evaluation benchmark, as this work aims to contribute to the field of abstention learning. All datasets on the benchmark were tested against this method and various baselines. Empirical results demonstrate that TIAR achieves state-of-the-art abstention F1 scores across five of six evaluation categories, outperforming the static ternary baseline on 17 of 31 benchmark datasets while fully preserving baseline accuracy.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Muyu Pan",
+   "Shu Zhao",
+   "Nan Zhang",
+   "Philip Shin",
+   "Varun Parekh",
+   "Vijaykrishnan Narayanan",
+   "Rui Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.25850v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.25850v1",
+  "published_iso": "2026-05-25T13:42:37Z"
+ },
+ {
+  "title": "Bayesian Best-Arm Identification with Abstention: A Polynomial-to-Exponential Phase Transition",
+  "title_norm": "bayesian best arm identification with abstention a polynomial to exponential pha",
+  "abstract": "We study the Bayesian fixed-budget best-arm identification problem in which a learner can abstain from making a terminal recommendation. Subject to an abstention budget $α$, we analyze the probability of undetected error--the risk of recommending a suboptimal arm without abstaining. Our central finding is that abstention induces a phase transition: without abstention, the error probability decays polynomially in the sampling budget $T$; in contrast, introducing any small positive abstention budget shifts this to an exponential decay. For Gaussian priors and rewards, in the regime $T\\to\\infty$ followed by $α\\downarrow0$, we establish exact matching information-theoretic lower bounds and algorithmic upper bounds on the optimal error exponent, which takes the form $\\exp(-\\frac{α^{2}T}{8κ_ν^{2}})$. The hardness parameter $κ_ν$ represents the prior density of the top-two gap at zero, highlighting that nearly tied instances drive the fundamental error. We introduce an adaptive algorithm, PGWS, that successfully achieves this optimal exponent by expending its abstention budget on statistically ambiguous instances. We further demonstrate that this polynomial-to-exponential improvement is exclusively a Bayesian phenomenon--in the frequentist setting, abstention only affects lower-order exponent terms. We also extend our results beyond the Gaussian model.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yuqi Huang",
+   "Yunlong Hou",
+   "Vincent Y. F. Tan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.29203v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.29203v1",
+  "published_iso": "2026-06-28T05:07:27Z"
+ },
+ {
+  "title": "Ranking with Abstention",
+  "title_norm": "ranking with abstention",
+  "abstract": "We introduce a novel framework of ranking with abstention, where the learner can abstain from making prediction at some limited cost $c$. We present a extensive theoretical analysis of this framework including a series of $H$-consistency bounds for both the family of linear functions and that of neural networks with one hidden-layer. These theoretical guarantees are the state-of-the-art consistency guarantees in the literature, which are upper bounds on the target loss estimation error of a predictor in a hypothesis set $H$, expressed in terms of the surrogate loss estimation error of that predictor. We further argue that our proposed abstention methods are important when using common equicontinuous hypothesis sets in practice. We report the results of experiments illustrating the effectiveness of ranking with abstention.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Anqi Mao",
+   "Mehryar Mohri",
+   "Yutao Zhong"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2307.02035v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2307.02035v1",
+  "published_iso": "2023-07-05T05:37:13Z"
+ },
+ {
+  "title": "Towards Prototyping Driverless Vehicle Behaviors, City Design, and Policies Simultaneously",
+  "title_norm": "towards prototyping driverless vehicle behaviors city design and policies simult",
+  "abstract": "Autonomous Vehicles (AVs) can potentially improve urban living by reducing accidents, increasing transportation accessibility and equity, and decreasing emissions. Realizing these promises requires the innovations of AV driving behaviors, city plans and infrastructure, and traffic and transportation policies to join forces. However, the complex interdependencies among AV, city, and policy design issues can hinder their innovation. We argue the path towards better AV cities is not a process of matching city designs and policies with AVs' technological innovations, but a process of iterative prototyping of all three simultaneously: Innovations can happen step-wise as the knot of AV, city, and policy design loosens and tightens, unwinds and reties. In this paper, we ask: How can innovators innovate AVs, city environments, and policies simultaneously and productively toward better AV cities? The paper has two parts. First, we map out the interconnections among the many AV, city, and policy design decisions, based on a literature review spanning HCI/HRI, transportation science, urban studies, law and policy, operations research, economy, and philosophy. This map can help innovators identify design constraints and opportunities across the traditional AV/city/policy design disciplinary bounds. Second, we review the respective methods for AV, city, and policy design, and identify key barriers in combining them: (1) Organizational barriers to AV-city-policy design collaboration, (2) computational barriers to multi-granularity AV-city-policy simulation, and (3) different assumptions and goals in joint AV-city-policy optimization. We discuss two broad approaches that can potentially address these challenges, namely, \"low-fidelity integrative City-AV-Policy Simulation (iCAPS)\" and \"participatory design optimization\".",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Hauke Sandhaus",
+   "Wendy Ju",
+   "Qian Yang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2304.06639v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2304.06639v1",
+  "published_iso": "2023-04-13T16:06:54Z"
+ },
+ {
+  "title": "When In Doubt, Abstain: The Impact of Abstention on Strategic Classification",
+  "title_norm": "when in doubt abstain the impact of abstention on strategic classification",
+  "abstract": "Algorithmic decision making is increasingly prevalent, but often vulnerable to strategic manipulation by agents seeking a favorable outcome. Prior research has shown that classifier abstention (allowing a classifier to decline making a decision due to insufficient confidence) can significantly increase classifier accuracy. This paper studies abstention within a strategic classification context, exploring how its introduction impacts strategic agents' responses and how principals should optimally leverage it. We model this interaction as a Stackelberg game where a principal, acting as the classifier, first announces its decision policy, and then strategic agents, acting as followers, manipulate their features to receive a desired outcome. Here, we focus on binary classifiers where agents manipulate observable features rather than their true features, and show that optimal abstention ensures that the principal's utility (or loss) is no worse than in a non-abstention setting, even in the presence of strategic agents. We also show that beyond improving accuracy, abstention can also serve as a deterrent to manipulation, making it costlier for agents, especially those less qualified, to manipulate to achieve a positive outcome when manipulation costs are significant enough to affect agent behavior. These results highlight abstention as a valuable tool for reducing the negative effects of strategic behavior in algorithmic decision making systems.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Lina Alkarmi",
+   "Ziyuan Huang",
+   "Mingyan Liu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2510.13327v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2510.13327v3",
+  "published_iso": "2025-10-15T09:13:44Z"
+ },
+ {
+  "title": "Factorizing Diffusion Policies for Observation Modality Prioritization",
+  "title_norm": "factorizing diffusion policies for observation modality prioritization",
+  "abstract": "Diffusion models have been extensively leveraged for learning robot skills from demonstrations. These policies are conditioned on several observational modalities such as proprioception, vision and tactile. However, observational modalities have varying levels of influence for different tasks that diffusion polices fail to capture. In this work, we propose 'Factorized Diffusion Policies' abbreviated as FDP, a novel policy formulation that enables observational modalities to have differing influence on the action diffusion process by design. This results in learning policies where certain observations modalities can be prioritized over the others such as $\\texttt{vision>tactile}$ or $\\texttt{proprioception>vision}$. FDP achieves modality prioritization by factorizing the observational conditioning for diffusion process, resulting in more performant and robust policies. Our factored approach shows strong performance improvements in low-data regimes with $15\\%$ absolute improvement in success rate on several simulated benchmarks when compared to a standard diffusion policy that jointly conditions on all input modalities. Moreover, our benchmark and real-world experiments show that factored policies are naturally more robust with $40\\%$ higher absolute success rate across several visuomotor tasks under distribution shifts such as visual distractors or camera occlusions, where existing diffusion policies fail catastrophically. FDP thus offers a safer and more robust alternative to standard diffusion policies for real-world deployment. Videos are available at https://fdp-policy.github.io/fdp-policy/ .",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Omkar Patil",
+   "Prabin Rath",
+   "Kartikay Pangaonkar",
+   "Eric Rosen",
+   "Nakul Gopalan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2509.16830v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2509.16830v1",
+  "published_iso": "2025-09-20T23:02:51Z"
+ },
+ {
+  "title": "Agricultural Policy in Ukraine",
+  "title_norm": "agricultural policy in ukraine",
+  "abstract": "Building upon the theory and methodology of agricultural policy developed in the previous chapter, in Chapter 2 we analyse and assess agricultural policy making in Ukraine since the breakup of Soviet Union till today. Going from top down to the bottom, we begin by describing the evolution of state policy in the agri-food sector. In the beginning, we describe the major milestones of agricultural policy making since independence, paving the way to the political economy of the modern agricultural policy in Ukraine. Then we describe the role of agri-food sector in the national economy as well as globally in ensuring food security in the world. After, we dig deeper and focus on a detailed performance of agricultural sector by looking at farm structures, their land use, overall and sector-wise untapped productivity potential. Modern agricultural policy and institutional set-up is contained and analyzed in details in the section 2.4. A review of the agricultural up- and downstream sectors wraps up this chapter",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Oleg Nivievskyi",
+   "Pavlo Martyshev",
+   "Sergiy Kvasha"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2305.01478v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2305.01478v1",
+  "published_iso": "2023-04-29T14:15:33Z"
+ },
+ {
+  "title": "SafeAdapt: Provably Safe Policy Updates in Deep Reinforcement Learning",
+  "title_norm": "safeadapt provably safe policy updates in deep reinforcement learning",
+  "abstract": "Safety guarantees are a prerequisite to the deployment of reinforcement learning (RL) agents in safety-critical tasks. Often, deployment environments exhibit non-stationary dynamics or are subject to changing performance goals, requiring updates to the learned policy. This leads to a fundamental challenge: how to update an RL policy while preserving its safety properties on previously encountered tasks? The majority of current approaches either do not provide formal guarantees or verify policy safety only a posteriori. We propose a novel a priori approach to safe policy updates in continual RL by introducing the Rashomon set: a region in policy parameter space certified to meet safety constraints within the demonstration data distribution. We then show that one can provide formal, provable guarantees for arbitrary RL algorithms used to update a policy by projecting their updates onto the Rashomon set. Empirically, we validate this approach across grid-world navigation environments (Frozen Lake and Poisoned Apple) where we guarantee an a priori provably deterministic safety on the source task during downstream adaptation. In contrast, we observe that regularisation-based baselines experience catastrophic forgetting of safety constraints while our approach enables strong adaptation with provable guarantees that safety is preserved.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Maksim Anisimov",
+   "Francesco Belardinelli",
+   "Matthew Wicker"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.09452v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.09452v1",
+  "published_iso": "2026-04-10T16:09:39Z"
+ },
+ {
+  "title": "Nuclear Energy Acceptance in Poland: From Societal Attitudes to Effective Policy Strategies -- Network Modeling Approach",
+  "title_norm": "nuclear energy acceptance in poland from societal attitudes to effective policy ",
+  "abstract": "Poland is currently undergoing substantial transformation in its energy sector, and gaining public support is pivotal for the success of its energy policies. We conducted a study with 338 Polish participants to investigate societal attitudes towards various energy sources, including nuclear energy and renewables. Applying a novel network approach, we identified a multitude of factors influencing energy acceptance. Political ideology is the central factor in shaping public acceptance, however we also found that environmental attitudes, risk perception, safety concerns, and economic variables play substantial roles. Considering the long-term commitment associated with nuclear energy and its role in Poland's energy transformation, our findings provide a foundation for improving energy policy in Poland. Our research underscores the importance of policies that resonate with the diverse values, beliefs, and preferences of the population. While the risk-risk trade-off and technology-focused strategies are effective to a degree, we advocate for a more comprehensive approach. The framing strategy, which tailors messages to distinct societal values, shows particular promise.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Pawel Robert Smolinski",
+   "Joseph Januszewicz",
+   "Barbara Pawlowska",
+   "Jacek Winiarski"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2309.14869v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2309.14869v1",
+  "published_iso": "2023-09-26T11:58:51Z"
+ },
+ {
+  "title": "Cost-Saving LLM Cascades with Early Abstention",
+  "title_norm": "cost saving llm cascades with early abstention",
+  "abstract": "LLM cascades deploy small LLMs to answer most queries, limiting the use of large and expensive LLMs to difficult queries. This approach can significantly reduce costs without impacting performance. However, risk-sensitive domains such as finance or medicine place an additional premium on avoiding model errors. Since even the most expensive models are susceptible to making mistakes, applications in these domains benefit from allowing LLM systems to completely abstain from answering difficult queries. Introducing abstention poses a design question for LLM cascades: should abstention only be allowed at the final model or also at earlier models? Since the error patterns of small and large models are correlated, allowing earlier models to abstain may reduce inference costs and latency by anticipating abstention decisions by expensive and slow models, thus avoiding the need to run these models. We investigate the benefits of such \"early abstention\" in LLM cascades and find that it reduces overall test loss by 2.2% on average across six benchmarks (GSM8K, MedMCQA, MMLU, TriviaQA, TruthfulQA, and XSum). These gains result from a more effective use of abstention, trading a 4.1% average increase in the overall abstention rate for a 13.0% reduction in cost and a 5.0% reduction in error rate. Our findings demonstrate the possibility of leveraging correlations between the error patterns of different language models to drive performance improvements for LLM systems with abstention.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Michael J. Zellinger",
+   "Rex Liu",
+   "Matt Thomson"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2502.09054v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2502.09054v2",
+  "published_iso": "2025-02-13T08:08:39Z"
+ },
+ {
+  "title": "Bounded-Abstention Pairwise Learning to Rank",
+  "title_norm": "bounded abstention pairwise learning to rank",
+  "abstract": "Ranking systems influence decision-making in high-stakes domains like health, education, and employment, where they can have substantial economic and social impacts. This makes the integration of safety mechanisms essential. One such mechanism is abstention, which enables algorithmic decision-making systems to defer uncertain or low-confidence decisions to human experts. While abstention has been predominantly explored in the context of classification tasks, its application to other machine learning paradigms remains underexplored. In this paper, we introduce a novel method for abstention in pairwise learning-to-rank tasks. Our approach is based on thresholding the ranker's conditional risk: the system abstains from making a decision when the estimated risk exceeds a predefined threshold. Our contributions are threefold: a theoretical characterization of the optimal abstention strategy, a model-agnostic, plug-in algorithm for constructing abstaining ranking models, and a comprehensive empirical evaluation across multiple datasets, demonstrating the effectiveness of our approach.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Antonio Ferrara",
+   "Andrea Pugnana",
+   "Francesco Bonchi",
+   "Salvatore Ruggieri"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2505.23437v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2505.23437v2",
+  "published_iso": "2025-05-29T13:35:39Z"
+ },
+ {
+  "title": "Bayesian Adaptive Trials for Social Policy",
+  "title_norm": "bayesian adaptive trials for social policy",
+  "abstract": "This paper proposes Bayesian Adaptive Trials (BAT) as both an efficient method to conduct trials and a unifying framework for evaluation social policy interventions, addressing limitations inherent in traditional methods such as Randomized Controlled Trials (RCT). Recognizing the crucial need for evidence-based approaches in public policy, the proposal aims to lower barriers to the adoption of evidence-based methods and align evaluation processes more closely with the dynamic nature of policy cycles. BATs, grounded in decision theory, offer a dynamic, ``learning as we go'' approach, enabling the integration of diverse information types and facilitating a continuous, iterative process of policy evaluation. BATs' adaptive nature is particularly advantageous in policy settings, allowing for more timely and context-sensitive decisions. Moreover, BATs' ability to value potential future information sources positions it as an optimal strategy for sequential data acquisition during policy implementation. While acknowledging the assumptions and models intrinsic to BATs, such as prior distributions and likelihood functions, the paper argues that these are advantageous for decision-makers in social policy, effectively merging the best features of various methodologies.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Sally Cripps",
+   "Anna Lopatnikova",
+   "Hadi Mohasel Afshar",
+   "Ben Gales",
+   "Roman Marchant",
+   "Gilad Francis",
+   "Catarina Moreira",
+   "Alex Fischer"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2406.02868v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2406.02868v1",
+  "published_iso": "2024-06-05T02:30:45Z"
+ },
+ {
+  "title": "Epistemic Injustice in Technology and Policy Design: Lessons from New York City's Heat Complaints System",
+  "title_norm": "epistemic injustice in technology and policy design lessons from new york city s",
+  "abstract": "This paper brings attention to epistemic injustice, an issue that has not received much attention in the design of technology and policy. Epistemic injustices occur when individuals are treated unfairly or harmed specifically in relation to their role as knowers or possessors of knowledge. Drawing on the case of making heat complaints in New York City, this paper illustrates how both technological and policy interventions that address epistemic injustice can fail or even exacerbate the situations for certain social groups, and individuals within them. In bringing this case to the workshop, this paper hopes to provide another generative and critical dimension that can be utilised to create better technologies and policies, especially when they deal with diverse and broad range of social groups",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Mohsin Yousufi",
+   "Charlotte Alexander",
+   "Nassim Parvin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2303.15468v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2303.15468v1",
+  "published_iso": "2023-03-25T04:14:00Z"
+ },
+ {
+  "title": "Knowing When to Quit: A Principled Framework for Dynamic Abstention in LLM Reasoning",
+  "title_norm": "knowing when to quit a principled framework for dynamic abstention in llm reason",
+  "abstract": "LLMs utilizing chain-of-thought reasoning often waste substantial compute by producing long, incorrect responses. Abstention can mitigate this by withholding outputs unlikely to be correct. While most abstention methods decide to withhold outputs before or after generation, dynamic mid-generation abstention considers early termination of unpromising reasoning traces at each token position. Prior work has explored empirical variants of this idea, but principled guidance for the abstention rule remains lacking. We present a formal analysis of dynamic abstention for LLMs, modeling abstention as an explicit action within a regularized reinforcement learning framework. An abstention reward parameter controls the trade-off between compute and information. We show that abstaining when the value function falls below this reward strictly outperforms natural baselines under general conditions. We further derive a principled and efficient method to approximate the value function. Empirical results on mathematical reasoning and toxicity avoidance tasks support our theory and demonstrate improved selective accuracy over existing methods.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Hen Davidov",
+   "Nachshon Cohen",
+   "Oren Kalinsky",
+   "Yaron Fairstein",
+   "Guy Kushilevitz",
+   "Ram Yazdi",
+   "Patrick Rebeschini"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.18419v6",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.18419v6",
+  "published_iso": "2026-04-20T15:38:45Z"
+ },
+ {
+  "title": "Know Your Limits: A Survey of Abstention in Large Language Models",
+  "title_norm": "know your limits a survey of abstention in large language models",
+  "abstract": "Abstention, the refusal of large language models (LLMs) to provide an answer, is increasingly recognized for its potential to mitigate hallucinations and enhance safety in LLM systems. In this survey, we introduce a framework to examine abstention from three perspectives: the query, the model, and human values. We organize the literature on abstention methods, benchmarks, and evaluation metrics using this framework, and discuss merits and limitations of prior work. We further identify and motivate areas for future research, such as whether abstention can be achieved as a meta-capability that transcends specific tasks or domains, and opportunities to optimize abstention abilities in specific contexts. In doing so, we aim to broaden the scope and impact of abstention methodologies in AI systems.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Bingbing Wen",
+   "Jihan Yao",
+   "Shangbin Feng",
+   "Chenjun Xu",
+   "Yulia Tsvetkov",
+   "Bill Howe",
+   "Lucy Lu Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.18418v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.18418v3",
+  "published_iso": "2024-07-25T22:31:50Z"
+ },
+ {
+  "title": "Bounded-Abstention Multi-horizon Time-series Forecasting",
+  "title_norm": "bounded abstention multi horizon time series forecasting",
+  "abstract": "Multi-horizon time-series forecasting involves simultaneously making predictions for a consecutive sequence of subsequent time steps. This task arises in many application domains, such as healthcare and finance, where mispredictions can have a high cost and reduce trust. The learning with abstention framework tackles these problems by allowing a model to abstain from offering a prediction when it is at an elevated risk of making a misprediction. Unfortunately, existing abstention strategies are ill-suited for the multi-horizon setting: they target problems where a model offers a single prediction for each instance. Hence, they ignore the structured and correlated nature of the predictions offered by a multi-horizon forecaster. We formalize the problem of learning with abstention for multi-horizon forecasting setting and show that its structured nature admits a richer set of abstention problems. Concretely, we propose three natural notions of how a model could abstain for multi-horizon forecasting. We theoretically analyze each problem to derive the optimal abstention strategy and propose an algorithm that implements it. Extensive evaluation on 24 datasets shows that our proposed algorithms significantly outperforms existing baselines.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Luca Stradiotti",
+   "Laurens Devos",
+   "Anna Monreale",
+   "Jesse Davis",
+   "Andrea Pugnana"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.04714v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.04714v1",
+  "published_iso": "2026-02-04T16:25:34Z"
+ },
+ {
+  "title": "Knowledge Graph Guided Evaluation of Abstention Techniques",
+  "title_norm": "knowledge graph guided evaluation of abstention techniques",
+  "abstract": "To deploy language models safely, it is crucial that they abstain from responding to inappropriate requests. Several prior studies test the safety promises of models based on their effectiveness in blocking malicious requests. In this work, we focus on evaluating the underlying techniques that cause models to abstain. We create SELECT, a benchmark derived from a set of benign concepts (e.g., \"rivers\") from a knowledge graph. Focusing on benign concepts isolates the effect of safety training, and grounding these concepts in a knowledge graph allows us to study the generalization and specificity of abstention techniques. Using SELECT, we benchmark different abstention techniques over six open-weight and closed-source models. We find that the examined techniques indeed cause models to abstain with over $80\\%$ abstention rates. However, these techniques are not as effective for descendants of the target concepts, where abstention rates drop by $19\\%$. We also characterize the generalization-specificity trade-offs for different techniques. Overall, no single technique is invariably better than others, and our findings inform practitioners of the various trade-offs involved.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Kinshuk Vasisht",
+   "Navreet Kaur",
+   "Danish Pruthi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2412.07430v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2412.07430v2",
+  "published_iso": "2024-12-10T11:40:47Z"
+ }
+]

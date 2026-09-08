@@ -1,0 +1,14 @@
+{
+  "tokens": 4940,
+  "query_len": 32,
+  "query_heads": 4,
+  "kv_heads": 4,
+  "head_dim": 128,
+  "block_size": 16,
+  "backend": "triton",
+  "full_materialize_ms": 5.504701452255249,
+  "k4_block_operator_ms": 0.6445081543922424,
+  "speedup": 8.540933756604005,
+  "max_abs_error": 9.8496675491333e-06,
+  "selected_set_jaccard_note": "Run the project-level AB test because equal block masses do not guarantee equal tie-breaking in every workload."
+}

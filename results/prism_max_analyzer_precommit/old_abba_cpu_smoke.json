@@ -1,0 +1,255 @@
+{
+  "aggregation": "each UID is averaged over repeats before aggregate and paired metrics",
+  "bootstrap": {
+    "samples": 1000,
+    "seed": 42,
+    "unit": "matched UID"
+  },
+  "exclusions": {
+    "application_order": "validated raw run, then excluded UIDs, then matched repeats/methods and computed metrics",
+    "manifest_path": "/home/panzihang/src/prism_max/configs/strict_eval_exclusions.json",
+    "observed_by_task": {
+      "rte": [],
+      "sst2": [],
+      "subj": [],
+      "trec": [
+        "trec-0"
+      ]
+    },
+    "observed_count_by_task": {
+      "rte": 0,
+      "sst2": 0,
+      "subj": 0,
+      "trec": 1
+    },
+    "per_run": {
+      "trec/k010/contigkv/r1": {
+        "analysis_records": 127,
+        "excluded_records": 1,
+        "excluded_uids": [
+          "trec-0"
+        ],
+        "raw_records": 128
+      },
+      "trec/k010/contigkv/r2": {
+        "analysis_records": 127,
+        "excluded_records": 1,
+        "excluded_uids": [
+          "trec-0"
+        ],
+        "raw_records": 128
+      },
+      "trec/k010/promixed/r1": {
+        "analysis_records": 127,
+        "excluded_records": 1,
+        "excluded_uids": [
+          "trec-0"
+        ],
+        "raw_records": 128
+      },
+      "trec/k010/promixed/r2": {
+        "analysis_records": 127,
+        "excluded_records": 1,
+        "excluded_uids": [
+          "trec-0"
+        ],
+        "raw_records": 128
+      }
+    },
+    "purpose": "Exclude every evaluation UID used to calibrate the offline layer-sensitivity profile.",
+    "requested_by_task": {
+      "rte": [
+        "rte-0"
+      ],
+      "sst2": [
+        "sst2-0"
+      ],
+      "subj": [
+        "subj-0"
+      ],
+      "trec": [
+        "trec-0"
+      ]
+    },
+    "requested_count_by_task": {
+      "rte": 1,
+      "sst2": 1,
+      "subj": 1,
+      "trec": 1
+    }
+  },
+  "input": {
+    "kind": "explicit_runs"
+  },
+  "metric_definitions": {
+    "pareto": "non-dominated accuracy (higher) versus mean logits_ready_ms (lower) across budgets",
+    "prefetch_stall_ratio": "prefetch_wait_ms / logits_ready_ms within each run, then averaged over repeats per UID",
+    "ssd_mib_per_request": "(critical_ssd_read_bytes + selector_disk_source_bytes) / 2^20, request-time only"
+  },
+  "protocol_by_task": {
+    "trec": {
+      "accuracy_scoring": "label_continuation_loglikelihood",
+      "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
+      "cache_type": "CKLFU",
+      "cache_update_in_ttft": true,
+      "cpu_cache_mb": 131.0,
+      "defer_cache_score_updates": false,
+      "evaluation_ready_includes_accuracy_scoring": true,
+      "generation_max_tokens": 1,
+      "gpu_cache_mb": 55.0,
+      "measurement": "ttft_ms/logits_ready_ms ends when first-token logits are ready; first_token_ready_ms additionally includes cache-score maintenance and first-token ID selection; latency_ms ends when all requested token IDs are ready; response_ready_ms additionally includes token decoding and excludes benchmark-only accuracy scoring; evaluation_ready_ms/accuracy_scores_ready_ms additionally includes complete-label scoring. latency_ms and response_ready_ms describe one token only when max_tokens=1.",
+      "model_compute_dtype": "bfloat16",
+      "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+      "online_selection": true,
+      "pcache_storage_dtype": "float16",
+      "period_size": 8,
+      "prefetch_time_budget": 10000.0,
+      "response_ready_excludes_accuracy_scoring": true,
+      "response_ready_metric_valid_for_first_token": true,
+      "selector_index_bits": 4,
+      "selector_index_dir": "/home/panzihang/src/prism_max/assets/selector_index_k4_g32",
+      "selector_index_group_size": 32,
+      "selector_index_manifest_sha256": "0a8e5c9f2053a39b7533eae37dd07396f526010c3cbddeab1e29708ac6955b7a",
+      "selector_index_preloaded_bytes": 39836160,
+      "similarity_alpha": 0.6,
+      "subperiod_size": 4,
+      "warmup_passes": 1,
+      "warmup_samples_per_task": 32
+    }
+  },
+  "schema_version": 1,
+  "scope": "re-prefill only; task-local analysis with no cross-task pooling",
+  "tasks": {
+    "trec": {
+      "budgets": {
+        "010": {
+          "methods": {
+            "contigkv": {
+              "accuracy": 0.5511811023622047,
+              "fairness_context": {
+                "actual_keep_ratio": 0.09959514170040486,
+                "selected_kv_mib": 26.90625
+              },
+              "logits_ready_mean_ms": 464.8683715087369,
+              "logits_ready_p95_ms": 520.5441743601114,
+              "prefetch_stall_ratio": 0.5185735637281707,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_contigkv_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_contigkv_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 9.143700787401574,
+                "selector": 0.0,
+                "total": 9.143700787401574
+              },
+              "uids": 127
+            },
+            "promixed": {
+              "accuracy": 0.5984251968503937,
+              "fairness_context": {
+                "actual_keep_ratio": 0.0992526743873615,
+                "selected_kv_mib": 26.81373031496063
+              },
+              "logits_ready_mean_ms": 274.88792150677364,
+              "logits_ready_p95_ms": 330.6002349127084,
+              "prefetch_stall_ratio": 0.12286535672901079,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_promixed_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_promixed_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 0.5372785433070866,
+                "selector": 0.0,
+                "total": 0.5372785433070866
+              },
+              "uids": 127
+            }
+          },
+          "paired": {
+            "promixed_vs_contigkv": {
+              "accuracy_delta_pp": 4.724409448818897,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                -4.724409448818897,
+                14.173228346456693
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_contigkv",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -189.98045000196325,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -197.06059380949614,
+                -182.80356092182333
+              ],
+              "prefetch_stall_delta_pp": -39.57082069991599,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -40.61927700097123,
+                -38.48322039521506
+              ],
+              "ssd_delta_mib_per_request": -8.606422244094489,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                -8.753586368110236,
+                -8.45867064468504
+              ],
+              "uids": 127
+            },
+            "promixed_vs_impress": {
+              "available": false,
+              "comparison": "promixed_vs_impress",
+              "reason": "missing method in this task/budget cell"
+            }
+          }
+        }
+      },
+      "pareto": {
+        "by_method": {
+          "contigkv": [
+            {
+              "accuracy": 0.5511811023622047,
+              "budget": "010",
+              "logits_ready_mean_ms": 464.8683715087369,
+              "method": "contigkv",
+              "pareto_optimal": true
+            }
+          ],
+          "impress": [],
+          "promixed": [
+            {
+              "accuracy": 0.5984251968503937,
+              "budget": "010",
+              "logits_ready_mean_ms": 274.88792150677364,
+              "method": "promixed",
+              "pareto_optimal": true
+            }
+          ]
+        },
+        "joint": [
+          {
+            "accuracy": 0.5511811023622047,
+            "budget": "010",
+            "logits_ready_mean_ms": 464.8683715087369,
+            "method": "contigkv",
+            "pareto_optimal": false
+          },
+          {
+            "accuracy": 0.5984251968503937,
+            "budget": "010",
+            "logits_ready_mean_ms": 274.88792150677364,
+            "method": "promixed",
+            "pareto_optimal": true
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+2026-08-24T22:08:47+08:00
+source_commit=f69d8bb1beb2628f2b83d8a48bb464a366360b31
+source_status=?? research/;
+method=contigkv
+selector_backend=k4
+score_mode=nodefer
+adaptive_coverage=false
+samples=128
+warmup_passes=1
+warmup_samples=32
+gpu_cache_mb=55
+cpu_cache_mb=131
+SOURCE    TARGET FSTYPE OPTIONS
+/dev/sda4 /      ext4   rw,relatime

@@ -1,0 +1,1049 @@
+[
+ {
+  "title": "ReST-KV: Robust KV Cache Eviction with Layer-wise Output Reconstruction and Spatial-Temporal Smoothing",
+  "title_norm": "rest kv robust kv cache eviction with layer wise output reconstruction and spati",
+  "abstract": "Large language models (LLMs) face growing challenges in efficient generative inference due to the increasing memory demands of Key-Value (KV) caches, especially for long sequences. Existing eviction methods typically retain KV pairs with high attention weights but overlook the impact of attention redistribution caused by token removal, as well as the spatial-temporal dynamics in KV selection. In this paper, we propose ReST-KV, a robust KV eviction method that combines layer-wise output Reconstruction and Spatial-Temporal smoothing to provide a more comprehensive perspective for the KV cache eviction task. Specifically, ReST-KV formulates KV cache eviction as an optimization problem that minimizes output discrepancies through efficient layer-wise reconstruction. By directly modeling how each token's removal affects the model output, our method naturally captures attention redistribution effects, going beyond simplistic reliance on raw attention weights. To further enhance robustness, we design exponential moving average smoothing to handle temporal variations and an adaptive window-based mechanism to capture spatial patterns. Our method, ReST-KV, significantly advances performance on long-context benchmarks. It surpasses state-of-the-art baselines by 2.58% on LongBench and 15.2% on RULER. Additionally, ReST-KV consistently outperforms existing methods on Needle-in-a-Haystack and InfiniteBench, all while achieving a remarkable 10.61$\\times$ reduction in decoding latency at 128k context length. The code is publicly available at https://github.com/an-yongqi/rest-kv to facilitate reproducibility and further research.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yongqi An",
+   "Chang Lu",
+   "Kuan Zhu",
+   "Tao Yu",
+   "Chaoyang Zhao",
+   "Hong Wu",
+   "Ming Tang",
+   "Jinqiao Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.08840v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.08840v1",
+  "published_iso": "2026-05-09T09:49:32Z"
+ },
+ {
+  "title": "Make Each Token Count: Towards Improving Long-Context Performance with KV Cache Eviction",
+  "title_norm": "make each token count towards improving long context performance with kv cache e",
+  "abstract": "The key-value (KV) cache is a major bottleneck in long-context inference, where memory and computation grow with sequence length. Existing KV eviction methods reduce this cost but typically degrade performance relative to full-cache inference. Our key insight is that full-cache attention is not always optimal: in long contexts, irrelevant tokens can dilute attention away from useful evidence, so selective, learnable eviction can improve generation rather than merely approximate the full cache. We introduce a global retention-based KV eviction method that learns each token's future utility under a unified memory budget. Lightweight retention gates assign utility scores to cached KV entries, and a shared final scoring projection calibrates these scores across all layers and heads. This enables a single global eviction policy in which tokens from different layers, heads, and modalities compete directly for cache capacity. We further provide theoretical analysis showing that preferentially retaining useful tokens reduces attention dilution, and we justify geometric retention as a query-agnostic proxy for future utility. Across diverse long-context language and vision-language reasoning, and multi-turn dialogue benchmarks, our method substantially reduces KV memory while matching or surpassing full-cache inference. These results suggest that learned, globally calibrated KV eviction is not only a compression technique, but also a mechanism for improving long-context reasoning.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ngoc Bui",
+   "Hieu Trung Nguyen",
+   "Arman Cohan",
+   "Rex Ying"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.09649v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.09649v1",
+  "published_iso": "2026-05-10T16:47:50Z"
+ },
+ {
+  "title": "Knowledge Packs: Zero-Token Knowledge Delivery via KV Cache Injection",
+  "title_norm": "knowledge packs zero token knowledge delivery via kv cache injection",
+  "abstract": "RAG wastes tokens. We propose Knowledge Packs: pre-computed KV caches that deliver the same knowledge at zero token cost. For causal transformers, the KV cache from a forward pass on text F is identical to what a joint pass on F+q would produce - this follows directly from the causal mask. The equivalence is exact but fragile: wrong chat template formatting causes 6-7pp degradation, which we believe explains prior claims of KV outperforming RAG. With correct formatting: zero divergences across 700 questions on Qwen3-8B and Llama-3.1-8B, up to 95% token savings. The KV interface also enables behavioral steering that RAG cannot do. Because RoPE rotates keys but leaves values untouched, contrastive deltas on cached values can nudge model behavior while key arithmetic destroys coherence. The effect sits in mid-layer values (33-66%), independent directions are nearly orthogonal (cos~0) and compose, and both channels - knowledge and steering - run simultaneously at alpha<=0.7 without interference. No training, no weight modification.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Andrey Pustovit"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.03270v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.03270v1",
+  "published_iso": "2026-03-22T11:55:09Z"
+ },
+ {
+  "title": "DQ-Ladder: A Deep Reinforcement Learning-based Bitrate Ladder for Adaptive Video Streaming",
+  "title_norm": "dq ladder a deep reinforcement learning based bitrate ladder for adaptive video ",
+  "abstract": "Adaptive streaming of segmented video over HTTP typically relies on a predefined set of bitrate-resolution pairs, known as a bitrate ladder. However, fixed ladders often overlook variations in content and decoding complexities, leading to suboptimal trade-offs between encoding time, decoding efficiency, and video quality. This article introduces DQ-Ladder, a deep reinforcement learning (DRL)-based scheme for constructing time- and quality-aware bitrate ladders for adaptive video streaming applications. DQ-Ladder employs predicted decoding time, quality scores, and bitrate levels per segment as inputs to a Deep Q-Network (DQN) agent, guided by a weighted reward function of decoding time, video quality, and resolution smoothness. We leverage machine learning models to predict decoding time, bitrate level, and objective quality metrics (VMAF, XPSNR), eliminating the need for exhaustive encoding or quality metric computation. We evaluate DQ-Ladder using the Versatile Video Coding (VVC) toolchain (VVenC/VVdeC) on 750 video sequences across six Apple HLS-compliant resolutions and 41 quantization parameters. Experimental results against four baselines show that DQ-Ladder achieves BD-rate reductions of at least 10.3% for XPSNR compared to the HLS ladder, while reducing decoding time by 22%. DQ-Ladder shows significantly lower sensitivity to prediction errors than competing methods, remaining robust even with up to 20% noise.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Reza Farahani",
+   "Zoha Azimi",
+   "Vignesh V Menon",
+   "Hermann Hellwagner",
+   "Radu Prodan",
+   "Schahram Dustdar",
+   "Christian Timmerer"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.13597v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.13597v1",
+  "published_iso": "2026-03-13T21:13:00Z"
+ },
+ {
+  "title": "Fail-Closed Lowering of Resident KV Claims onto LLM Serving Runtimes",
+  "title_norm": "fail closed lowering of resident kv claims onto llm serving runtimes",
+  "abstract": "LLM serving runtimes increasingly expose KV-cache primitives that resemble future-reuse controls: retention priority, TTL-like duration, host or storage offload, block events, active no-evict scheduling, and KV-aware routing. This paper argues that such primitives are weaker than accepted future-KV obligations. A runtime can expose priority, offload, events, and routing without accepting responsibility for a future reuse claim. We study ResidentClaim lowering: when a runtime primitive, trusted adapter, or patch can be treated as satisfying an accepted claim about future KV reuse. A conformant lowering must bind behavior to accepted claim identity, a materialization predicate, ordered lifecycle events, and claim-scoped outcomes. We contribute a fail-closed lowering relation, checker, descriptor format, and bad-lowering suite that classify runtime/mode mappings as native conformance, adapter-observational evidence, adapter-policy evidence under controlled pressure, approximation substrate, rejected mapping, or unknown evidence. The checker validates manually curated, anchored runtime descriptors against obligation bundles; it does not prove that unaudited runtime behavior is complete. Public TensorRT-LLM, SGLang/HiCache, and Dynamo expose strong substrates and selected adapter positives, but not native ResidentClaim conformance. The positive systems witness is a local patched vLLM connector/scheduler-boundary mechanism: claim metadata flows through real in-process offload/load behavior, and controlled same-claim restoration failure reaches vLLM's invalid-KV-load path and becomes an ordered claim-scoped fail-closed outcome. The result is a calibrated semantics boundary, not a production performance claim or a compatibility survey.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Lukas Stepanek"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.01387v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.01387v1",
+  "published_iso": "2026-05-31T18:23:21Z"
+ },
+ {
+  "title": "Near-Oracle KV Selection via Pre-hoc Sparsity for Long-Context Inference",
+  "title_norm": "near oracle kv selection via pre hoc sparsity for long context inference",
+  "abstract": "A core bottleneck in large language model (LLM) inference is the cost of attending over the ever-growing key-value (KV) cache. Although near-oracle top-k KV selection can preserve the quality of dense attention while sharply reducing computation and bandwidth, existing sparse methods generally rely on posterior heuristics, i.e., selectors conditioned on observed attention or proxy scores. Such conditioning introduces posterior bias: it tends to distort true token importance and miss salient tokens, thereby impairing long-range reasoning. To tackle this problem, we propose Pre-hoc Sparsity (PrHS), which selects KV entries before attention scoring and provides explicit accuracy control. Let the attention mass of discarded entries be delta (the dropped mass). Through a marginal-to-mutual-information analysis, we derive an upper bound on the mutual-information loss that depends only on the dropped mass. This relation explains failure modes of posterior heuristics and enables verifiable guarantees by controlling the dropped mass in advance. Within PrHS, we instantiate three orthogonal pre-hoc selectors along the axes of time, depth, and layer. Extensive experiments on LLaMA and Mistral families validate PrHS. Across GSM8K and CoQA, PrHS reduces retrieval overhead by over 90%, achieving 3x higher retrieval sparsity than HShare at matched or better accuracy. It incurs under 1% average degradation on LongBench, lowers attention FLOPs by about 15% versus prior sparse baselines, and yields a 9.9x speedup in attention-operator latency and 2.8x higher throughput on NVIDIA A100-80GB GPUs than the dense baseline.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yifei Gao",
+   "Lei Wang",
+   "Rong-Cheng Tu",
+   "Qixin Zhang",
+   "Jun Cheng",
+   "Dacheng Tao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.08329v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.08329v1",
+  "published_iso": "2026-02-09T07:05:23Z"
+ },
+ {
+  "title": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
+  "title_norm": "fractal kv cache archives lossless symbolic storage with in place retrieval for ",
+  "abstract": "The key-value (KV) cache dominates the memory cost of long-context autoregressive inference, and a growing body of work compresses it through quantization, eviction, or offloading. We study a complementary question: once a position's KV state has been quantized to codebook indices, how should the resulting symbol stream be stored, and can the storage layer do more than store? A family of contractive iterated-map codes that serialize a symbol sequence into a sequence of low-dimensional real vectors is revisited, and it is shown that they form a natural archive format for a quantized KV cache with the following features. The method provides exactly the access pattern a growing cache requires. It is lossless, it runs in linear time, and supports O(1) random access and O(1) amortized append. A controlled study of the quantizer feeding this archive is conducted on GPT-2 with 1024-token contexts. Keeping a small exact window (4 attention sinks plus 32 recent tokens) and archiving the rest, per-head residual vector quantization reduces the archived cache by 36-54x relative to an fp16 cache at a perplexity cost of 11-15%, and we quantify a sharp key/value asymmetry - quantizing keys is roughly 4x more damaging than quantizing values, consistent with prior low-bit KV work - and use it to allocate bits in a hybrid scheme. Finally, we show the archive is simultaneously a search index: approximate substring queries execute directly on the stored vectors, and matched context is decoded from the matched vector without ever materializing the surrounding text. We further characterize the archive's operating range: truncating stored points yields a lossy regime whose distortion we localize, and probability-weighting the maps recovers arithmetic coding, exposing a trade-off between rate efficiency, random access, and memory. We release all code; every number reproduces on a laptop CPU.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Vladimir Gusev"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.07144v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.07144v2",
+  "published_iso": "2026-07-08T08:37:49Z"
+ },
+ {
+  "title": "WitCert: Sound Runtime Risk Observability and Gating for KV-Cache Quantization",
+  "title_norm": "witcert sound runtime risk observability and gating for kv cache quantization",
+  "abstract": "KV-cache quantization is validated today by offline benchmark averages; a deployed system cannot tell whether compression is damaging the request it is serving right now. We give it a provably sound runtime meter -- a \"DTrace for KV quantization\": a per-(layer, head, step) upper bound on the total variation between exact and compressed attention. The meter has two tiers: a deterministic band-norm-witness bound, sound for any cache-preserving black-box quantizer and for any query (adaptive-safe, worst-case Cauchy--Schwarz plus RoPE band-unitarity), and a tighter probabilistic certificate for a controlled subtractively-dithered INT8 quantizer under an explicit request-level failure budget (stated for non-adaptive queries; core theorems machine-checked in Lean 4). Three results. Observability: the meter enters SGLang through an env-guarded patch, and any scheme registered as one tensor function is measured in live serving. Repair: meter-driven gating -- risk-ranked where the witness is saturated, certified where it is informative -- empirically restores the quality floor at benchmark scale, e.g. raw-cast fp8 from 22.8 back to 79.7 on hard RULER tasks with the difference from uncompressed bounded at $[+0.0,+0.8]$ by a paired test. Analysis: aggressive schemes survive on cross-layer error cancellation, not per-step fidelity -- in a 28-layer sweep, no single layer's pollution alone loses anything (0/28) -- and the certified int8 cache serves $1.88\\times$ more KV tokens at the same memory in SGLang. All artifacts, guards, and the Lean development are released at https://github.com/metask-ai/witcert-kv-certificates; every number regenerates from the shipped artifacts by one command.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Fanzhe Wei",
+   "Li Liu",
+   "Ziyang Wang",
+   "Chenyu Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.28699v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.28699v3",
+  "published_iso": "2026-07-30T11:04:45Z"
+ },
+ {
+  "title": "PolyKV: A Shared Asymmetrically-Compressed KV Cache Pool for Multi-Agent LLM Inference",
+  "title_norm": "polykv a shared asymmetrically compressed kv cache pool for multi agent llm infe",
+  "abstract": "We present PolyKV, a system in which multiple concurrent inference agents share a single, asymmetrically compressed KV cache pool. Rather than allocating a separate KV cache per agent -- the standard paradigm -- PolyKV writes a compressed cache once and injects it into N independent agent contexts via HuggingFace DynamicCache objects. Compression is asymmetric: Keys are quantized at int8 (q8_0) to preserve softmax stability, while Values are compressed using TurboQuant MSE -- a Fast Walsh-Hadamard Transform (FWHT) rotation followed by 3-bit Lloyd-Max quantization with centroids tuned to N(0,1). We evaluate across two model scales (SmolLM2-1.7B-Instruct and Llama-3-8B-Instruct), three context lengths (600-7,194 tokens), and up to 15 concurrent agents. PolyKV achieves a stable 2.91x compression ratio across all configurations. On Llama-3-8B with 15 agents sharing a 4K-token context, PolyKV reduces KV cache memory from 19.8 GB to 0.45 GB -- a 97.7% reduction -- while maintaining only +0.57% perplexity degradation and a mean BERTScore F1 of 0.928. PPL delta does not grow with agent count and improves as context length increases, inverting to -0.26% at 1,851 coherent tokens. To our knowledge, no prior work combines a single shared, lossy-compressed KV pool with multi-reader concurrent agent access.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ishan Patel",
+   "Ishan Joshi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.24971v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.24971v1",
+  "published_iso": "2026-04-27T20:10:21Z"
+ },
+ {
+  "title": "Brownian Kernel Ladders",
+  "title_norm": "brownian kernel ladders",
+  "abstract": "We introduce Brownian kernel ladders (BKLs), a recursive hierarchy of integral reproducing kernel Hilbert spaces built from linear functionals by repeatedly integrating Brownian pullback kernels indexed by functions from the preceding layer. The nonnegative 1-homogeneity of the Brownian kernel yields a kernel-preserving canonical spherical normalization and propagates square-root regularity through the hierarchy. Allowing all canonical ladder measures to vary produces a full adaptive BKL envelope with an infimal complexity. For this envelope, we prove depth-dependent Hölder and pointwise estimates, quasi-Banach structure, nestedness, and, under a geometric trace condition, strict growth with ballwise separation. We also establish existence of regularized empirical-risk minimizers for continuous losses uniformly bounded below, with almost-everywhere uniqueness of population predictions under strict convexity and pointwise uniqueness under full support. For statistical estimation, we study one realized ladder and finite dictionaries fixed independently of the estimation sample. For a dictionary of $M$ ladders, the Gaussian complexity of the union of radius-$r$ top-layer RKHS balls has $n^{-1/2}$ dependence, no explicit ambient-dimension factor, and model-selection factor $1+\\sqrt{2\\ln M}$. Corresponding high-probability oracle and excess-risk bounds follow; polynomial-size dictionaries retain a near-parametric rate. The theory separates adaptive representational richness from the statistical cost of ladder selection.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Mahdi Mohammadigohari",
+   "Giuseppe Di Fatta",
+   "Giuseppe Nicosia",
+   "Panos M Pardalos"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.15812v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.15812v2",
+  "published_iso": "2026-06-14T13:27:28Z"
+ },
+ {
+  "title": "KV-Skill: Forging Expertise in the Model's Native Language",
+  "title_norm": "kv skill forging expertise in the model s native language",
+  "abstract": "Task knowledge is commonly stored either as text in the prompt or as an update to model weights. Text is modular but must be interpreted on every use, while weight adaptation makes the resulting capability difficult to load, remove, or share independently. We introduce KV-Skill, a design space of external factorized operators that a frozen language model reads through a lightweight interface. KV-Skill supports two complementary paths. Registration converts an authored text skill into a text-derived operator and trains a shared per-backbone interface. Reward learning develops a compact latent operator directly from task outcomes, with or without an authored skill. Neither path adds positions to the prompt. Across ten benchmarks and four backbones from three model families, converting text to a KV-Skill consistently makes the same procedural knowledge more effective. On Qwen3.5-4B LiveMath, registration reaches 77.2 accuracy, compared with 23.4 for the source text skill, 52.0 for SkillOpt, and 64.5 for SoftSkill. Under matched reward training and parameter budgets, KV-Skill gives the best result in seven of eight matched settings against soft prefixes, prefix tuning, and LoRA. A post-hoc rank analysis further shows that text-derived operators retain nearly all of their benefit with one task-aligned direction per injection layer, while matched random directions fail. Finally, one shared interface retains three independently loadable KV-Skills without measurable forgetting. These results show that task knowledge can be acquired from text or experience, compressed into an external operator, and deployed separately from the backbone. Code is available at: https://github.com/shawnzhg/KV-Skill",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Zhaowei Han",
+   "Xiang Zhang",
+   "Bing Han",
+   "Kai Liu",
+   "Danqi Hu",
+   "Jie Liu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.05475v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.05475v1",
+  "published_iso": "2026-08-05T23:46:56Z"
+ },
+ {
+  "title": "Minimal-Intervention KV Retention via Set-Conditioned Diversity",
+  "title_norm": "minimal intervention kv retention via set conditioned diversity",
+  "abstract": "KV-cache compression at small budgets is a crowded design space spanning cache representation, head-wise routing, compression cadence, decoding behavior, and within-budget scoring. We study seven mechanisms across these five families under matched mean cache on long-form mathematical reasoning (MATH-500~\\cite{hendrycks2021math}) with two distilled-reasoning models (Qwen-7B and Llama-8B variants of DeepSeek-R1-Distill~\\cite{deepseek2025r1}) at budgets $b \\in \\{64, 128\\}$. All seven were rejected. We then propose $α$, a one-function modification to the TriAttention~\\cite{mao2026triattention} retention scorer that replaces argmax-top-$k$ with greedy facility-location-inspired selection under a V-space redundancy penalty controlled by a single weight $λ$. A pre-registered protocol tunes $λ$ on a frozen development split and confirms on a disjoint held-out split; with $λ= 0.5$, $α$ clears Bonferroni on two of the four (model, budget) cells (Qwen $b{=}128$ and Llama $b{=}64$), no cell is significantly negative, and the pre-registered Branch~A triggers. The finding is asymmetric: a minimal scoring modification beat heavier structural redesigns in this regime, and the combined matched-memory, sympy-graded, held-out confirmation protocol is the evidence standard that made the asymmetry visible.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Libo Sun",
+   "Po-wei Harn",
+   "Peixiong He",
+   "Xiao Qin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.14292v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.14292v2",
+  "published_iso": "2026-05-14T02:50:20Z"
+ },
+ {
+  "title": "Kitty: Accurate and Efficient 2-bit KV Cache Quantization with Dynamic Channel-wise Precision Boost",
+  "title_norm": "kitty accurate and efficient 2 bit kv cache quantization with dynamic channel wi",
+  "abstract": "The KV cache is a dominant memory bottleneck for LLM inference. While 4-bit KV quantization preserves accuracy, 2-bit often degrades it, especially on long-context reasoning. We close this gap via an algorithm-system co-design for mixed-precision KV caching: Kitty. On the algorithm side, extensive experiments show that Dynamic Channel-wise Precision Boost -- which ranks Key-cache channels by sensitivity and keeps only a small fraction at higher precision -- maintains near-zero loss in accuracy drop while approaching 2-bit memory. The main challenge is handling dynamic 4-bit channel boosts while keeping the page layout coalesced and the dequantization uniform, with no scattered reads or hard-coded masks. Kitty addresses these issues by decompose each mixed-precision Key page into two tensors with unified 2-bit precision. Based on this, Kitty provides a page-centric KV layout, Triton-compatible page dequantization kernels, and a lightweight runtime pipeline that preserves coalescing and avoids divergence. Across seven tasks and two model families (Qwen3, LLaMA3), Kitty cuts KV memory by nearly 8x with negligible accuracy loss, enabling up to 8x larger batches and 2.1x-4.1x higher throughput under the same memory budget. We release the full implementation of Kitty at https://github.com/Summer-Summer/Kitty.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Haojun Xia",
+   "Xiaoxia Wu",
+   "Jisen Li",
+   "Robert Wu",
+   "Junxiong Wang",
+   "Jue Wang",
+   "Chenxi Li",
+   "Aman Singhal",
+   "Alay Dilipbhai Shah",
+   "Alpay Ariyak",
+   "Donglin Zhuang",
+   "Zhongzhu Zhou",
+   "Ben Athiwaratkun",
+   "Zhen Zheng",
+   "Shuaiwen Leon Song"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2511.18643v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2511.18643v1",
+  "published_iso": "2025-11-23T22:54:48Z"
+ },
+ {
+  "title": "WindowQuant: Mixed-Precision KV Cache Quantization based on Window-Level Similarity for VLMs Inference Optimization",
+  "title_norm": "windowquant mixed precision kv cache quantization based on window level similari",
+  "abstract": "Recently, video language models (VLMs) have been applied in various fields. However, the visual token sequence of the VLM is too long, which may cause intolerant inference latency and GPU memory usage. Existing methods propose mixed-precision quantization to the key-value (KV) cache in VLMs based on token granularity, which is time-consuming in the search process and hardware inefficient during computation. This paper introduces a novel approach called WindowQuant, which employs window-adaptive mixed-precision quantization to optimize the KV cache. WindowQuant consists of two modules: window-level quantization search and window-level KV cache computation. Window-level quantization search quickly determines the optimal bit-width configuration of the KV cache windows based on the similarity scores between the corresponding visual token windows and the text prompt, maintaining the model accuracy. Furthermore, window-level KV cache computation reorders the KV cache windows before quantization, avoiding the hardware inefficiency caused by mixed-precision quantization in inference computation. Extensive experiments demonstrate that WindowQuant outperforms state-of-the-art VLM models and KV cache quantization methods on various datasets.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Wei Tao",
+   "Xiaoyang Qu",
+   "Peiqiang Wang",
+   "Guokuan Li",
+   "Jiguang Wan",
+   "Kai Lu",
+   "Jianzong Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.02262v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.02262v1",
+  "published_iso": "2026-05-04T06:17:13Z"
+ },
+ {
+  "title": "MixKVQ: Query-Aware Mixed-Precision KV Cache Quantization for Long-Context Reasoning",
+  "title_norm": "mixkvq query aware mixed precision kv cache quantization for long context reason",
+  "abstract": "Long Chain-of-Thought (CoT) reasoning has significantly advanced the capabilities of Large Language Models (LLMs), but this progress is accompanied by substantial memory and latency overhead from the extensive Key-Value (KV) cache. Although KV cache quantization is a promising compression technique, existing low-bit quantization methods often exhibit severe performance degradation on complex reasoning tasks. Fixed-precision quantization struggles to handle outlier channels in the key cache, while current mixed-precision strategies fail to accurately identify components requiring high-precision representation. We find that an effective low-bit KV cache quantization strategy must consider two factors: a key channel's intrinsic quantization difficulty and its relevance to the query. Based on this insight, we propose MixKVQ, a novel plug-and-play method that introduces a lightweight, query-aware algorithm to identify and preserve critical key channels that need higher precision, while applying per-token quantization for value cache. Experiments on complex reasoning datasets demonstrate that our approach significantly outperforms existing low-bit methods, achieving performance comparable to a full-precision baseline at a substantially reduced memory footprint.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Tao Zhang",
+   "Ziqian Zeng",
+   "Hao Peng",
+   "Huiping Zhuang",
+   "Cen Chen"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2512.19206v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2512.19206v1",
+  "published_iso": "2025-12-22T09:44:26Z"
+ },
+ {
+  "title": "SpectrumKV: Per-Token Mixed-Precision KV Cache Transfer for Prefill-Decode Disaggregated LLM Serving",
+  "title_norm": "spectrumkv per token mixed precision kv cache transfer for prefill decode disagg",
+  "abstract": "Prefill-decode (PD) disaggregation decouples prompt processing from token generation, but it also turns the key-value (KV) cache into a network payload. Existing PD-side KV reduction methods are mostly binary: selected tokens are transmitted at full precision and the rest are not transmitted. This paper argues that binary selection leaves a useful design space unused. SpectrumKV assigns a precision level to each token instead: attention sinks and other high-importance tokens are protected at FP16, medium-importance tokens are sent at INT8, and low-importance tokens are sent at INT4 when the model can tolerate it. The main practical complication is that INT4 tolerance is model-dependent. Qwen2.5-7B catastrophically fails under INT4 KV quantization, while Mistral-7B and Gemma-2-9B remain stable. SpectrumKV therefore runs a lightweight deployment-time probe: three aggressive NIAH trials under a 3-tier policy. Models that pass use FP16+INT8+INT4; models that fail fall back to FP16+INT8. Across Qwen2.5-7B-Instruct, Mistral-7B-Instruct-v0.3, and Gemma-2-9B-it, SpectrumKV improves quality at the same transfer budget. At a 50% normalized KV budget on WikiText-2, SpectrumKV changes perplexity by +1.97%,-0.06%, and-0.44%, respectively, compared with PDTrim's +25.85%, +22.07%, and +35.63%. On NIAH retrieval at 4096 tokens, the adaptive policy reaches 52.6% on Qwen at the aggressive b=0.3 budget versus 26.3% for PDTrim, and reaches 100% by b=0.5; Mistral and Gemma preserve retrieval under the 3-tier policy. End-to-end GPU timing of the transfer path shows 50-62% TTFT reductions at b=0.5. These results suggest that PD KV transfer should be treated as a precision-allocation problem, not only as token pruning.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yang Pengju"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.08635v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.08635v1",
+  "published_iso": "2026-06-07T13:57:05Z"
+ },
+ {
+  "title": "From Power to Precision: Learning Fine-grained Dexterity for Multi-fingered Robotic Hands",
+  "title_norm": "from power to precision learning fine grained dexterity for multi fingered robot",
+  "abstract": "Human grasps can be roughly categorized into two types: power grasps and precision grasps. Precision grasping enables tool use and is believed to have influenced human evolution. Today's multi-fingered robotic hands are effective in power grasps, but for tasks requiring precision, parallel grippers are still more widely adopted. This contrast highlights a key limitation in current robotic hand design: the difficulty of achieving both stable power grasps and precise, fine-grained manipulation within a single, versatile system. In this work, we bridge this gap by jointly optimizing the control and hardware design of a multi-fingered dexterous hand, enabling both power and precision manipulation. Rather than redesigning the entire hand, we introduce a lightweight fingertip geometry modification, represent it as a contact plane, and jointly optimize its parameters along with the corresponding control. Our control strategy dynamically switches between power and precision manipulation and simplifies precision control into parallel thumb-index motions, which proves robust for sim-to-real transfer. On the design side, we leverage large-scale simulation to optimize the fingertip geometry using a differentiable neural-physics surrogate model. We validate our approach through extensive experiments in both sim-to-real and real-to-real settings. Our method achieves an 82.5% zero-shot success rate on unseen objects in sim-to-real precision grasping, and a 93.3% success rate in challenging real-world tasks involving bread pinching. These results demonstrate that our co-design framework can significantly enhance the fine-grained manipulation ability of multi-fingered hands without reducing their ability for power grasps. Our project page is at https://jianglongye.com/power-to-precision",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Jianglong Ye",
+   "Lai Wei",
+   "Guangqi Jiang",
+   "Changwei Jing",
+   "Xueyan Zou",
+   "Xiaolong Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2511.13710v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2511.13710v1",
+  "published_iso": "2025-11-17T18:56:50Z"
+ },
+ {
+  "title": "KV-CAR: KV Cache Compression using Autoencoders and KV Reuse in Large Language Models",
+  "title_norm": "kv car kv cache compression using autoencoders and kv reuse in large language mo",
+  "abstract": "As Large Language Models (LLMs) scale in size and context length, the memory requirements of the key value (KV) cache have emerged as a major bottleneck during autoregressive decoding. The KV cache grows with sequence length and embedding dimension, often exceeding the memory footprint of the model itself and limiting achievable batch sizes and context windows. To address this challenge, we present KV CAR, a unified and architecture agnostic framework that significantly reduces KV cache storage while maintaining model fidelity. KV CAR combines two complementary techniques. First, a lightweight autoencoder learns compact representations of key and value tensors along the embedding dimension, compressing them before they are stored in the KV cache and restoring them upon retrieval. Second, a similarity driven reuse mechanism identifies opportunities to reuse KV tensors of specific attention heads across adjacent layers. Together, these methods reduce the dimensional and structural redundancy in KV tensors without requiring changes to the transformer architecture. Evaluations on GPT 2 and TinyLLaMA models across Wikitext, C4, PIQA, and Winogrande datasets demonstrate that KV CAR achieves up to 47.85 percent KV cache memory reduction with minimal impact on perplexity and zero shot accuracy. System level measurements on an NVIDIA A40 GPU show that the reduced KV footprint directly translates into longer sequence lengths and larger batch sizes during inference. These results highlight the effectiveness of KV CAR in enabling memory efficient LLM inference.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Sourjya Roy",
+   "Shrihari Sridharan",
+   "Surya Selvam",
+   "Anand Raghunathan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2512.06727v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2512.06727v1",
+  "published_iso": "2025-12-07T08:40:52Z"
+ },
+ {
+  "title": "IP-SAM: Rethinking Prompt-Conditioned Segmentation for Prompt-Absent Deployment",
+  "title_norm": "ip sam rethinking prompt conditioned segmentation for prompt absent deployment",
+  "abstract": "Prompt-conditioned foundation segmenters have emerged as a dominant paradigm for image segmentation, where explicit spatial prompts(e.g., points, boxes, masks) guide mask decoding. However, many real-world deployments require fully automatic segmentation, creating a structural mismatch: the decoder expects prompts that are unavailable at inference. Existing adaptations typically modify intermediate features, inadvertently bypassing the model's native prompt interface and weakening prompt-conditioned decoding. We propose IP-SAM, which revisits adaptation from a prompt-space perspective through prompt-space conditioning. Specifically, a Self-Prompt Generator (SPG) distills image context into complementary intrinsic prompts that serve as coarse regional anchors. These cues are projected through SAM2's frozen prompt encoder, restoring prompt-guided decoding without external intervention. To suppress background-induced false positives, Prompt-Space Gating (PSG) leverages the intrinsic background prompt as an asymmetric suppressive constraint prior to decoding. Under a deterministic no-external-prompt protocol, IP-SAM achieves state-of-the-art performance across four camouflaged object detection benchmarks with only 21.26M trainable parameters. Furthermore, the proposed conditioning strategy generalizes beyond COD to medical polyp segmentation.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Huiyao Zhang",
+   "Jin Bai",
+   "Rui Guo",
+   "JianWen Tan",
+   "HongFei Wang",
+   "Ye Li"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.27250v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.27250v2",
+  "published_iso": "2026-03-28T11:52:55Z"
+ },
+ {
+  "title": "TriAxialKV: Toward Extreme Low-Precision KV-Cache Quantization for Agentic Inference Tasks",
+  "title_norm": "triaxialkv toward extreme low precision kv cache quantization for agentic infere",
+  "abstract": "Agentic workloads have emerged as a major workload for LLM inference. They differ significantly from chat-only workloads, requiring long-context processing, the ability to handle multimodal inputs, and structured multi-turn interactions with tool calling capabilities. As a result, their context exhibits structure that can carry different importance along three key axes: temporal recency to the current turn, modality such as text or image tokens, and semantic role such as user queries, tool calls, observations, or reasoning. These axes capture distinct token behaviors and lead to different sensitivities to KV-cache compression. However, existing KV-cache quantization methods are typically homogeneous or exploit only heterogeneity on a single dimension, such as temporal proximity or modality, overlooking the interactions among them. To this end, we introduce TriAxialKV, a novel mixed-precision KV-cache quantization scheme that assigns each token a triaxial tag, calibrates per-tag sensitivity, and allocates INT2/INT4 bitwidths under a fixed memory budget. We implement TriAxialKV as an end-to-end serving system, comprising calibration, mixed-precision quantization and memory management, and custom fused Triton decode kernels. When using Qwen3-VL-32B-Thinking as a computer-use agent operating the OSWorld, TriAxialKV matches the accuracy of SGLang with BF16 KV cache while supporting 4.5$\\times$ KV cache size and achieving 30% higher end-to-end throughput, when running on real GPU systems.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Hanzhang Shen",
+   "Haoran Wu",
+   "Yiren Zhao",
+   "Robert Mullins"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.17170v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.17170v1",
+  "published_iso": "2026-05-16T21:58:28Z"
+ },
+ {
+  "title": "P-Cast Precision in FP8 Attention: Sink-Induced Collapse and the Optimality of S=2^8",
+  "title_norm": "p cast precision in fp8 attention sink induced collapse and the optimality of s ",
+  "abstract": "FP8 (E4M3) acceleration for attention computation offers significant throughput gains, but the 3-bit mantissa introduces precision challenges when the softmax probability matrix~$P$ is cast to FP8 before the $P \\cdot V$ matrix multiplication. We analyze two implementation choices that affect output precision under the \\emph{Attention Sink} phenomenon: (1)~the KV block iteration order, and (2) the static scaling factor applied to $P$ before casting.\n  We show that forward KV iteration causes \\emph{P-collapse} -- to leading order a fraction $Φ(Δ+ δ_k - 6.93 - \\ln S)$ of non-sink $P$ values underflow to zero, where the small shift $δ_k \\approx 1$ (for $k_{\\text{sink}}{=}4$) is the expected within-sink-block score maximum -- and that reverse iteration removes it, with a zero-underflow guarantee when reverse is combined with $S{=}256$. We further give a constructive characterization of $S = 256 = 2^8$ as the static scale that simultaneously satisfies (i)~bit-exact IEEE 754 scaling, (ii) the lower envelope of a sawtooth function $dp(S)$ over the E4M3 number line ($dp = 2^{-4}$, the minimum worst-case quantization step), and (iii)~the maximum normal-range coverage \\emph{among bit-exact ($2^k$) scales} (a non-bit-exact scale such as $448$ attains slightly higher coverage; sec.5}). Both optimizations are already deployed in FlashAttention-3/4 on engineering grounds; our contribution is a quantitative account of \\emph{why} these choices are good and a closed-form threshold $Δ_c = 6.93 + \\ln S - δ_k$ for predicting kernel-level precision loss. Kernel-faithful experiments ($Q, K, V$ in FP32 to isolate the P-cast effect) show $3$-$10\\times$ MSE improvement at moderate sink strengths, and paired tests confirm both fixes saturate to the same precision floor when combined -- which motivated updating the hpc-ops kernel from $S{=}1$ to $S{=}256$.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Reed Lau"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.06521v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.06521v1",
+  "published_iso": "2026-06-02T17:29:15Z"
+ },
+ {
+  "title": "KV-Pipe: On the Relation Between KV Sharing and Pipeline Parallel Efficiency in LLMs",
+  "title_norm": "kv pipe on the relation between kv sharing and pipeline parallel efficiency in l",
+  "abstract": "Pipeline parallelism (PP) is widely used to scale large language model (LLM) training, but its efficiency is often limited by stage imbalance and pipeline bubbles. Meanwhile, cross-layer KV sharing has primarily been studied as a mechanism for reducing KV-cache costs during inference, without examining how KV reuse reshapes pipeline workloads. We present \\textbf{KV-Pipe}, a stage-aware KV-sharing mechanism that turns KV reuse into a pipeline-balancing control knob. KV-Pipe starts from the tail stage, converts selected attention layers to cross-layer KV sharing in a tail-first order, and iteratively retargets the current bottleneck to drive the FLOPs Imbalance Ratio (FIR) toward $1$. The procedure is performed offline and requires only a pipeline partition and per-layer FLOPs estimates, introducing negligible runtime overhead and requiring no online tuning. Across multiple pipeline-parallel configurations, KV-Pipe consistently improves utilization and throughput, achieving up to \\textbf{9.2\\%} higher training MFU and up to a \\textbf{9.8\\%} reduction in iteration time, with larger gains at higher pipeline-parallel degrees where stage imbalance is amplified. Furthermore, the same KV-sharing mechanism provides an inference-side benefit by reducing KV-cache growth and redundant KV projection work, resulting in higher decoding throughput for long-context workloads. These results identify KV layout as a system--architecture degree of freedom for jointly improving pipeline-parallel training efficiency and long-context inference.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Maryam Dialameh",
+   "Hossein Rajabzadeh",
+   "Harish Krishnamoorthy Murali",
+   "Walid Ahmed",
+   "Weiwei Zhang",
+   "Hyock Ju Kwon"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.15943v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.15943v1",
+  "published_iso": "2026-08-16T22:01:16Z"
+ },
+ {
+  "title": "Residual Stream Duality in Modern Transformer Architectures",
+  "title_norm": "residual stream duality in modern transformer architectures",
+  "abstract": "Recent work has made clear that the residual pathway is not mere optimization plumbing; it is part of the model's representational machinery. We agree, but argue that the cleanest way to organize this design space is through a two-axis view of the Transformer. A decoder evolves information along two ordered dimensions: sequence position and layer depth. Self-attention already provides adaptive mixing along the sequence axis, whereas the residual stream usually performs fixed addition along the depth axis. If we fix a token position and treat layer index as the ordered variable, then a causal depth-wise residual attention read is exactly the same local operator as causal short sliding-window attention (ShortSWA), except written over depth rather than over sequence. This is the core residual stream duality behind Transformer$^2$. This perspective also clarifies the recent literature. ELC-BERT and DenseFormer already show that learned aggregation over depth can outperform uniform residual accumulation, while Vertical Attention, DeepCrossAttention (DCA), MUDDFormer, and Attention Residuals move further toward explicit attention-based routing over earlier layers. The key point, however, is that operator-level duality does not imply systems-level symmetry. For large-scale autoregressive models, sequence-axis ShortSWA is usually the more hardware-friendly placement because it reuses token-side sliding-window kernels, KV-cache layouts, and chunked execution. If the goal is instead to change the shortcut itself, Deep Delta Learning (DDL) is the cleaner intervention because it modifies the residual operator directly rather than adding a separate cross-layer retrieval path. Our recommendation is therefore simple: use DDL when the shortcut is the object of interest, and use sequence-axis ShortSWA when the goal is local adaptive mixing.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yifan Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.16039v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.16039v2",
+  "published_iso": "2026-03-17T00:56:29Z"
+ },
+ {
+  "title": "YOCO++: Enhancing YOCO with KV Residual Connections for Efficient LLM Inference",
+  "title_norm": "yoco enhancing yoco with kv residual connections for efficient llm inference",
+  "abstract": "Cross-layer key-value (KV) compression has been found to be effective in efficient inference of large language models (LLMs). Although they reduce the memory consumption of the KV cache, such methods usually introduce non-negligible performance degradation. In this work, we aim to enhance the performance of YOCO, a cross-layer KV compression method that shares the KVs of the middle layer with the top-half layers. We propose YOCO++, an enhanced YOCO that incorporates a weighted residual connection between the KVs of each bottom-half layer and the bottom layer. Compared to YOCO, YOCO++ increases model capacity while maintaining the same training and inference efficiency. Our experiments show that YOCO++ achieves state-of-the-art performance among the cross-layer KV compression methods at a 50% KV cache compression rate, outperforming the standard Transformer.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "You Wu",
+   "Ziheng Chen",
+   "Yizhen Zhang",
+   "Haoyi Wu",
+   "Chengting Yu",
+   "Yuchi Xu",
+   "Wenbo Su",
+   "Bo Zheng",
+   "Kewei Tu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.13556v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.13556v1",
+  "published_iso": "2026-04-15T07:05:14Z"
+ },
+ {
+  "title": "Adaptive Mass-Segmented KV Compression for Long-Context Reasoning",
+  "title_norm": "adaptive mass segmented kv compression for long context reasoning",
+  "abstract": "The linear growth of the Key-Value (KV) cache is a critical bottleneck in long-form LLM inference. Existing KV compression methods mitigate this by evicting tokens based on importance scores. However, we show that their reliance on global Top-k selection triggers Region Wipe-out: the severe eviction of contiguous reasoning blocks that derails logical coherence. To address this, we propose Adaptive Mass-Segmented (AMS) KV Compression, a framework that shifts the paradigm from token-level competition to region-aware quota allocation. AMS adaptively partitions the KV cache based on the spatial distribution of attention mass, ensuring structurally vital reasoning segments receive guaranteed memory quotas. To ensure stability during iterative decoding, an EMA-based smoothing mechanism is incorporated to prevent jitter in segment boundaries. Crucially, AMS is a universal plug-and-play layer that is orthogonal to existing scorers. It can be seamlessly integrated into representative methods such as TOVA, Expected Attention, KeyDiff, R-KV and TriAttention. AMS is also system-compatible with modern paged-KV serving frameworks such as vLLM, supporting efficient gather-and-compact KV execution without introducing additional steady-state attention overhead. Extensive experiments across a diverse suite of tasks, including mathematical reasoning (MATH500, AIME, GSM8K), code completion, open-domain QA, and sparse retrieval, demonstrate that AMS consistently mitigates structural fragmentation and boosts model performance.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Junzhe Yang",
+   "Xiaoyu Shen"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.23200v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.23200v1",
+  "published_iso": "2026-05-22T03:32:52Z"
+ },
+ {
+  "title": "StreamKV: Streaming Video Question-Answering with Segment-based KV Cache Retrieval and Compression",
+  "title_norm": "streamkv streaming video question answering with segment based kv cache retrieva",
+  "abstract": "Video Large Language Models (Video-LLMs) have demonstrated significant potential in the areas of video captioning, search, and summarization. However, current Video-LLMs still face challenges with long real-world videos. Recent methods have introduced a retrieval mechanism that retrieves query-relevant KV caches for question answering, enhancing the efficiency and accuracy of long real-world videos. However, the compression and retrieval of KV caches are still not fully explored. In this paper, we propose \\textbf{StreamKV}, a training-free framework that seamlessly equips Video-LLMs with advanced KV cache retrieval and compression. Compared to previous methods that used uniform partitioning, StreamKV dynamically partitions video streams into semantic segments, which better preserves semantic information. For KV cache retrieval, StreamKV calculates a summary vector for each segment to retain segment-level information essential for retrieval. For KV cache compression, StreamKV introduces a guidance prompt designed to capture the key semantic elements within each segment, ensuring only the most informative KV caches are retained for answering questions. Moreover, StreamKV unifies KV cache retrieval and compression within a single module, performing both in a layer-adaptive manner, thereby further improving the effectiveness of streaming video question answering. Extensive experiments on public StreamingVQA benchmarks demonstrate that StreamKV significantly outperforms existing Online Video-LLMs, achieving superior accuracy while substantially improving both memory efficiency and computational latency. The code has been released at https://github.com/sou1p0wer/StreamKV.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Yilong Chen",
+   "Xiang Bai",
+   "Zhibin Wang",
+   "Chengyu Bai",
+   "Yuhan Dai",
+   "Ming Lu",
+   "Shanghang Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2511.07278v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2511.07278v1",
+  "published_iso": "2025-11-10T16:25:03Z"
+ },
+ {
+  "title": "DepthWeave-KV: Token-Adaptive Cross-Layer Residual Factorization for Long-Context KV Cache Compression",
+  "title_norm": "depthweave kv token adaptive cross layer residual factorization for long context",
+  "abstract": "Long-context language model inference is increasingly limited by the memory bandwidth and capacity required to store key-value caches, yet existing compression methods often apply uniform budgets across layers or tokens and degrade retrieval when lexical cues and semantic states require different preservation. We introduce DepthWeave-KV, a token-adaptive cache compression method that factorizes key and value states across neighboring transformer layers using shared low-rank channel bases while retaining lightweight token-specific residuals where attention behavior is sensitive. DepthWeave-KV combines cross-depth residual factorization with a token-conditional depth router that allocates higher reconstruction rank to instruction-bearing and retrieval-critical tokens, and uses calibration-free online error tracking from attention-output probes to adapt compression during generation without retraining the base model. A fused CUDA implementation jointly performs basis lookup, residual dequantization, and attention projection to reduce decode-time memory traffic. Across LongBench, Needle-in-a-Haystack, L-Eval, and long-form QA and summarization benchmarks, DepthWeave-KV achieves near-full-cache task quality with substantially lower memory use, improving average score and retrieval accuracy over prior compressed caches while reaching 8.3x KV memory reduction and 72.8 tokens per second at 64K context.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Anna Cordoba",
+   "Adam Puente Tercero",
+   "Nerea Angulo Hijo",
+   "Mar Linares Tercero",
+   "Julia Barrientos",
+   "Ainhoa Miranda",
+   "Jesus Olivera"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.06523v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.06523v1",
+  "published_iso": "2026-07-07T17:29:01Z"
+ },
+ {
+  "title": "Residual-Mass Accounting for Partial-KV Decoding",
+  "title_norm": "residual mass accounting for partial kv decoding",
+  "abstract": "We study a controlled partial-KV decoding setting in which exact unnormalized softmax contributions are computed for sink/tail anchors and a retrieved token set, while the remaining prefill tokens are represented by a residual estimate. We focus on the accounting rule after the query-dependent exact support has been selected, and use exhaustive Top-K only as an oracle selector, not as a deployable retrieval system. The proposed rule leaves the backbone language model and the exact-branch KV tensors unchanged. It builds fixed-size summary states $(S,u)$ from learned positive feature maps $φ$, subtracts retrieved-token feature contributions to keep the exact and residual sets non-overlapping, and merges the estimated residual numerator and denominator with the exact branch under one normalization. At a 1% exact-support budget, our residual-completion method improves over the selection-only Top-K baseline on RULER and BABILong across frozen 1B and 3B Llama-3.2-Instruct backbones at all reported context lengths. In the 0.5-4% exact-support budget sweeps, this trend largely persists. On LongBench, summarization results are mostly favorable, while multi-document QA is mixed. Attention-output diagnostics support retrieved-token subtraction as the partition-consistent accounting rule, while indicating that the main remaining error is imperfect learned-$φ$ approximation of the unretrieved residual mass.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yasuto Hoshi",
+   "Daisuke Miyashita",
+   "Jun Deguchi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.05438v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.05438v2",
+  "published_iso": "2026-04-07T05:19:54Z"
+ },
+ {
+  "title": "The Residual Stream Is All You Need: On the Redundancy of the KV Cache in Transformer Inference",
+  "title_norm": "the residual stream is all you need on the redundancy of the kv cache in transfo",
+  "abstract": "The key-value (KV) cache is widely treated as essential state in transformer inference, and a large body of work engineers policies to compress, evict, or approximate its entries. We prove that this state is entirely redundant: keys and values at every layer are deterministic projections of the residual stream, and recomputing them from a single residual vector per token incurs exactly zero reconstruction error, not approximately, but bit-identically. We verify this across six models from four architecture families (135M to 4B parameters). Cross-task residual patching at every layer produces D_KL = 0 between patched and original output distributions, confirming that the residual stream satisfies a Markov property and is the sole information-carrying state. Removing the cache entirely and recomputing from scratch yields token-identical output under greedy decoding on all models tested. We build on this result with KV-Direct, a bounded-memory inference scheme that checkpoints residual vectors (5 KB per token on Gemma 3-4B) instead of full KV pairs (136 KB), recomputing keys and values on demand. Over 20 conversation turns, KV-Direct holds peak memory at 42 MB while the standard cache grows past 103 MB. Against five eviction baselines (H2O, StreamingLLM, SnapKV, TOVA, window-only), KV-Direct maintains 100% token match at every cache budget; all baselines degrade to 5-28%. A per-operation latency analysis shows recomputation runs up to 5x faster than reading cached tensors at moderate batch sizes. Code is available at https://github.com/Kaleemullahqasim/KV-Direct.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Kaleem Ullah Qasim",
+   "Jiashu Zhang",
+   "Muhammad Kafeel Shaheen",
+   "Razan Alharith",
+   "Heying Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.19664v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.19664v1",
+  "published_iso": "2026-03-20T05:59:50Z"
+ },
+ {
+  "title": "GSRQ: Gain-Shape Residual Quantization for Sub-1-bit KV Cache",
+  "title_norm": "gsrq gain shape residual quantization for sub 1 bit kv cache",
+  "abstract": "The deployment of Large Language Models (LLMs) with extended context windows is increasingly constrained by the linear growth of Key-Value (KV) cache memory. Vector Quantization (VQ), particularly Residual Quantization (RQ), is a promising approach for pushing KV cache storage toward the sub-1-bit regime by progressively encoding residuals with small codebooks. However, most VQ methods still rely on standard $\\ell_2$ $K$-means as the core codebook-learning primitive. We identify a subtle high-dimensional issue of this primitive: Euclidean centroid averaging can induce centroid shrinkage, which weakens the angular alignment term in the $\\ell_2$ distortion and makes directional preservation harder. To address this issue, we propose Gain-Shape $K$-means (GSKM), a drop-in replacement for $K$-means that improves directional fidelity while matching, and in some regimes improving, $\\ell_2$ distortion. We then build Gain-Shape Residual Quantization (GSRQ) by incorporating a weighted extension of GSKM into an RQ pipeline. On LLaMA-3-8B, GSRQ substantially improves over strong KV cache quantization baselines across bit rates. At 1-bit, it improves the average accuracy across LongBench tasks from 11.34 to 33.54, a gain of 22.20 percentage points over VQLLM.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Soosung Kim",
+   "Minjae Park",
+   "Eui-Young Chung",
+   "Jaeyong Chung"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.01065v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.01065v1",
+  "published_iso": "2026-07-01T15:25:21Z"
+ },
+ {
+  "title": "DeltaKV: Residual-Based KV Cache Compression via Long-Range Similarity",
+  "title_norm": "deltakv residual based kv cache compression via long range similarity",
+  "abstract": "The deployment of efficient long-context LLMs in applications like autonomous agents, long-chain reasoning, and creative writing is fundamentally bottlenecked by the linear growth of KV cache memory. Existing compression and eviction methods often struggle to balance accuracy, compression ratio, and hardware efficiency. We propose DeltaKV, a residual-based KV cache compression framework motivated by two empirical findings: long-range inter-token similarity and highly shared latent components in KV representations. Instead of discarding tokens, DeltaKV encodes semantic residuals relative to retrieved historical references, preserving fidelity while substantially reducing storage. To translate compression gains into real system speedups, we further introduce Sparse-vLLM, a high-performance inference engine with decoupled memory management and kernels optimized for sparse and irregular KV layouts. Experiments show that DeltaKV reduces KV cache memory to 29\\% of the original while maintaining near-lossless accuracy on LongBench, SCBench, and AIME. When integrated with Sparse-vLLM, it achieves up to 2$\\times$ throughput improvement over vLLM in long-context scenarios, demonstrating a practical path toward scalable long-context LLM deployment. Code, model checkpoints, and datasets are available at https://github.com/CURRENTF/Sparse-vLLM.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Jitai Hao",
+   "Qiang Huang",
+   "Yaowei Wang",
+   "Min Zhang",
+   "Jun Yu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.08005v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.08005v1",
+  "published_iso": "2026-02-08T15:14:36Z"
+ },
+ {
+  "title": "SparseX: Efficient Segment-Level KV Cache Sharing for Interleaved LLM Serving",
+  "title_norm": "sparsex efficient segment level kv cache sharing for interleaved llm serving",
+  "abstract": "In long-context LLM serving, the prefill stage often dominates time-to-first-token and computational cost. Although Prefix Cache in vLLM/PagedAttention has been widely used to reuse identical prompt prefixes, repeated content in practical applications frequently appears as non-prefix, cross-request, cross-turn, and cross-agent segments, which makes conventional cache mechanisms insufficient. This paper presents SparseX, a segment-level KV Cache sharing method for common serving scenarios. SparseX uses contiguous token segments as reuse units and exploits Sparse-Q indices that naturally arise in KV Cache reuse workloads to estimate the key tokens that require correction. Based on this estimate, SparseX performs Sparse-KV Recomputation within a single forward pass, thereby restoring cross-segment contextual interactions under complex interleaved reuse patterns while avoiding additional models or separate preprocessing stages for token selection. SparseX further implements a full+sparse hybrid attention mode based on a layer-specific threshold: early layers retain full attention to obtain a more stable token-importance signal, and later layers switch to sparse recomputation to improve reuse quality on complex long-context tasks. We implement SparseX-vLLM on top of vLLM, integrating segment-level cache lookup, PagedAttention management, RoPE alignment, Sparse-Q token selection, and FlashAttention backends into a unified execution path. SparseX is model-agnostic, training-free, and compatible with Prefix Cache, and it provides unified support for common online serving scenarios including multi-round chat, retrieval-augmented generation (RAG), and agent workflows.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Quqing Zhang",
+   "Kai Chen",
+   "Ning Liao",
+   "Zehao Lin",
+   "Bo Tang",
+   "Feiyu Xiong",
+   "Zhiyu Li",
+   "Xiaoxing Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.01751v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.01751v2",
+  "published_iso": "2026-06-01T06:12:55Z"
+ },
+ {
+  "title": "Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models",
+  "title_norm": "foresight residual rl for long horizon robot manipulation with vision language a",
+  "abstract": "Vision-Language-Action (VLA) policies offer strong general-purpose manipulation priors, but often fail on tight-tolerance, contact-rich assembly due to long-horizon credit assignment and subtask coupling: a state that is geometrically successful for the current skill can be brittle for downstream skills. We show this failure mode in residual reinforcement learning (RL) over a frozen VLA base policy: constant sparse success rewards improve each subtask in isolation yet yield little or no gain when skills are chained, because terminal state quality is uncontrolled. We propose Foresight Residual RL, which optimizes handoff quality by augmenting each subtask's sparse success reward with an offline-estimated foresight value -- the probability of future subtask success conditioned on the terminal state of the current subtask. Concretely, we (i) train a visual foresight predictor from images of terminal states of the base policy, labeled using downstream rollout statistics, and (ii) train residual policies via backward foresight induction, using the predictor output as a reward multiplier. On a three-phase wrench-based nut-tightening assembly task in Isaac Gym (grasp, move-insert, rotate), our method achieves 85.6% full-task success, outperforming standard subtask residual RL (54.5%) and VLA baselines, while leaving per-subtask success unchanged. These results highlight that improving long-horizon performance requires shaping which successful states are produced at each sub-task, not only whether success occurs.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yuhan Liu",
+   "Xinyu Zhang",
+   "Litao Liu",
+   "Abdeslam Boularias"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.16506v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.16506v1",
+  "published_iso": "2026-07-17T21:00:28Z"
+ },
+ {
+  "title": "Residual subspace evolution strategies for nonlinear inverse problems",
+  "title_norm": "residual subspace evolution strategies for nonlinear inverse problems",
+  "abstract": "Nonlinear inverse problems pervade engineering and science, yet noisy, non-differentiable, or expensive residual evaluations routinely defeat Jacobian-based solvers. Derivative-free alternatives either demand smoothness, require large populations to stabilise covariance estimates, or stall on flat regions where gradient information fades. This paper introduces residual subspace evolution strategies (RSES), a derivative-free solver that draws Gaussian probes around the current iterate, records how residuals change along those directions, and recombines the probes through a least-squares solve to produce an optimal update. The method builds a residual-only surrogate without forming Jacobians or empirical covariances, and each iteration costs just $k+1$ residual evaluations with $O(k^3)$ linear algebra overhead, where $k$ remains far smaller than the parameter dimension. Benchmarks on calibration, regression, and deconvolution tasks show that RSES reduces misfit consistently across deterministic and stochastic settings, matching or exceeding xNES, NEWUOA, Adam, and ensemble Kalman inversion under matched evaluation budgets. The gains are most pronounced when smoothness or covariance assumptions break, suggesting that lightweight residual-difference surrogates can reliably guide descent where heavier machinery struggles.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Francesco Alemanno"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2512.10325v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2512.10325v2",
+  "published_iso": "2025-12-11T06:20:13Z"
+ },
+ {
+  "title": "Residual Symmetries and Their Algebras in the Kerr-Schild Double Copy",
+  "title_norm": "residual symmetries and their algebras in the kerr schild double copy",
+  "abstract": "The Kerr-Schild double copy (KSDC) is well-known for relating exact classical solutions between Yang-Mills theory and theories of gravity. However, whether this correspondence provides a more fundamental mapping between the underlying symmetries of gauge theory and gravity remains an underdeveloped area of research in the contemporary double copy program. In this paper, we demonstrate that the KSDC correspondence does not provide a mapping between the residual symmetry structures of the Kerr-Schild ansatz in Yang-Mills theory and gravity. On the gauge theory side, residual symmetries form an infinite-dimensional algebra of functions along null directions. On the gravitational side, residual diffeomorphisms preserving the Kerr-Schild form of the Schwarzschild metric generate a conformal algebra on $S^2$, which decomposes into Killing vectors and proper conformal Killing vectors (CKVs). While the Killing sector reproduces the expected global isometries, the CKV sector yields an infinite-dimensional algebra after imposing asymptotic flatness and horizon regularity. This appears to contradict the fact that the Schwarzschild solution admits no proper conformal symmetries. We resolve this apparent contradiction by constructing a Weyl-compensated BRST complex, showing that the CKV sector is BRST-exact and therefore trivial in cohomology, so that the physical symmetry algebra reduces to the global isometries of Schwarzschild. This demonstrates that the KSDC introduces an enlarged symmetry structure at the level of the ansatz, but preserves physical symmetries after a cohomological reduction, revealing a fundamental mismatch between Yang-Mills and gravity at the level of residual symmetries.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "B. P. Holton"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.05262v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.05262v2",
+  "published_iso": "2026-04-06T23:54:45Z"
+ },
+ {
+  "title": "A guided residual search for nonlinear state-space identification",
+  "title_norm": "a guided residual search for nonlinear state space identification",
+  "abstract": "Identifying the parameters of nonlinear state-space models from input-output data typically requires solving a highly non-convex optimization problem, which is prone to slow convergence and suboptimal local solutions. This work improves the reliability and efficiency of the estimation process by decomposing the overall optimization problem into a sequence of tractable subproblems. Starting from a linear baseline model, nonlinear residual dynamics are first estimated using a guided residual search (GRS) and subsequently refined through multiple-shooting optimization. Experiments on two benchmarks show competitive performance with state-of-the-art black-box methods and improved convergence over naive initialization.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Merijn Floren",
+   "Jan Swevers"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.22964v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.22964v2",
+  "published_iso": "2026-02-26T13:01:42Z"
+ },
+ {
+  "title": "Residual Centering and Error Bounds for Convex Approximation of Mixed-Integer Recourse",
+  "title_norm": "residual centering and error bounds for convex approximation of mixed integer re",
+  "abstract": "We study convex approximations of mixed-integer recourse functions in two-stage stochastic programming. For first-stage decisions, the relevant approximation error is the signed expected residual between the convex approximation and the integer-recourse value function. On bounded uncertainty boxes, we identify residual conditions that yield deterministic bounds for this expectation error. The central condition is coordinate slice-centering, under which integration by parts gives an anisotropic total-variation bound and a mixed-derivative bound whose all-coordinate case is expressed through Vitali variation of the density. Exact centering, however, may be incompatible with convexity, even for totally unimodular ceiling recourse. We therefore use commuting coordinate projectors to decompose an arbitrary residual into a centered component and an explicit slice-mean defect. The resulting defect-adjusted bounds provide selectable error certificates and uniform first-stage decision-quality guarantees. We further establish sharp constants, extend the mixed-derivative estimate to nonsmooth densities, and develop tensor-product and geometric extensions of the framework, alongside a max-affine convex fitting and audit methodology.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Alban Kryeziu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.00245v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.00245v1",
+  "published_iso": "2026-07-31T19:41:39Z"
+ },
+ {
+  "title": "Multi-Segment Attention: Enabling Efficient KV-Cache Management for Faster Large Language Model Serving",
+  "title_norm": "multi segment attention enabling efficient kv cache management for faster large ",
+  "abstract": "Large Language Model (LLM) inference relies on key-value (KV) caches to avoid redundant attention computation. While approximate KV cache retention techniques reduce memory usage by sacrificing model accuracy, lossless approaches instead evict KV cache blocks from GPU memory and reconstruct them on demand to preserve exact outputs. Existing lossless KV cache management systems primarily base eviction decisions on access frequency or positional heuristics, without considering how different KV cache blocks affect the execution efficiency of GPU attention kernels.\n  In this paper, we propose AsymCache, a computation-latency-aware KV cache management system for LLM inference that explicitly aligns cache residency decisions with GPU attention kernel performance, including three key components: Multi-Segment Attention (MSA) for efficient non-contiguous KV context processing, a cache eviction policy that jointly optimizes hit rate and position-aware recomputation cost, and an adaptive chunking scheduler for high hardware utilization. Experiments show that AsymCache reduces TTFT by up to 1.90-2.03x and time-per-output-token (TPOT) by 1.62-1.71x over latest baselines, confirming the effectiveness of the method in common workloads and validating its design goal of balancing computational efficiency with cache hit rate. Moreover, the low-level design of AsymCache allows seamless integration into agent serving systems such as Continuum, where it further reduces average job latency by up to 18.1%.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Chunan Shi",
+   "Yilei Chen",
+   "Yilin Chen",
+   "Xupeng Miao",
+   "Bin Cui"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.02964v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.02964v1",
+  "published_iso": "2026-06-01T23:51:37Z"
+ },
+ {
+  "title": "Mitigating Frequency Learning Bias in Quantum Models via Multi-Stage Residual Learning",
+  "title_norm": "mitigating frequency learning bias in quantum models via multi stage residual le",
+  "abstract": "Quantum machine learning models based on parameterized circuits can be viewed as Fourier series approximators. However, they often struggle to learn functions with multiple frequency components, particularly high-frequency or non-dominant ones; a phenomenon we term the quantum Fourier parameterization bias. Inspired by recent advances in classical Fourier neural operators (FNOs), we adapt the multi-stage residual learning idea to the quantum domain, iteratively training additional quantum modules on the residuals of previous stages. We evaluate our method on a synthetic benchmark composed of spatially localized frequency components with diverse envelope shapes (Gaussian, Lorentzian, triangular). Systematic experiments show that the number of qubits, the encoding scheme, and residual learning are all crucial for resolving multiple frequencies; residual learning alone can improve test MSE significantly over a single-stage baseline trained for the same total number of epochs. Our work provides a practical framework for enhancing the spectral expressivity of quantum models and offers new insights into their frequency-learning behavior.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ammar Daskin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.10083v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.10083v2",
+  "published_iso": "2026-03-10T11:18:20Z"
+ },
+ {
+  "title": "Route-Block Membership Selects Packed-AWQ Arithmetic: A Controlled Single-Fixture Mechanism Study",
+  "title_norm": "route block membership selects packed awq arithmetic a controlled single fixture",
+  "abstract": "Mixture-of-experts (MoE) inference first aligns routed tokens into padded expert blocks, then executes packed quantized matrix multiplication over those blocks. This preprocessing is often treated as bookkeeping. In one pre-specified Qwen3-Coder AWQ layer-6 fixture on a pinned vLLM/Marlin build and RTX 3090 runtime, we show that the tested route-block interventions select exact packed arithmetic trajectories. Two fixed preconstruction histories produced distinct native alignments and exact trajectories. Injecting the opposite alignment transferred W13, activation, routed-W2, and final outputs. Permuting two routes within one block preserved each native trajectory, while exchanging two prior-data-selected routes across the boundary between expert-106 blocks 40 and 41 transferred the complete opposite trajectory. Source- and binary-derived schedule geometry maps those blocks to direct/full-K and split/global-reduction classes. Forcing a single-slice 200-block grid made W13 bitwise equal. Stable canonical construction made both histories converge to a third exact trajectory. The confirmatory cohort contains 70 valid cold processes and seven required perturbation rejections. This is a causal mechanism result for one fixture, not a prevalence, allocator, portability, or serving-impact claim.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Lukas Stepanek"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.26316v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.26316v1",
+  "published_iso": "2026-07-28T22:25:41Z"
+ },
+ {
+  "title": "Learning to Route Electric Trucks Under Operational Uncertainty",
+  "title_norm": "learning to route electric trucks under operational uncertainty",
+  "abstract": "Electric truck operations require routing decisions that remain feasible under limited battery range, long charging times, travel and energy consumption, and competition for shared charging infrastructure. These features make electric truck routing a coupled logistics and energy problem, limiting the practicality of heuristics-based methods and rendering them computationally infeasible at scale. This paper proposes a learning-based framework for the stochastic electric truck routing under charging constraints and operational uncertainty. The problem, solved by Reinforcement Learning, is formulated as an event-driven semi-Markov decision process with shared charging resources, stochastic travel and energy requirements, and realistic nonlinear fast-charging behavior. To support learning in this setting, a graph-based representation of system state and feasible decisions is introduced, together with a rule-based action mask that restricts policies to operationally admissible actions; thus, improving training efficiency. Building on this formulation, an event-driven simulation environment is developed that supports both Reinforcement Learning and benchmarking against heuristic and mathematical programming baselines. Computational experiments across a range of fleet sizes show that the proposed learning-based algorithm consistently outperforms baselines and attains performance close to optimization benchmarks in many settings, while preserving high success rates under charging congestion and uncertainty.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Stavros Orfanoudakis",
+   "Ziyan Li",
+   "Ruixiao Yang",
+   "Nikolay Aristov",
+   "Pedro P. Vergara",
+   "Chuchu Fan",
+   "Elenna Dugundji"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.26566v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.26566v1",
+  "published_iso": "2026-04-29T11:52:00Z"
+ },
+ {
+  "title": "Small Experiments, Cheaper Decisions: A Case Study in Staged Promotion for Micro-Pretraining",
+  "title_norm": "small experiments cheaper decisions a case study in staged promotion for micro p",
+  "abstract": "Short pretraining runs can reduce experimental cost, but they can also over-promote configurations that only look strong at tiny budgets. We study an auditable staged-promotion protocol for a fixed micro-pretraining runner on two heterogeneous host blocks: Windows A100 and Linux L40S. Starting from twelve prior-screened configurations, we use staged budgets of 2 minutes, 5 minutes, 10 minutes, 60 minutes, and 12 hours, with frozen promotion rules before expensive continuations.\n  The early screens are intentionally treated as unstable: the 5- and 10-minute rankings are host-sensitive, and the eventual 12-hour top-ranked condition is not the mean-best condition at the replicated 10-minute gate. Because seed ranges differ across stages, these changes are operational promotion evidence, not within-seed curves. A replicated 60-minute gate keeps the Staged Factorial Screening bridge reference in the promoted set, where it ranks first in all four 60-minute host-seed cells. In the final 12-hour confirmation package, the bridge condition ranks first in all four host-seed cells across two seeds; the greedy comparator does not meet the frozen 0.010 val_bpb near-equivalence rule; and the cheaper d8/ar48 (depth-8, aspect-48) sentinel does not meet the frozen 0.020 mean-gap rule.\n  The executed 12-hour branch spends 144 GPU-hours, and the full staged protocol records 169.2 training GPU-hours including screening stages. Continuing all four 60-minute candidates would spend 192 GPU-hours, while continuing all nine replicated 10-minute candidates would spend 432 GPU-hours. The latter numbers are accounting counterfactuals for unrun continuations, not evidence that skipped candidates could not have overtaken the reference. The result is a bounded cost-allocation finding, not a claim of global optimality, capacity-normalized superiority, or superiority over adaptive hyperparameter optimization methods.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Felipe Chavarro Polania"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.11387v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.11387v1",
+  "published_iso": "2026-06-09T19:10:54Z"
+ },
+ {
+  "title": "A Wolf in Sheep's Clothing: Targeted Routing Hijacking in Federated RAG",
+  "title_norm": "a wolf in sheep s clothing targeted routing hijacking in federated rag",
+  "abstract": "Federated Retrieval-Augmented Generation (FedRAG) is attractive for privacy-sensitive applications because raw data remain local. As a result, routing must rely on client-provided semantic profiles, creating a new opportunity for manipulation. We introduce Routing Hijacking, a routing-stage attack in which a malicious client forges its profile to attract target queries despite having irrelevant underlying data. We show that this vulnerability is severe. Across three representative FedRAG routing architectures, Routing Hijacking consistently misroutes target queries and leads to downstream disruptions and failures, including missing evidence, poisoning, incorrect answers, and hallucinations. In a high-stakes MedQA-USMLE case study, we further show that poisoned retrieved evidence can mislead models across scales, leading to incorrect answers, hallucinations, and sycophantic failures. Existing defenses do not close this gap: encrypted routing preserves the exploited ranking, and Byzantine-robust Federated Learning (FL) rules transfer poorly to heterogeneous routing profiles. To address this gap, we propose a trust-aware post-routing framework that reweights clients using returned-evidence feedback, including retrieval relevance, profile consistency, and cross-client agreement; online experiments show that it suppresses persistent hijacking over recurring queries and transfers to a learned neural router. Our findings establish routing integrity as a new security challenge in FedRAG and highlight the need for stronger defenses for secure federated retrieval.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Junjie Mu",
+   "Qiongxiu Li"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.28112v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.28112v1",
+  "published_iso": "2026-05-27T08:06:10Z"
+ },
+ {
+  "title": "Detection Is Cheap, Routing Is Learned: Why Refusal-Based Alignment Evaluation Fails",
+  "title_norm": "detection is cheap routing is learned why refusal based alignment evaluation fai",
+  "abstract": "Current alignment evaluation mostly measures whether models encode dangerous concepts and whether they refuse harmful requests. Both miss the layer where alignment often operates: routing from concept detection to behavioral policy. We study political censorship in Chinese-origin language models as a natural experiment, using probes, surgical ablations, and behavioral tests across nine open-weight models from five labs. Three findings follow. First, probe accuracy alone is non-diagnostic: political probes, null controls, and permutation baselines can all reach 100%, so held-out category generalization is the informative test. Second, surgical ablation reveals lab-specific routing. Removing the political-sensitivity direction eliminates censorship and restores accurate factual output in most models tested, while one model confabulates because its architecture entangles factual knowledge with the censorship mechanism. Cross-model transfer fails, indicating that routing geometry is model- and lab-specific. Third, refusal is no longer the dominant censorship mechanism. Within one model family, hard refusal falls to zero while narrative steering rises to the maximum, making censorship invisible to refusal-only benchmarks. These results support a three-stage descriptive framework: detect, route, generate. Models often retain the relevant knowledge; alignment changes how that knowledge is expressed. Evaluations that audit only detection or refusal therefore miss the routing mechanism that most directly determines behavior.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Gregory N. Frank"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.18280v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.18280v3",
+  "published_iso": "2026-03-18T20:54:34Z"
+ },
+ {
+  "title": "Adaptive Multi-Dimensional Coordinated Comprehensive Routing Scheme for IoV",
+  "title_norm": "adaptive multi dimensional coordinated comprehensive routing scheme for iov",
+  "abstract": "The characteristics of high-speed node movement and dynamic topology changes pose great challenges to the design of internet of vehicles (IoV) routing protocols. Existing schemes suffer from common problems such as insufficient adaptability and lack of global consideration, making it difficult to achieve a globally optimal balance between routing reliability, real-time performance and transmission efficiency. This paper proposes an adaptive multi-dimensional coordinated comprehensive routing scheme for IoV environments. A complete IoV system model including network topology, communication links, hierarchical congestion and transmission delay is first constructed, the routing problem is abstracted into a single-objective optimization model with multiple constraints, and a single-hop link comprehensive routing metric integrating link reliability, node local load, network global congestion and link stability is defined. Second, an intelligent transmission switching mechanism is designed: candidate nodes are screened through dual criteria of connectivity and progressiveness, a dual decision-making of primary and backup paths and a threshold switching strategy are introduced to avoid link interruption and congestion, and an adaptive update function is constructed to dynamically adjust weight coefficients and switching thresholds to adapt to changes in network status. Simulation results show that the proposed scheme can effectively adapt to the high dynamic topology and network congestion characteristics of IoV, perform excellently in key indicators such as routing interruption times, packet delivery rate and end-to-end delay, and its comprehensive performance is significantly superior to traditional routing schemes.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ruixing Ren",
+   "Minqi Tao",
+   "Junhui Zhao",
+   "Qiuping Li",
+   "Xiaoke Sun"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.27939v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.27939v1",
+  "published_iso": "2026-03-30T01:25:54Z"
+ },
+ {
+  "title": "Task-Conditioned Routing Signatures in Sparse Mixture-of-Experts Transformers",
+  "title_norm": "task conditioned routing signatures in sparse mixture of experts transformers",
+  "abstract": "Sparse Mixture-of-Experts (MoE) architectures enable efficient scaling of large language models through conditional computation, yet the routing mechanisms responsible for expert selection remain poorly understood. In this work, we introduce routing signatures, a vector representation summarizing expert activation patterns across layers for a given prompt, and use them to study whether MoE routing exhibits task-conditioned structure. Using OLMoE-1B-7B-0125-Instruct as an empirical testbed, we show that prompts from the same task category induce highly similar routing signatures, while prompts from different categories exhibit substantially lower similarity. Within-category routing similarity (0.8435 +/- 0.0879) significantly exceeds across-category similarity (0.6225 +/- 0.1687), corresponding to Cohen's d = 1.44. A logistic regression classifier trained solely on routing signatures achieves 92.5% +/- 6.1% cross-validated accuracy on four-way task classification. To ensure statistical validity, we introduce permutation and load-balancing baselines and show that the observed separation is not explained by sparsity or balancing constraints alone. We further analyze layer-wise signal strength and low-dimensional projections of routing signatures, finding that task structure becomes increasingly apparent in deeper layers. These results suggest that routing in sparse transformers is not merely a balancing mechanism, but a measurable task-sensitive component of conditional computation. We release MOE-XRAY, a lightweight toolkit for routing telemetry and analysis.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Mynampati Sri Ranganadha Avinash"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.11114v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.11114v1",
+  "published_iso": "2026-03-11T12:45:53Z"
+ },
+ {
+  "title": "Pre-Inference Routing for Cost-Efficient Document Field Extraction",
+  "title_norm": "pre inference routing for cost efficient document field extraction",
+  "abstract": "Most document-extraction systems use a single model for all documents. This is simple but can be costly for easy cases and less effective for difficult ones. We examine whether we can predict a document's difficulty before extraction using inexpensive, document-based signals, and use this to choose between a cheaper and a stronger extractor. We find that routing only helps if two conditions hold: the cheaper model fails often enough to make routing worthwhile, and those failures can be predicted from visible features such as image quality and layout. We turn these into a practical test and apply it to five genres. When both conditions are met, the calibrated router reduces cost by 31-33% on receipts and 77% on degraded ad-buy forms while keeping quality within 0.02 F1 of always choosing the large model. Routing does not help if either condition is missing, as with clean digital invoices or nutrition labels that are already easy to read. A small labeled pilot can predict whether routing will work, and in the two cases where we ran it first, the prediction was correct. A simple bag-of-words router works about as well as engineered features, showing that the main limit is the genre, not the router design; we use interpretable features to help explain which genres can be routed. The router must be retrained for each dataset and does not transfer across datasets, even within the same genre. These results hold for two model pairs with cost differences of 5x and 3x.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Sreerekha Rajendran"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.06607v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.06607v1",
+  "published_iso": "2026-08-06T21:34:51Z"
+ },
+ {
+  "title": "The Road Less Traveled: Congestion-Aware NoC Placement and Packet Routing for FPGAs",
+  "title_norm": "the road less traveled congestion aware noc placement and packet routing for fpg",
+  "abstract": "To help scale to ever-larger and more complex designs, recent FPGA architectures now integrate network-on-chips (NoCs). NoCs help transfer high-bandwidth data over long distances within the chip without using scarce low-delay long routing wire segments. While NoC-enhanced FPGAs aid system integration and design reuse, they also complicate FPGA computer-aided design (CAD) flows by introducing new constraints and metrics. Placement and routing need to optimize NoC metrics like latency and bandwidth utilization and avoid link oversubscription (congestion), while simultaneously optimizing the programmable routing resource usage of the design modules attached to NoC routers.\n  In this work, we develop several new approaches to reduce NoC congestion while minimizing the impact on other design metrics. First, we incorporate a NoC link congestion cost into the placement engine of the open-source CAD flow, versatile place & route (VPR). Second, we integrate turn model NoC routing algorithms into the placement engine to leverage path diversity to further reduce congestion. On average over a suite of 29 benchmarks, combining placement congestion modeling with turn model packet routing reduces NoC congestion by 90.7% at the cost of increasing aggregate bandwidth demand by 4%. In cases where the enhanced placement engine and NoC routing fail to fully resolve congestion, we formulate NoC routing as a Boolean satisfiability (SAT) problem. This approach yields significant additional improvements; the combined algorithm reduces congestion by 95.1% compared to the baseline placement. Finally, we enhance the reinforcement learning (RL) agent in VPR's placement engine by introducing a NoC-aware move type, resulting in an 8.8% reduction in wirelength on designs that make extensive use of the NoC.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Soheil Gholami Shahrouz",
+   "Vaughn Betz"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.17266v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.17266v1",
+  "published_iso": "2026-08-18T01:51:14Z"
+ },
+ {
+  "title": "Mechanism-level routing failure in LLMs over Lean-verified algebraic structures",
+  "title_norm": "mechanism level routing failure in llms over lean verified algebraic structures",
+  "abstract": "We present an empirical study of structural routing failure in large language models (LLMs) over a formally verified algebraic corpus. The task requires selecting the correct proof-mechanism label from a fixed closed template set for compact mathematical objects drawn from the FiberRing formalization in Lean 4, where each item is anchored to a Lean-verified artifact and assigned a label from the corresponding certificate family.\n  Our central finding is a mechanism-level routing ceiling: under blind conditions, gpt-oss-120b achieves 80.3% template accuracy on 22 FiberRing items (n=66; temperature=0, seed=0), while Llama 3.3 70B reaches 68.2%. Exposing a mechanism-bearing Lean verdict/witness cue (Condition A2) raises accuracy to 90.9% and 81.8% -- gaps of +10.6 and +13.6 pp termed cue-induced routing uplift.\n  The dominant failure is a CRT-to-ring-equivalence misroute: gpt-oss-120b misroutes 7 of 12 CRT items (58.3%) blind, zero under A2. A cross-model dissociation in Llama is notable: verdict accuracy is identical in both conditions (95.5%), while template accuracy improves 13.6 pp -- confirming that truth inference and proof-mechanism classification are separable capacities.\n  A cross-corpus extension (Set B; 6 POM/CollisionKernel items, 72 evaluations) provides a small cross-module check: CRT-granularity compression reappears with different labels, and an inverse cross-model dissociation emerges. These findings extend the router hypothesis (Cazares 2026) to formal algebraic structures. The full pipeline, manifest, and results are at https://github.com/bytepro-ai/fiber-routing-eval.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Manuel Israel Cázares",
+   "Wenlin Zhang",
+   "Haobo Ma"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.04534v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.04534v1",
+  "published_iso": "2026-07-05T22:45:49Z"
+ },
+ {
+  "title": "ACAR: Adaptive Complexity Routing for Multi-Model Ensembles with Auditable Decision Traces",
+  "title_norm": "acar adaptive complexity routing for multi model ensembles with auditable decisi",
+  "abstract": "We present ACAR (Adaptive Complexity and Attribution Routing), a measurement framework for studying multi-model orchestration under auditable conditions. ACAR uses self-consistency variance (sigma) computed from N=3 probe samples to route tasks across single-model, two-model, and three-model execution modes. The system is implemented on top of TEAMLLM, a deterministic execution substrate with immutable artifacts and complete decision traces. We evaluate ACAR on 1,510 tasks spanning four benchmarks: MathArena, Reasoning Gym, LiveCodeBench, and SuperGPQA, using Claude Sonnet 4, GPT-4o, and Gemini 2.0 Flash, producing more than 7,550 auditable runs. Results show that sigma-based routing achieves 55.6 percent accuracy, exceeding the two-model baseline of 54.4 percent while avoiding full ensembling on 54.2 percent of tasks. The routing mechanism is model-agnostic and requires no learned components. We also document negative results. First, retrieval augmentation reduced accuracy by 3.4 percentage points, as median retrieval similarity was only 0.167, demonstrating that experience injection without semantic alignment introduces noise rather than grounding. Second, when models agree on incorrect answers (sigma equals zero), no downstream ensemble can recover; this agreement-but-wrong failure mode is intrinsic to self-consistency and bounds achievable accuracy at approximately eight percentage points below full ensembling. Third, attribution estimates based on proxy signals such as response similarity and entropy showed weak correlation with ground-truth leave-one-out values, indicating that practical attribution requires explicit counterfactual computation. This work documents which assumptions fail in practice and provides falsifiable baselines for future research on routing, retrieval, and multi-model attribution.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ramchand Kumaresan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.21231v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.21231v1",
+  "published_iso": "2026-02-06T23:27:17Z"
+ },
+ {
+  "title": "Modality-Native Routing in Agent-to-Agent Networks: A Multimodal A2A Protocol Extension",
+  "title_norm": "modality native routing in agent to agent networks a multimodal a2a protocol ext",
+  "abstract": "Preserving multimodal signals across agent boundaries is necessary for accurate cross-modal reasoning, but it is not sufficient. We show that modality-native routing in Agent-to-Agent (A2A) networks improves task accuracy by 20 percentage points over text-bottleneck baselines, but only when the downstream reasoning agent can exploit the richer context that native routing preserves. An ablation replacing LLM-backed reasoning with keyword matching eliminates the accuracy gap entirely (36% vs. 36%), establishing a two-layer requirement: protocol-level routing must be paired with capable agent-level reasoning for the benefit to materialize.\n  We present MMA2A, an architecture layer atop A2A that inspects Agent Card capability declarations to route voice, image, and text parts in their native modality. On CrossModal-CS, a controlled 50-task benchmark with the same LLM backend, same tasks, and only the routing path varying, MMA2A achieves 52% task completion accuracy versus 32% for the text-bottleneck baseline (95% bootstrap CI on $Δ$TCA: [8, 32] pp; McNemar's exact $p = 0.006$). Gains concentrate on vision-dependent tasks: product defect reports improve by +38.5 pp and visual troubleshooting by +16.7 pp. This accuracy gain comes at a $1.8\\times$ latency cost from native multimodal processing. These results suggest that routing is a first-order design variable in multi-agent systems, as it determines the information available for downstream reasoning.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Vasundra Srinivasan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.12213v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.12213v1",
+  "published_iso": "2026-04-14T02:44:50Z"
+ },
+ {
+  "title": "Fretiq: Browser-Native Electric Guitar String Classification via Engineered Spectral Features and Held-Out Free-Play Evaluation",
+  "title_norm": "fretiq browser native electric guitar string classification via engineered spect",
+  "abstract": "Identifying which string produces a given pitch in monophonic electric guitar audio is a classification challenge: a single pitch can often be produced on multiple strings, with timbral differences largely imperceptible to untrained humans. We present Fretiq, a preliminary single-instrument, single-player browser-based string classification system using a 26-dimensional feature representation of frequency band energies, spectral statistics, and 13 Mel-Frequency Cepstral Coefficients. Across five seeds, a shuffled frame-level validation split yields 97.25 +/- 0.32 percent accuracy, with an ablation study identifying MFCCs as the primary accuracy driver (92.09 +/- 0.50 percent without MFCCs). We introduce Comparison Training, a data collection method recording same-pitch pairs on adjacent strings in deliberate alternation. An initial shuffled-split comparison found no net benefit but was confounded by non-comparable validation sets across conditions. A corrected matched evaluation, using an identical recording session held out from training and model selection, shows including comparison-session data improves accuracy by 25.78 +/- 1.46 percentage points; a size-matched control shows this is not explained by training-set size alone. A recording-session-held-out evaluation yields 86.53 +/- 1.23 percent accuracy, closely matching an independently collected free-play evaluation (87.8 percent), both well below the shuffled-split figure, showing shuffled validation substantially overestimates real generalization here. We describe the feature extraction pipeline in Python and TypeScript for training-inference parity and document two implementation failure modes. The system runs entirely in-browser with no specialized hardware required.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Aadi Garg"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.18303v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.18303v2",
+  "published_iso": "2026-07-17T03:06:07Z"
+ },
+ {
+  "title": "Recursive Self-Evolving Agents via Held-Out Selection",
+  "title_norm": "recursive self evolving agents via held out selection",
+  "abstract": "LLM agents are increasingly improved without weight updates by evolving a natural-language artifact, such as reflections, workflows, playbooks, cheatsheets, or optimized prompts, that conditions a frozen policy. Such methods are typically reported as wins on the single benchmark where they help. We study them apples-to-apples and surface a sharper picture. We introduce RSEA, a Recursive Self-Evolving Agent that carries a compact three-layer natural-language state: an imperative strategy, reusable skills, and a procedural playbook. Across generations, RSEA rewrites all three layers from its own trajectories and commits a candidate only if it does not regress on a disjoint held-out split, using a strict keep-better gate.\n  Across four diverse benchmarks, ALFWorld, GAIA, (τ)-bench, and WebShop, and six faithful baselines, ReAct, Reflexion, GEPA, AWM, ACE, and Dynamic Cheatsheet, all evaluated on one shared local backbone, we find three main results. First, no artifact universally wins. RSEA is the strongest single-pass method on ALFWorld, reaching 69.3% compared with 64.6% for ReAct (McNemar (p=0.015)), and reaches 79.4% with retry, the best overall result. However, concrete-workflow induction, represented by AWM, is best on the strong-backbone tool-use tasks. Second, unguarded context evolution is high-variance and unsafe. Dynamic Cheatsheet, which curates context online without a held-out gate, is near-best on ALFWorld at 70.7%, yet collapses on WebShop, with a score of 0.14 compared with 0.43 for ReAct. Third, RSEA's strict held-out selection is what makes recursive self-evolution monotone-safe: it never significantly underperforms the base agent on any benchmark and falls back to vanilla ReAct when evolved context would hurt.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Michael Nguyen",
+   "Quoc Nguyen",
+   "Paul Vuong"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.28374v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.28374v1",
+  "published_iso": "2026-06-17T14:53:36Z"
+ },
+ {
+  "title": "Regimes: An Auditable, Held-Out-Gated Improvement Loop Demonstrated on LongMemEval with ActiveGraph",
+  "title_norm": "regimes an auditable held out gated improvement loop demonstrated on longmemeval",
+  "abstract": "Autonomous improvement loops are hard to trust because the improvement process is usually external scaffolding bolted onto the agent: failures go unlogged, diagnoses cannot be replayed, and promote-or-discard decisions land in a side database rather than the agent's own history. We show that an event-sourced agent runtime removes that friction and turns controlled improvement into a first-class workflow. When the agent's state is a deterministic projection of an append-only event log, failures are recorded, a run replays exactly from its log, candidate patches scope to typed pipeline seams, gates are auditable, and every promotion or discard is itself an event. We demonstrate this with Regimes, a loop on the ActiveGraph runtime that diagnoses failed evaluations, proposes a repair at a pipeline point, and promotes it only after static checks, sandbox execution, in-sample evaluation, and held-out validation. The loop is target-agnostic: the same control flow runs against different tasks through a common interface. On LongMemEval-S the dominant failure is not retrieval but reconciliation: the evidence is already in the assembled context, yet the reader answers incorrectly. Across five seeded held-out splits, Regimes discovers reader-prompt repairs that improve final held-out accuracy by +0.05 to +0.10 in four splits and +0.01 in one over-promotion split; two splits are individually significant (seed 5 unadjusted for its sequential promotion structure), and the pooled count is descriptive only, since the splits share one 500-question pool. The durable contributions are ActiveGraph as an auditable substrate that makes controlled improvement loops tractable, the held-out-gated loop it supports, the failure-regime taxonomy routing each failure to a pipeline location (whose marginal value over an unrouted baseline is the primary open question), and the prompt-as-discovery-probe hypothesis.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yohei Nakajima"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.10241v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.10241v1",
+  "published_iso": "2026-06-08T23:04:35Z"
+ },
+ {
+  "title": "Response Magnitude as a Dominant Signal for Held-Out CRISPRi Perturbation Effect Prediction",
+  "title_norm": "response magnitude as a dominant signal for held out crispri perturbation effect",
+  "abstract": "Predicting the magnitude of a CRISPRi perturbation's transcriptomic effect on held-out target genes is an important open problem in single-cell biology. Recent work has documented that simple baselines often match or exceed deep perturbation predictors on related protocols. We study this phenomenon on the Virtual Cell Challenge (VCC) benchmark under a strict held-out target-gene split, identify the specific low-dimensional signal that drives the gap, and characterize how it transfers across cell types. The target is the log Anderson-Darling distance from non-targeting controls, which is strongly predictable from four deterministic scalar functions of the 2,000-dimensional input. A deep MLP encoder with direct access to the full input collapses toward the marginal training mean, and standard remedies do not close the gap. A linear regression on the four magnitude scalars alone exceeds the strongest x-only classical model, while a Random Forest on the input plus the four scalars substantially outperforms our deep proof-of-concept encoder. Two pre-specified controls attribute the magnitude gain to per-row alignment rather than added dimensionality. Under zero-shot transfer to two external CRISPRi screens evaluated against a target-gene endpoint rebuilt from single-cell data, magnitude-only predictors transfer positively whereas expression-only predictors are negative or unresolved. Exposing magnitude to the deep encoder improves transfer over its expression-only counterpart, yet the encoder does not outperform a four-scalar linear regression on the same features. We also find that the Anderson-Darling column distributed with these screens measures transcriptome-wide response breadth rather than target-gene effect strength, so evaluating transfer against it scores a different outcome.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Mehrdad Shoeibi",
+   "Niloofar Yousefi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.00152v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.00152v1",
+  "published_iso": "2026-07-31T17:09:26Z"
+ },
+ {
+  "title": "Dataset Usage Inference without Shadow Models or Held-out Data",
+  "title_norm": "dataset usage inference without shadow models or held out data",
+  "abstract": "How much of my data was used to train a machine learning model? Dataset Usage Inference (DUI) aims to answer this by estimating what fraction of a dataset contributed to a model's training. However, existing DUI methods rely on assumptions that rarely hold in practice: they require training expensive shadow models to imitate the target model, and they assume access to both known training samples and an in-distribution held-out set confirmed to be absent from training. These conditions make current approaches impractical for modern large models and real data ownership disputes. We introduce a practical DUI framework that removes these constraints. Our method requires neither shadow models nor real held-out data. Instead, it generates synthetic non-member samples, extracts diverse membership signals, and casts DUI as a mixture proportion estimation problem to estimate what share of the candidate dataset was used during training. Experiments on large image generative models show that our method reliably quantifies dataset usage, providing a practical tool for data owners to determine how much of their data was used to train a model.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Wojciech Łapacz",
+   "Stanisław Pawlak",
+   "Jan Dubiński",
+   "Franziska Boenisch",
+   "Adam Dziedzic"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.26257v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.26257v1",
+  "published_iso": "2026-06-24T18:02:42Z"
+ }
+]

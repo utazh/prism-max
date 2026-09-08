@@ -1,0 +1,34 @@
+2026-08-28T17:45:08+08:00
+source_commit=d35240de08a0236f89859d6638ecbd2ac2d583f6
+source_status= M scripts/run_prism_max_cell.sh; M src/contiguous_fuxian/flexgen_pcache.py; M src/contiguous_fuxian/flexgen_qwen_reprefill.py; M tests/test_flexgen_pcache.py; M tests/test_flexgen_qwen_reprefill.py; M tests/test_prism_max_runner.py;?? research/;?? scripts/analyze_five_method_grid.py;?? scripts/build_as_pcache_store.sh;?? src/contiguous_fuxian/as_baselines.py;?? tests/test_analyze_five_method_grid.py;?? tests/test_as_baselines.py;
+method=as_h2o_lru
+selector_backend=fp16
+score_mode=nodefer
+as_baseline_mode=as_h2o_lru
+cache_type=LRU
+budget_semantics=full-keys-selected-values
+as_full_key_ratio=1.0
+as_value_keep_ratio=0.10
+as_logical_total_kv_ratio=0.55
+plan=/home/panzihang/src/prism_max/configs/qwen25_k010_impress.json
+plan_sha256=83edd810f66d03990dd66ad48090ea4fae8846e870dd70e843a837d666cbabae
+bundle_dir=/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval
+bundle_metadata=/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval/metadata.json
+bundle_metadata_sha256=cb5838f20d8a4c555ea05907d1e4b1f35894b16098add175aa05031313af2191
+store_root=/home/panzihang/contiguous_fuxian_ssd/qwen25_7b_paper_seed42
+store_task_metadata=/home/panzihang/contiguous_fuxian_ssd/qwen25_7b_paper_seed42/sst2/metadata.json
+store_task_metadata_sha256=2f51a3fc7693e3caa38a7d07210a118c38f4b69075c36cd89f4cc5004d5db7a5
+kv_dir=/home/panzihang/contiguous_fuxian_ssd/paper4_as_c64_plain_v1
+kv_complete_marker=/home/panzihang/contiguous_fuxian_ssd/paper4_as_c64_plain_v1/.contiguous_fuxian_complete
+kv_complete_sha256=3df8dc69b1b5beb140b016329c9cfdc095820bc1171a647630fe72a742b4c9eb
+impress_reorder_manifest=none
+impress_reorder_sha256=none
+kv_complete_impress_reorder_sha256=none
+adaptive_coverage=false
+samples=1
+warmup_passes=0
+warmup_samples=1
+gpu_cache_mb=55
+cpu_cache_mb=131
+SOURCE    TARGET FSTYPE OPTIONS
+/dev/sda4 /      ext4   rw,relatime

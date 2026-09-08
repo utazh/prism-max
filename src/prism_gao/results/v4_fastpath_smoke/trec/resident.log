@@ -1,0 +1,16 @@
+[2026-09-01T23:21:55+08:00] promixed/k4 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/panzihang/src/prism_max/src/prism_gao/run_fused_selector.py", line 63, in <module>
+    raise SystemExit(main())
+  File "/home/panzihang/src/prism_max/src/prism_gao/run_fused_selector.py", line 59, in main
+    return int(original_main())
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 2889, in main
+    summary = run_flexgen_reprefill(
+  File "/home/panzihang/src/prism_max/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1512, in run_flexgen_reprefill
+    raise ValueError("warmup_samples_per_task must be positive")
+ValueError: warmup_samples_per_task must be positive

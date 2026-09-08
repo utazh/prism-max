@@ -1,0 +1,81 @@
+[2026-08-04T12:59:05+08:00] period=1
+[2026-08-04T12:59:08+08:00] starting rte k005 ours
+[2026-08-04T13:00:24+08:00] completed rte k005 ours
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 5% | Ours | 32 | 0.9375 | 640.07 | 722.42 | 28.00 | 1 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 5% | Ours | 32 | 0.9375 | 640.07 | 722.42 | 28.00 | 1 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+[2026-08-04T13:00:25+08:00] period=8
+[2026-08-04T13:00:28+08:00] starting rte k005 ours
+[2026-08-04T13:01:15+08:00] completed rte k005 ours
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 5% | Ours | 32 | 0.8750 | 294.84 | 328.30 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 5% | Ours | 32 | 0.8750 | 294.84 | 328.30 | 4.00 | 8 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+[2026-08-04T13:01:15+08:00] period=4
+[2026-08-04T13:01:18+08:00] starting rte k005 ours
+[2026-08-04T13:02:09+08:00] completed rte k005 ours
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 5% | Ours | 32 | 0.4062 | 385.79 | 451.69 | 7.00 | 4 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|
+# Dataset-wise ContiguousKV comparison
+
+Each dataset is an independent process and workload. No request-weighted or unweighted cross-dataset headline metric is reported.
+
+## RTE
+
+| KV budget | Method | N | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) | Selector calls | Selection period |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 5% | Ours | 32 | 0.4062 | 385.79 | 451.69 | 7.00 | 4 |
+
+| KV budget | Ours accuracy delta vs ContiguousKV (pp) | Ours mean TTFT reduction vs ContiguousKV | Ours P95 reduction vs ContiguousKV |
+|---:|---:|---:|---:|

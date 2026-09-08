@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "design": "ABBA",
+    "task": "trec",
+    "budget": "010",
+    "backend": "k4",
+    "score_mode": "nodefer",
+    "adaptive_coverage": false,
+    "primary_latency_metric": "response_ready_ms",
+    "unique_uids": 495,
+    "repetitions_per_method": 2,
+    "run_order": [
+      "reference_r1",
+      "candidate_r1",
+      "candidate_r2",
+      "reference_r2"
+    ],
+    "reference_runs": [
+      "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r1",
+      "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r2"
+    ],
+    "candidate_runs": [
+      "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r1",
+      "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r2"
+    ],
+    "bootstrap_samples": 20000,
+    "bootstrap_seed": 20260824,
+    "shared_runtime_config": {
+      "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+      "measurement": "ttft_ms/logits_ready_ms ends when first-token logits are ready; first_token_ready_ms additionally includes cache-score maintenance and first-token ID selection; latency_ms ends when all requested token IDs are ready; response_ready_ms additionally includes token decoding and excludes benchmark-only accuracy scoring; evaluation_ready_ms/accuracy_scores_ready_ms additionally includes complete-label scoring. latency_ms and response_ready_ms describe one token only when max_tokens=1.",
+      "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
+      "model_compute_dtype": "bfloat16",
+      "accuracy_scoring": "label_continuation_loglikelihood",
+      "accuracy_scoring_protocol": "mean token log-probability over each complete teacher-forced label continuation after the measured TTFT boundary",
+      "generation_max_tokens": 1,
+      "pcache_storage_dtype": "float16",
+      "keep_ratio": 0.1,
+      "chunk_size": 16,
+      "period_size": 8,
+      "subperiod_size": 4,
+      "gpu_cache_mb": 55.0,
+      "cpu_cache_mb": 131.0,
+      "cache_type": "CKLFU",
+      "prefetch_time_budget": 10000.0,
+      "reused_existing_kv_chunks": true,
+      "resumed_partial_kv_chunks": false,
+      "online_selection": true,
+      "registered_store_tasks": [
+        "sst2",
+        "subj",
+        "trec",
+        "rte"
+      ],
+      "selector_kv_head_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selector_index_dir": "/home/panzihang/src/prism_max/assets/selector_index_k4_g32",
+      "selector_index_bits": 4,
+      "selector_index_group_size": 32,
+      "selector_index_manifest_sha256": "0a8e5c9f2053a39b7533eae37dd07396f526010c3cbddeab1e29708ac6955b7a",
+      "selector_index_preloaded_tasks": [
+        "trec"
+      ],
+      "selector_index_preloaded_bytes": 39836160,
+      "nominal_cpu_cache_plus_selector_bytes": 177199616,
+      "similarity_alpha": 0.6,
+      "defer_cache_score_updates": false,
+      "cache_update_in_ttft": true,
+      "warmup_passes": 1,
+      "warmup_samples_per_task": 32,
+      "response_ready_metric_valid_for_first_token": true,
+      "response_ready_excludes_accuracy_scoring": true,
+      "evaluation_ready_includes_accuracy_scoring": true
+    }
+  },
+  "integrity": {
+    "strict_validation_passed": true,
+    "identical_uid_sets": true,
+    "repeat_predictions_deterministic": true,
+    "repeat_selection_hashes_deterministic": true,
+    "ready_aliases_and_boundaries_valid": true
+  },
+  "input_bundle_preexclusions": {
+    "metadata_path": "/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval_strict/metadata.json",
+    "metadata_sha256": "bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c9160abdb5",
+    "preapplied": true,
+    "application_stage": "strict bundle construction before benchmark runs",
+    "manifest_path": "/home/panzihang/src/prism_max/configs/strict_eval_exclusions.json",
+    "manifest_sha256": "b89e0216afdc427a5c3012467232bb595b3f8366f727078c3a89305017bb6ec9",
+    "excluded_uids_by_task": {
+      "sst2": [
+        "sst2-0"
+      ],
+      "subj": [
+        "subj-0"
+      ],
+      "trec": [
+        "trec-0"
+      ],
+      "rte": [
+        "rte-0"
+      ]
+    }
+  },
+  "accuracy": {
+    "reference_accuracy": 0.5434343434343434,
+    "candidate_accuracy": 0.6404040404040404,
+    "accuracy_delta_pp": 9.696969696969697,
+    "wrong_to_correct": 97,
+    "correct_to_wrong": 49,
+    "mcnemar_two_sided_p": 8.768705718553241e-05
+  },
+  "ready_metrics": {
+    "logits_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 412.90379077610044,
+      "candidate_mean_ms": 249.45482170642023,
+      "mean_reduction_percent": 39.585243032634544,
+      "reference_p95_ms": 450.779824052006,
+      "candidate_p95_ms": 288.3725995197892,
+      "p95_reduction_percent": 36.02805979033349,
+      "mean_paired_delta_ms": -163.44896906968017,
+      "median_paired_delta_ms": -163.4705443866551,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -167.68113889625636,
+        -159.1353548815794
+      ],
+      "candidate_faster_uids": 491,
+      "tied_uids": 0,
+      "total_uids": 495,
+      "forward_order_mean_delta_ms": -149.83175722035494,
+      "reverse_order_mean_delta_ms": -177.0661809190054,
+      "reference_repeat_means_ms": [
+        421.30663652687963,
+        404.5009450253212
+      ],
+      "candidate_repeat_means_ms": [
+        271.4748793065247,
+        227.43476410631578
+      ]
+    },
+    "first_token_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 413.0347033210023,
+      "candidate_mean_ms": 249.58050166811756,
+      "mean_reduction_percent": 39.573963238108696,
+      "reference_p95_ms": 450.9013183414936,
+      "candidate_p95_ms": 288.50995330139995,
+      "p95_reduction_percent": 36.014834828472445,
+      "mean_paired_delta_ms": -163.4542016528848,
+      "median_paired_delta_ms": -163.50858425721526,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -167.648240048697,
+        -159.23508439629313
+      ],
+      "candidate_faster_uids": 491,
+      "tied_uids": 0,
+      "total_uids": 495,
+      "forward_order_mean_delta_ms": -149.82932577041365,
+      "reverse_order_mean_delta_ms": -177.07907753535594,
+      "reference_repeat_means_ms": [
+        421.4459876106544,
+        404.6234190313503
+      ],
+      "candidate_repeat_means_ms": [
+        271.61666184024074,
+        227.54434149599436
+      ]
+    },
+    "latency_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 413.06810553345565,
+      "candidate_mean_ms": 249.61026710636838,
+      "mean_reduction_percent": 39.57164357097726,
+      "reference_p95_ms": 450.92802913859487,
+      "candidate_p95_ms": 288.5407852008939,
+      "p95_reduction_percent": 36.01178756794258,
+      "mean_paired_delta_ms": -163.45783842708727,
+      "median_paired_delta_ms": -163.5269452817738,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -167.69927648084257,
+        -159.16424715969094
+      ],
+      "candidate_faster_uids": 491,
+      "tied_uids": 0,
+      "total_uids": 495,
+      "forward_order_mean_delta_ms": -149.82947909056838,
+      "reverse_order_mean_delta_ms": -177.08619776360615,
+      "reference_repeat_means_ms": [
+        421.4806111454211,
+        404.6555999214902
+      ],
+      "candidate_repeat_means_ms": [
+        271.6511320548527,
+        227.56940215788404
+      ]
+    },
+    "response_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 413.16035481151005,
+      "candidate_mean_ms": 249.7014079374647,
+      "mean_reduction_percent": 39.56307641100216,
+      "reference_p95_ms": 451.0102877393365,
+      "candidate_p95_ms": 288.624532520771,
+      "p95_reduction_percent": 36.004889385675625,
+      "mean_paired_delta_ms": -163.45894687404535,
+      "median_paired_delta_ms": -163.53694023564458,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -167.69425992564663,
+        -159.30907367512285
+      ],
+      "candidate_faster_uids": 491,
+      "tied_uids": 0,
+      "total_uids": 495,
+      "forward_order_mean_delta_ms": -149.82376697689597,
+      "reverse_order_mean_delta_ms": -177.09412677119477,
+      "reference_repeat_means_ms": [
+        421.5780248733783,
+        404.7426847496418
+      ],
+      "candidate_repeat_means_ms": [
+        271.75425789648233,
+        227.64855797844703
+      ]
+    },
+    "evaluation_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 513.0536969619418,
+      "candidate_mean_ms": 346.82104163473906,
+      "mean_reduction_percent": 32.400634926042414,
+      "reference_p95_ms": 561.9902992621064,
+      "candidate_p95_ms": 396.865239366889,
+      "p95_reduction_percent": 29.38219042428788,
+      "mean_paired_delta_ms": -166.2326553272027,
+      "median_paired_delta_ms": -167.7615544758737,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -171.0948444357979,
+        -161.25589049280143
+      ],
+      "candidate_faster_uids": 491,
+      "tied_uids": 0,
+      "total_uids": 495,
+      "forward_order_mean_delta_ms": -144.19728587710796,
+      "reverse_order_mean_delta_ms": -188.26802477729743,
+      "reference_repeat_means_ms": [
+        523.8871414007413,
+        502.2202525231423
+      ],
+      "candidate_repeat_means_ms": [
+        379.68985552363324,
+        313.9522277458449
+      ]
+    }
+  },
+  "mechanism": {
+    "reference": {
+      "mean_effective_mean_keep_ratio": 0.09959514170040484,
+      "mean_selected_kv_bytes": 28213248.0,
+      "mean_physical_prefetch_kv_bytes": 41476940.02424242,
+      "mean_total_ssd_read_bytes": 9157298.941414142,
+      "mean_selector_load_ms": 2.3625328807592996,
+      "mean_selector_compute_ms": 15.527249778137364,
+      "mean_cache_update_ms": 11.554010167266384
+    },
+    "candidate": {
+      "mean_effective_mean_keep_ratio": 0.09925296925296925,
+      "mean_selected_kv_bytes": 28116317.608080808,
+      "mean_physical_prefetch_kv_bytes": 31077402.892929293,
+      "mean_total_ssd_read_bytes": 364287.4828282828,
+      "mean_selector_load_ms": 9.949883021828201,
+      "mean_selector_compute_ms": 54.472600452443864,
+      "mean_cache_update_ms": 17.9088655671086
+    }
+  }
+}

@@ -1,0 +1,212 @@
+[2026-08-25T19:37:19+08:00] Prism-Max K4/nodefer strict ABBA diagnostics starts
+[2026-08-25T19:37:20+08:00] cell subj k025 ABBA begins
+[2026-08-25T19:37:20+08:00] launch subj k025 contigkv r1
+[2026-08-25T19:37:26+08:00] contigkv/k4 subj k025 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T19:46:56+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_contigkv_k4_nodefer_r1
+[2026-08-25T19:46:57+08:00] accepted validated output after status 0
+[2026-08-25T19:46:57+08:00] launch subj k025 promixed r1
+[2026-08-25T19:47:02+08:00] promixed/k4 subj k025 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T19:56:01+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_promixed_k4_nodefer_r1
+[2026-08-25T19:56:01+08:00] accepted validated output after status 0
+[2026-08-25T19:56:01+08:00] launch subj k025 promixed r2
+[2026-08-25T19:56:07+08:00] promixed/k4 subj k025 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T20:05:20+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_promixed_k4_nodefer_r2
+[2026-08-25T20:05:21+08:00] accepted validated output after status 0
+[2026-08-25T20:05:21+08:00] launch subj k025 contigkv r2
+[2026-08-25T20:05:26+08:00] contigkv/k4 subj k025 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T20:14:03+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_contigkv_k4_nodefer_r2
+[2026-08-25T20:14:03+08:00] accepted validated output after status 0
+# PRISM-Max matched ABBA comparison
+
+Task `subj`, KV budget `025`, selector backend `k4`, score mode `nodefer`. Strict protocol validation passed for 998 paired UIDs.
+
+Each ready time is averaged per UID over the two repeats before the paired bootstrap. Negative paired deltas favor ProMixed; positive reduction percentages favor ProMixed.
+Response-ready is the primary latency; logits-ready is retained as a phase metric.
+
+| Boundary | ContiguousKV mean/P95 (ms) | ProMixed mean/P95 (ms) | Mean/P95 reduction | Paired delta 95% CI (ms) | Faster UIDs |
+|---|---:|---:|---:|---:|---:|
+| Response ready (primary) | 441.74/595.62 | 440.30/507.60 | +0.33%/+14.78% | [-6.79, +3.85] | 454/998 |
+| Logits ready (phase) | 441.37/595.32 | 440.04/507.30 | +0.30%/+14.78% | [-6.66, +4.03] | 453/998 |
+| First token ready | 441.62/595.46 | 440.17/507.45 | +0.33%/+14.78% | [-6.80, +3.84] | 454/998 |
+| All requested token IDs ready (latency) | 441.65/595.50 | 440.20/507.50 | +0.33%/+14.78% | [-6.78, +3.85] | 454/998 |
+| Evaluation ready | 475.96/633.39 | 476.41/549.50 | -0.09%/+13.24% | [-4.99, +5.75] | 442/998 |
+
+## Exclusion provenance
+
+Input-bundle exclusions were pre-applied before all runs: `subj-0`. No analysis-time exclusion manifest was applied.
+
+## Accuracy
+
+ContiguousKV `0.4860`, ProMixed `0.8246`, delta `+33.87 pp`; W→C/C→W `373/35`, exact McNemar p `1.699e-72`.
+
+## Run order
+
+- `reference_r1`
+- `candidate_r1`
+- `candidate_r2`
+- `reference_r2`
+JSON: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.subj_k025_candidate_56901.json
+Markdown: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.subj_k025_candidate_56901.md
+[2026-08-25T20:14:05+08:00] cell subj k050 ABBA begins
+[2026-08-25T20:14:05+08:00] launch subj k050 contigkv r1
+[2026-08-25T20:14:11+08:00] contigkv/k4 subj k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T20:31:55+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_contigkv_k4_nodefer_r1
+[2026-08-25T20:31:56+08:00] accepted validated output after status 0
+[2026-08-25T20:31:56+08:00] launch subj k050 promixed r1
+[2026-08-25T20:32:01+08:00] promixed/k4 subj k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T20:47:56+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_promixed_k4_nodefer_r1
+[2026-08-25T20:47:57+08:00] accepted validated output after status 0
+[2026-08-25T20:47:57+08:00] launch subj k050 promixed r2
+[2026-08-25T20:48:02+08:00] promixed/k4 subj k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:03:52+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_promixed_k4_nodefer_r2
+[2026-08-25T21:03:52+08:00] accepted validated output after status 0
+[2026-08-25T21:03:52+08:00] launch subj k050 contigkv r2
+[2026-08-25T21:03:58+08:00] contigkv/k4 subj k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:21:10+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_contigkv_k4_nodefer_r2
+[2026-08-25T21:21:10+08:00] accepted validated output after status 0
+# PRISM-Max matched ABBA comparison
+
+Task `subj`, KV budget `050`, selector backend `k4`, score mode `nodefer`. Strict protocol validation passed for 998 paired UIDs.
+
+Each ready time is averaged per UID over the two repeats before the paired bootstrap. Negative paired deltas favor ProMixed; positive reduction percentages favor ProMixed.
+Response-ready is the primary latency; logits-ready is retained as a phase metric.
+
+| Boundary | ContiguousKV mean/P95 (ms) | ProMixed mean/P95 (ms) | Mean/P95 reduction | Paired delta 95% CI (ms) | Faster UIDs |
+|---|---:|---:|---:|---:|---:|
+| Response ready (primary) | 914.87/1202.22 | 808.04/1040.64 | +11.68%/+13.44% | [-116.52, -97.36] | 840/998 |
+| Logits ready (phase) | 914.48/1201.96 | 807.76/1040.30 | +11.67%/+13.45% | [-116.32, -97.03] | 840/998 |
+| First token ready | 914.73/1202.10 | 807.90/1040.48 | +11.68%/+13.44% | [-116.43, -97.22] | 840/998 |
+| All requested token IDs ready (latency) | 914.77/1202.13 | 807.94/1040.51 | +11.68%/+13.44% | [-116.37, -97.14] | 840/998 |
+| Evaluation ready | 950.63/1239.37 | 851.11/1100.06 | +10.47%/+11.24% | [-109.52, -89.84] | 823/998 |
+
+## Exclusion provenance
+
+Input-bundle exclusions were pre-applied before all runs: `subj-0`. No analysis-time exclusion manifest was applied.
+
+## Accuracy
+
+ContiguousKV `0.5551`, ProMixed `0.8547`, delta `+29.96 pp`; W→C/C→W `316/17`, exact McNemar p `1.706e-72`.
+
+## Run order
+
+- `reference_r1`
+- `candidate_r1`
+- `candidate_r2`
+- `reference_r2`
+JSON: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.subj_k050_candidate_56901.json
+Markdown: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.subj_k050_candidate_56901.md
+[2026-08-25T21:21:12+08:00] cell trec k010 ABBA begins
+[2026-08-25T21:21:13+08:00] launch trec k010 contigkv r1
+[2026-08-25T21:21:18+08:00] contigkv/k4 trec k010 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:26:39+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r1
+[2026-08-25T21:26:39+08:00] accepted validated output after status 0
+[2026-08-25T21:26:40+08:00] launch trec k010 promixed r1
+[2026-08-25T21:26:45+08:00] promixed/k4 trec k010 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:30:43+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r1
+[2026-08-25T21:30:43+08:00] accepted validated output after status 0
+[2026-08-25T21:30:43+08:00] launch trec k010 promixed r2
+[2026-08-25T21:30:48+08:00] promixed/k4 trec k010 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:34:11+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r2
+[2026-08-25T21:34:11+08:00] accepted validated output after status 0
+[2026-08-25T21:34:12+08:00] launch trec k010 contigkv r2
+[2026-08-25T21:34:17+08:00] contigkv/k4 trec k010 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:39:15+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r2
+[2026-08-25T21:39:15+08:00] accepted validated output after status 0
+# PRISM-Max matched ABBA comparison
+
+Task `trec`, KV budget `010`, selector backend `k4`, score mode `nodefer`. Strict protocol validation passed for 495 paired UIDs.
+
+Each ready time is averaged per UID over the two repeats before the paired bootstrap. Negative paired deltas favor ProMixed; positive reduction percentages favor ProMixed.
+Response-ready is the primary latency; logits-ready is retained as a phase metric.
+
+| Boundary | ContiguousKV mean/P95 (ms) | ProMixed mean/P95 (ms) | Mean/P95 reduction | Paired delta 95% CI (ms) | Faster UIDs |
+|---|---:|---:|---:|---:|---:|
+| Response ready (primary) | 413.16/451.01 | 249.70/288.62 | +39.56%/+36.00% | [-167.69, -159.31] | 491/495 |
+| Logits ready (phase) | 412.90/450.78 | 249.45/288.37 | +39.59%/+36.03% | [-167.68, -159.14] | 491/495 |
+| First token ready | 413.03/450.90 | 249.58/288.51 | +39.57%/+36.01% | [-167.65, -159.24] | 491/495 |
+| All requested token IDs ready (latency) | 413.07/450.93 | 249.61/288.54 | +39.57%/+36.01% | [-167.70, -159.16] | 491/495 |
+| Evaluation ready | 513.05/561.99 | 346.82/396.87 | +32.40%/+29.38% | [-171.09, -161.26] | 491/495 |
+
+## Exclusion provenance
+
+Input-bundle exclusions were pre-applied before all runs: `trec-0`. No analysis-time exclusion manifest was applied.
+
+## Accuracy
+
+ContiguousKV `0.5434`, ProMixed `0.6404`, delta `+9.70 pp`; W→C/C→W `97/49`, exact McNemar p `8.769e-05`.
+
+## Run order
+
+- `reference_r1`
+- `candidate_r1`
+- `candidate_r2`
+- `reference_r2`
+JSON: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.trec_k010_candidate_56901.json
+Markdown: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.trec_k010_candidate_56901.md
+[2026-08-25T21:39:16+08:00] cell trec k050 ABBA begins
+[2026-08-25T21:39:16+08:00] launch trec k050 contigkv r1
+[2026-08-25T21:39:22+08:00] contigkv/k4 trec k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T21:52:42+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_contigkv_k4_nodefer_r1
+[2026-08-25T21:52:42+08:00] accepted validated output after status 0
+[2026-08-25T21:52:42+08:00] launch trec k050 promixed r1
+[2026-08-25T21:52:48+08:00] promixed/k4 trec k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T22:03:15+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_promixed_k4_nodefer_r1
+[2026-08-25T22:03:16+08:00] accepted validated output after status 0
+[2026-08-25T22:03:16+08:00] launch trec k050 promixed r2
+[2026-08-25T22:03:21+08:00] promixed/k4 trec k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T22:12:47+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_promixed_k4_nodefer_r2
+[2026-08-25T22:12:47+08:00] accepted validated output after status 0
+[2026-08-25T22:12:47+08:00] launch trec k050 contigkv r2
+[2026-08-25T22:12:53+08:00] contigkv/k4 trec k050 on GPU 0; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-25T22:25:17+08:00] completed /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_contigkv_k4_nodefer_r2
+[2026-08-25T22:25:17+08:00] accepted validated output after status 0
+# PRISM-Max matched ABBA comparison
+
+Task `trec`, KV budget `050`, selector backend `k4`, score mode `nodefer`. Strict protocol validation passed for 495 paired UIDs.
+
+Each ready time is averaged per UID over the two repeats before the paired bootstrap. Negative paired deltas favor ProMixed; positive reduction percentages favor ProMixed.
+Response-ready is the primary latency; logits-ready is retained as a phase metric.
+
+| Boundary | ContiguousKV mean/P95 (ms) | ProMixed mean/P95 (ms) | Mean/P95 reduction | Paired delta 95% CI (ms) | Faster UIDs |
+|---|---:|---:|---:|---:|---:|
+| Response ready (primary) | 1236.50/1717.75 | 901.90/1157.46 | +27.06%/+32.62% | [-354.95, -315.01] | 473/495 |
+| Logits ready (phase) | 1236.07/1717.47 | 901.61/1157.18 | +27.06%/+32.62% | [-354.59, -314.96] | 473/495 |
+| First token ready | 1236.36/1717.62 | 901.77/1157.33 | +27.06%/+32.62% | [-354.77, -314.69] | 473/495 |
+| All requested token IDs ready (latency) | 1236.40/1717.66 | 901.81/1157.36 | +27.06%/+32.62% | [-355.11, -314.86] | 473/495 |
+| Evaluation ready | 1342.78/1832.68 | 1010.94/1269.84 | +24.71%/+30.71% | [-352.34, -311.84] | 472/495 |
+
+## Exclusion provenance
+
+Input-bundle exclusions were pre-applied before all runs: `trec-0`. No analysis-time exclusion manifest was applied.
+
+## Accuracy
+
+ContiguousKV `0.6141`, ProMixed `0.5939`, delta `-2.02 pp`; W→C/C→W `5/15`, exact McNemar p `0.04139`.
+
+## Run order
+
+- `reference_r1`
+- `candidate_r1`
+- `candidate_r2`
+- `reference_r2`
+JSON: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.trec_k050_candidate_56901.json
+Markdown: /home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/validation/.trec_k050_candidate_56901.md
+/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/.grid_analysis_candidate_56901.json
+/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/.grid_analysis_candidate_56901.md
+[2026-08-25T22:25:51+08:00] completed four-cell K4/nodefer strict ABBA diagnostics

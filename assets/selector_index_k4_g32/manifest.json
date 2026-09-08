@@ -1,0 +1,72 @@
+{
+  "format": "promixed-key-index-v1",
+  "bits": 4,
+  "quantization": "symmetric-groupwise-per-token-head",
+  "group_size": 32,
+  "packing": "signed-int4-low-nibble-first",
+  "source_dtype": "float16",
+  "scale_dtype": "float16",
+  "selector_kv_head_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "source_pcache_dir": "/home/panzihang/contiguous_fuxian_ssd/paper4_online_contig_c16_v14",
+  "source_bytes": 549756928,
+  "index_bytes": 154619136,
+  "compression_ratio": 3.5555555555555554,
+  "rmse": 0.9008952086695913,
+  "relative_rmse": 0.09423392718786722,
+  "max_abs_error": 30.0,
+  "tasks": {
+    "sst2": {
+      "directory": "sst2",
+      "prefix_id": 0,
+      "prefix_tokens": 3811,
+      "layers": 28,
+      "kv_heads": 4,
+      "head_dim": 128,
+      "group_size": 32,
+      "rmse": 0.8959831835634589,
+      "relative_rmse": 0.09379017461662247,
+      "max_abs_error": 30.0
+    },
+    "subj": {
+      "directory": "subj",
+      "prefix_id": 1,
+      "prefix_tokens": 4412,
+      "layers": 28,
+      "kv_heads": 4,
+      "head_dim": 128,
+      "group_size": 32,
+      "rmse": 0.8973109848352553,
+      "relative_rmse": 0.09389918806389905,
+      "max_abs_error": 30.0
+    },
+    "trec": {
+      "directory": "trec",
+      "prefix_id": 2,
+      "prefix_tokens": 4940,
+      "layers": 28,
+      "kv_heads": 4,
+      "head_dim": 128,
+      "group_size": 32,
+      "rmse": 0.9061434178064486,
+      "relative_rmse": 0.09465450408553613,
+      "max_abs_error": 30.0
+    },
+    "rte": {
+      "directory": "rte",
+      "prefix_id": 3,
+      "prefix_tokens": 6011,
+      "layers": 28,
+      "kv_heads": 4,
+      "head_dim": 128,
+      "group_size": 32,
+      "rmse": 0.9022997305610976,
+      "relative_rmse": 0.09441183088914452,
+      "max_abs_error": 30.0
+    }
+  }
+}

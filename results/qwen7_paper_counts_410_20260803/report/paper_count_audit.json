@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "expected_samples": 410,
+  "expected_counts_by_task": {
+    "sst2": 100,
+    "subj": 110,
+    "trec": 120,
+    "rte": 80
+  },
+  "common_request_uids": 410,
+  "excluded_calibration_uids": 16,
+  "calibration_overlap": 0,
+  "run_boundary_gpu_snapshots": 24,
+  "runs": {
+    "k005_impress": {
+      "family": "impress",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.824390243902439,
+      "mean_ttft_ms": 2033.5616144147225,
+      "p95_ttft_ms": 3271.2271152995527,
+      "effective_keep_ratio": 0.055528915241836924,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k005_contiguouskv": {
+      "family": "contiguouskv",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.6439024390243903,
+      "mean_ttft_ms": 295.2530958473955,
+      "p95_ttft_ms": 410.7722882181406,
+      "effective_keep_ratio": 0.049714241388742475,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k005_ours": {
+      "family": "ours",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8341463414634146,
+      "mean_ttft_ms": 587.4415421211047,
+      "p95_ttft_ms": 801.7502836883068,
+      "effective_keep_ratio": 0.049081002581500055,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 22548,
+      "prefetch_completed": 22548,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 5740
+    },
+    "k010_contiguouskv": {
+      "family": "contiguouskv",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.7439024390243902,
+      "mean_ttft_ms": 440.5038826633245,
+      "p95_ttft_ms": 601.5701703727245,
+      "effective_keep_ratio": 0.09949676600829274,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k010_ours": {
+      "family": "ours",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8268292682926829,
+      "mean_ttft_ms": 682.2331741100131,
+      "p95_ttft_ms": 898.6843833699822,
+      "effective_keep_ratio": 0.09896642792115436,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 22550,
+      "prefetch_completed": 22550,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 5740
+    },
+    "k010_impress": {
+      "family": "impress",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8097560975609757,
+      "mean_ttft_ms": 2831.6445472389005,
+      "p95_ttft_ms": 4151.364885270596,
+      "effective_keep_ratio": 0.1326653645899021,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k025_contiguouskv": {
+      "family": "contiguouskv",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.7731707317073171,
+      "mean_ttft_ms": 1368.104832839766,
+      "p95_ttft_ms": 2353.8678730838,
+      "effective_keep_ratio": 0.24986107301328514,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k025_ours": {
+      "family": "ours",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8390243902439024,
+      "mean_ttft_ms": 1287.1056355774494,
+      "p95_ttft_ms": 2471.8456231057644,
+      "effective_keep_ratio": 0.24905237432293761,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 22550,
+      "prefetch_completed": 22550,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 5740
+    },
+    "k025_impress": {
+      "family": "impress",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8365853658536585,
+      "mean_ttft_ms": 9224.829859422838,
+      "p95_ttft_ms": 34939.77849185467,
+      "effective_keep_ratio": 0.2944476786624558,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k050_ours": {
+      "family": "ours",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8609756097560975,
+      "mean_ttft_ms": 3157.9818253757476,
+      "p95_ttft_ms": 5436.449749395251,
+      "effective_keep_ratio": 0.49943140833923005,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 22550,
+      "prefetch_completed": 22550,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 5740
+    },
+    "k050_impress": {
+      "family": "impress",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8536585365853658,
+      "mean_ttft_ms": 16198.29096423303,
+      "p95_ttft_ms": 44416.66092304513,
+      "effective_keep_ratio": 0.5515252968806869,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    },
+    "k050_contiguouskv": {
+      "family": "contiguouskv",
+      "samples": 410,
+      "counts_by_task": {
+        "sst2": 100,
+        "subj": 110,
+        "trec": 120,
+        "rte": 80
+      },
+      "accuracy": 0.8121951219512196,
+      "mean_ttft_ms": 3611.0394569829377,
+      "p95_ttft_ms": 5976.846464909613,
+      "effective_keep_ratio": 0.5002487131576748,
+      "exact_budget_mismatches": 0,
+      "prefetch_submitted": 0,
+      "prefetch_completed": 0,
+      "prefetch_failed": 0,
+      "prefetch_cancelled": 0,
+      "period_prefetch_jobs": 0
+    }
+  }
+}

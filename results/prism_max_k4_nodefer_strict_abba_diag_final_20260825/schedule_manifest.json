@@ -1,0 +1,118 @@
+{
+  "purpose": "Four-cell matched K4/nodefer strict ABBA re-prefill diagnostics.",
+  "runs": [
+    {
+      "budget": "025",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_contigkv_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "subj"
+    },
+    {
+      "budget": "025",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_promixed_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "subj"
+    },
+    {
+      "budget": "025",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_promixed_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "subj"
+    },
+    {
+      "budget": "025",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_contigkv_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "subj"
+    },
+    {
+      "budget": "050",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_contigkv_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "subj"
+    },
+    {
+      "budget": "050",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_promixed_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "subj"
+    },
+    {
+      "budget": "050",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_promixed_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "subj"
+    },
+    {
+      "budget": "050",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_contigkv_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "subj"
+    },
+    {
+      "budget": "010",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "trec"
+    },
+    {
+      "budget": "010",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "trec"
+    },
+    {
+      "budget": "010",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "trec"
+    },
+    {
+      "budget": "010",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "trec"
+    },
+    {
+      "budget": "050",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_contigkv_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "trec"
+    },
+    {
+      "budget": "050",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_promixed_k4_nodefer_r1",
+      "repeat": "r1",
+      "task": "trec"
+    },
+    {
+      "budget": "050",
+      "method": "promixed",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_promixed_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "trec"
+    },
+    {
+      "budget": "050",
+      "method": "contigkv",
+      "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_contigkv_k4_nodefer_r2",
+      "repeat": "r2",
+      "task": "trec"
+    }
+  ],
+  "schema_version": 1
+}

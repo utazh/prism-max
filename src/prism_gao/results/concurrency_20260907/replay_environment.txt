@@ -1,0 +1,10 @@
+2026-09-07T13:21:33+08:00
+?? research/
+?? src/prism_gao/
+0, NVIDIA GeForce RTX 3090, GPU-b1f7fa73-f984-05f0-b325-0edef724c0d0, 12857 MiB, 100 %
+1, NVIDIA GeForce RTX 3090, GPU-ce16a16b-91ae-18c1-8704-776d412380dd, 12857 MiB, 100 %
+2, NVIDIA GeForce RTX 3090, GPU-040da80c-3e74-ca1d-0c7f-34018d9e5f72, 15 MiB, 0 %
+3, NVIDIA GeForce RTX 3090, GPU-86cfbc78-00fa-197b-f4bd-8e35560370ae, 15 MiB, 0 %
+TARGET SOURCE    FSTYPE OPTIONS
+/      /dev/sda4 ext4   rw,relatime
+512

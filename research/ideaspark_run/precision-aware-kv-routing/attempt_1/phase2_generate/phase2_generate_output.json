@@ -1,0 +1,72 @@
+{
+  "title": "Conformal Damage Certificates for Deadline-Constrained KV Routing",
+  "hook": "KV regions with the same mean predicted importance can require opposite cache actions when their counterfactual damage tails differ. At fixed KV bytes and TTFT, routing on calibrated upper-tail damage should raise LongBench score over point-score mixed-precision policies while keeping resource violations at zero.",
+  "hook_shape_rationale": "This is a surprising empirical reveal: the admission-test metric is LongBench normalized average score at fixed bytes and TTFT, and the non-obvious predicted direction is an increase caused specifically by separating equal-mean, unequal-tail regions. Counter-intuitive minimalism was viable because the router keeps Qwen2.5-7B frozen, but it was rejected as the hook because fewer trainable parameters is less diagnostic than the predicted tail-risk regime split.",
+  "gap_closure": [
+    {
+      "gap": "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+      "main_pattern": "reframe_as_solvable_object",
+      "sub_pattern": "C00 (Reframe as a Solvable Object)",
+      "companion_pattern": null,
+      "how_closed": "Closed by representing every layer-block action as a counterfactually faithful damage-cost certificate and solving one anytime, exact-feasibility multiple-choice program over the certificates."
+    },
+    {
+      "gap": "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling.",
+      "main_pattern": "controlled_diagnostic_design",
+      "sub_pattern": "C02 (Design a Confound-Isolating Diagnostic)",
+      "companion_pattern": null,
+      "how_closed": "Closed by matched intervention pairs with equal predicted mean damage but independently varied tail spread, scored by gold downstream answers, which isolates point-estimation failure from ordinary ranking error."
+    },
+    {
+      "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+      "main_pattern": "heterogeneous_decomposition",
+      "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+      "companion_pattern": null,
+      "how_closed": "Closed by assigning retain-FP16, INT8, INT4, or omit per layer-block from action-specific downstream-damage distributions, with a joint fidelity certificate rather than a simple importance-ranked precision tier."
+    },
+    {
+      "gap": "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+      "main_pattern": "self_supervised_signal_engineering",
+      "sub_pattern": "C26 (Manufacture the Supervisory Signal)",
+      "companion_pattern": null,
+      "how_closed": "Closed by minimal counterfactual action pairs from a frozen full-cache teacher, whose suffix-level KL orderings supervise block-action quantiles without task labels and expose uncertainty rather than only a point score."
+    }
+  ],
+  "core_mechanism": "The shared object is a conformal block-action certificate C_{i,a}=(U_{i,a},m_{i,a},t_{i,a}) for historical KV region i=(l,b) and action a, where l ranges over every decoder layer in the Qwen2.5-7B config, b is a contiguous 64-token block outside a mandatory 128-token FP16 recent window, and a is retain-FP16, INT8, INT4, or omit. For an offline calibration prompt with a gold or teacher-forced 32-token continuation, the action damage D_{i,a} is the mean next-token KL in nats/token between frozen full-cache logits and logits from a second forward pass in which only region i receives action a; paired actions sharing the same prompt, layer, and block manufacture minimally differing preference examples. A two-layer MLP q_theta consumes layer index, block position, pooled K/V norms, last-32-query attention mass, and action-specific sampled-channel round-trip error, and outputs 0.5 and 0.9 damage quantiles; it is trained with pinball loss plus lambda_rank times a Bradley-Terry loss on the paired damage orderings, with lambda_rank selected on held-out calibration prompts. For each action, split conformal calibration supplies c_a, the empirical 0.9 quantile of D_{i,a}-q_theta,0.9, so the load-bearing value is U_{i,a}=max(0,q_theta,0.9+c_a), a computable upper-tail damage estimate rather than an importance point score. To cover interactions, held-out random joint action maps supply c_joint, the 0.9 quantile of measured joint suffix KL minus the sum of their U values; the assignment certificate is max(0,sum_i U_{i,a_i}+c_joint), and its empirical coverage is reported rather than assumed. The byte cost m_{i,a} is computed exactly from block tokens, configured KV heads and head dimension, bit width, scales, and metadata, while t_{i,a} is a hardware-profiled p99 conversion-kernel time for that layer, block length, and action; elapsed feature time and the fixed recent-window costs are subtracted from the request budgets before routing. An anytime Lagrangian multiple-choice knapsack solver minimizes sum_i U_{i,a_i} subject to sum_i m_{i,a_i}<=M_remaining and sum_i t_{i,a_i}<=T_remaining, always retaining a deterministic all-omit feasible incumbent and repairing any dual solution by the smallest damage-per-saved-resource downgrades until both inequalities hold exactly. The selected actions rewrite the actual KV buffers before decoding, so precision changes and omissions propagate through every subsequent attention computation to generated answers; a wall-clock guard commits the best feasible incumbent before the TTFT deadline and maps any not-yet-converted region to omit. Thus the same certificate makes the constrained problem solvable, identifies point-score failures, assigns nonuniform representations by action-conditioned damage rather than generic importance, and protects uncertain regions through calibrated tail risk.",
+  "core_mechanism_reasoning": "The four gaps share machinery because the counterfactual block-action certificate is simultaneously the solver input, the uncertainty carrier, the differentiated-treatment discriminator, and the controlled diagnostic variable; only cost profiling and evaluation are separate support modules. We rejected attention-only layer allocation and magnitude-based mixed precision because they regress to the occupied H2O/DynamicKV and KIVI/Oaken branches, and rejected paging/offloading because it attacks placement rather than damage-aware compression. We also rejected end-to-end discrete policy learning: it weakens exact feasibility and hides whether gains come from calibration or resource allocation.",
+  "core_mechanism_steps": "1. Add hooks to frozen Qwen2.5-7B prefill and decode code paths; inputs are prompts and 64-token layer-block indices, and outputs are full-cache logits, block features, and action-intervened logits.\n2. Sample prompt-layer-block tuples and run minimally paired FP16/INT8/INT4/omit interventions for a 32-token teacher-forced suffix; inputs are full-cache traces, and outputs are D_{i,a} values and pairwise action orderings.\n3. Train the small quantile predictor with pinball plus lambda_rank Bradley-Terry losses; inputs are block features, scalar damages, and pairwise orderings, and outputs are per-action median and 0.9-quantile predictions.\n4. On disjoint calibration prompts, compute c_a and c_joint from single-action and random joint-action residuals; inputs are predictor outputs and measured suffix KL, and outputs are calibrated U_{i,a} tables plus a reported joint-coverage curve.\n5. Microbenchmark every conversion kernel and derive exact byte formulas including scales and metadata; inputs are the Qwen config, block size, action format, and target GPU, and outputs are m_{i,a} and p99 t_{i,a} lookup tables.\n6. During each real prefill, preserve the final 128 tokens in FP16 and compute features for every earlier layer-block; inputs are live Q/K/V tensors and the last 32 query positions, and outputs are prompt-specific C_{i,a} certificates.\n7. Subtract measured elapsed feature time and mandatory-window costs, then run the anytime two-resource solver; inputs are certificates and request ceilings, and output is a byte- and time-feasible action map.\n8. Apply the action map to the physical KV buffers and launch normal decoding; inputs are full KV tensors and selected actions, and outputs are heterogeneous buffers whose changed attention reads alter the generated answer.\n9. Enforce the wall-clock guard by committing the best feasible incumbent before the deadline and omitting any unconverted historical block; inputs are elapsed time and incumbent state, and outputs are zero byte/TTFT violations plus the final cache.\n10. Build matched equal-mean/unequal-tail diagnostic pairs and evaluate ProMixed, ContiguousKV, DynamicKV, and the certificate router; inputs are LongBench/NIAH prompts and gold answers, and outputs are downstream scores, joint-certificate coverage, TTFT, bytes, and violation counts.",
+  "falsification_prediction": "Run Qwen2.5-7B on LongBench and Needle-in-a-Haystack with historical KV capped at 25% of FP16 bytes and total TTFT capped at 1.05 times uncompressed-prefill TTFT, comparing ProMixed, ContiguousKV, DynamicKV, and the proposed router while measuring LongBench normalized average score, NIAH retrieval accuracy, actual bytes, and deadline violations. If the mechanism works, LongBench score and NIAH accuracy increase over the best zero-violation baseline while byte and TTFT violation counts remain zero, with the largest gain on matched regions whose predicted means are equal but tail spreads differ. The single load-bearing variable is the conformal upper damage bound U_{i,a}; as a negative control, permute U_{i,a} across blocks within each layer and action before re-solving, preserving its marginal distribution and all resource costs. That intervention should drive the downstream LongBench and NIAH gains back toward the point-score baseline even though the selected precision histogram and hard-budget feasibility remain similar.",
+  "compute_budget": "Approximately 72 GPU-days on 80GB-class A100/H100 GPUs for counterfactual trace generation, predictor fitting, LongBench/NIAH baselines, coverage studies, and two iterations; at up to 8 concurrent GPUs this is feasible inside 5 months. Paid inference/API cost: $0, because Qwen2.5-7B, gold benchmark metrics, and the frozen full-cache teacher are all local.",
+  "differentiation_from_lit": [
+    {
+      "paper_id": "openalex:W4416034925",
+      "delta": "DynamicKV converts recent-query attention scores into layer-specific retained-token counts under a global token budget; this candidate instead constructs calibrated action-conditional downstream-damage bounds and routes FP16/INT8/INT4/omit jointly under exact byte and TTFT constraints."
+    },
+    {
+      "paper_id": "openalex:W4411487104",
+      "delta": "Oaken fixes data-agnostic outlier thresholds offline and applies a single online low-bit quantization design with hardware support; this candidate assigns representation or omission separately to each request’s layer-block from a calibrated damage distribution and a request-level two-resource solver."
+    },
+    {
+      "paper_id": "openalex:W4407123430",
+      "delta": "ChunkKV changes the atomic pruning unit to a semantic chunk and reuses indices across layers, whereas this candidate estimates an upper-tail downstream cost for every precision-or-omission action and couples all block choices through exact serving constraints."
+    },
+    {
+      "paper_id": "openalex:W4413014966",
+      "delta": "Abstract-only inference: EMPIRIC defines oracle accuracy, computation, and storage bounds, while this candidate constructs the non-oracle predictor, conformal joint-action certificate, and deadline-guarded feasible router needed to make such a bound operational."
+    }
+  ],
+  "almost_prior_paper_id": "openalex:W4416034925",
+  "what_step_was_missed": "DynamicKV would have needed to replace its per-layer attention point scores and token-count normalization with counterfactual precision-or-omission damage distributions, calibrate their upper tails on joint interventions, and solve the resulting byte-and-TTFT-constrained action assignment before its adaptive allocation became this contribution.",
+  "signature_terms": [
+    "conformal block-action damage certificates",
+    "hard-deadline KV routing",
+    "tail-risk cache action allocation",
+    "byte-feasible precision omission routing"
+  ],
+  "alias_terms": [
+    "safe resource constrained contextual bandit",
+    "chance constrained model compression",
+    "risk sensitive multiple choice knapsack",
+    "budgeted abstention policy"
+  ]
+}

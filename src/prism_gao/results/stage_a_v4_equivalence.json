@@ -1,0 +1,98 @@
+[
+  {
+    "order": "forward",
+    "task": "trec",
+    "budget": "010",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "forward",
+    "task": "subj",
+    "budget": "025",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "forward",
+    "task": "sst2",
+    "budget": "010",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "forward",
+    "task": "rte",
+    "budget": "025",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "reverse",
+    "task": "trec",
+    "budget": "010",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "reverse",
+    "task": "subj",
+    "budget": "025",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "reverse",
+    "task": "sst2",
+    "budget": "010",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  },
+  {
+    "order": "reverse",
+    "task": "rte",
+    "budget": "025",
+    "samples": 64,
+    "uid_sets_equal": true,
+    "mismatches": {
+      "layer_token_selection_sha256": 0,
+      "prediction": 0,
+      "correct": 0
+    }
+  }
+]

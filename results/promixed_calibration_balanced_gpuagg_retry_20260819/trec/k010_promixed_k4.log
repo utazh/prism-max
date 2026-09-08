@@ -1,0 +1,31 @@
+[2026-08-19T20:20:35+08:00] ProMixed trec k010 k4 on GPU 1; GPU 0 reserved
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 99.54it/s]
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/panzihang/src/prism_promixed/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 2562, in <module>
+    raise SystemExit(main())
+  File "/home/panzihang/src/prism_promixed/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 2508, in main
+    summary = run_flexgen_reprefill(
+  File "/home/panzihang/src/prism_promixed/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1602, in run_flexgen_reprefill
+    model, tokenizer = _load_model_and_tokenizer(model_path, dtype=dtype, device=device)
+  File "/home/panzihang/src/prism_promixed/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1343, in _load_model_and_tokenizer
+    ).to(device).eval()
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4343, in to
+    return super().to(*args, **kwargs)
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1381, in to
+    return self._apply(convert)
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  [Previous line repeated 2 more times]
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/torch/nn/modules/module.py", line 964, in _apply
+    param_applied = fn(param)
+  File "/home/panzihang/venvs/vllm-stable/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1367, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 130.00 MiB. GPU 0 has a total capacity of 23.56 GiB of which 38.06 MiB is free. Process 20519 has 14.96 GiB memory in use. Including non-PyTorch memory, this process has 8.53 GiB memory in use. Of the allocated memory 8.27 GiB is allocated by PyTorch, and 15.13 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

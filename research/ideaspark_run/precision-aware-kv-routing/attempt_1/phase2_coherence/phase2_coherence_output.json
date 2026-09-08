@@ -1,0 +1,452 @@
+{
+  "trace_report": {
+    "formalized_procedure": [
+      {
+        "step": "S1",
+        "consumes": [
+          "prompt token IDs [P]",
+          "frozen Qwen2.5-7B parameters",
+          "historical block index i=(layer l, 64-token block b)",
+          "action a in {FP16, INT8, INT4, omit}"
+        ],
+        "produces": [
+          "full-cache logits [32,V] under a fixed 32-token teacher-forced suffix",
+          "per-block feature vector x_i in R^d",
+          "single-action logits [32,V]"
+        ],
+        "note": "Hooks execute the baseline and exactly one block-action intervention while all other regions remain full-cache."
+      },
+      {
+        "step": "S2",
+        "consumes": [
+          "S1 baseline/intervention logits",
+          "prompt-layer-block-action tuples"
+        ],
+        "produces": [
+          "D_{i,a}=mean_{s=1..32} KL(p_full,s || p_i,a,s), scalar nats/token",
+          "paired labels sign(D_{i,a}-D_{i,a'}), scalar per same-prompt i pair"
+        ],
+        "note": "FP16 self-action has D=0 up to numerical error; the pairing key is prompt and i."
+      },
+      {
+        "step": "S3",
+        "consumes": [
+          "training feature-action rows (x_i,a)",
+          "S2 scalar damages",
+          "S2 paired labels",
+          "candidate lambda_rank grid and a disjoint selection split"
+        ],
+        "produces": [
+          "q_theta,0.5(x_i,a) and q_theta,0.9(x_i,a), two scalars per block-action",
+          "selected lambda_rank"
+        ],
+        "note": "The predictor produces a median and 0.9 quantile, not a mean."
+      },
+      {
+        "step": "S4",
+        "consumes": [
+          "disjoint single-action calibration rows",
+          "S3 q_0.9 predictions",
+          "measured D",
+          "disjoint random joint action maps A and their joint suffix KL"
+        ],
+        "produces": [
+          "per-action residual order statistic c_a",
+          "U_{i,a}=max(0,q_0.9+c_a), scalar table [N,4]",
+          "joint residual order statistic c_joint",
+          "joint certificate max(0,sum_i U_{i,a_i}+c_joint), scalar",
+          "coverage observations on a separate evaluation set"
+        ],
+        "note": "A finite-sample order-statistic convention and behavior for too-small n are required; random-map calibration gives marginal evidence for that map distribution, not a guarantee for solver-selected maps."
+      },
+      {
+        "step": "S5",
+        "consumes": [
+          "Qwen KV-head count H_kv",
+          "head dimension d_h",
+          "64 tokens/block",
+          "action bit width",
+          "scale/metadata layout",
+          "target-GPU kernel measurements"
+        ],
+        "produces": [
+          "m_{i,a} in bytes [N,4]",
+          "t_{i,a} as profiled p99 milliseconds [N,4]"
+        ],
+        "note": "Byte costs are exact for the declared representation; p99 time is a statistical quantile, not a hard upper bound."
+      },
+      {
+        "step": "S6",
+        "consumes": [
+          "live prefill Q/K/V tensors",
+          "last 32 query positions",
+          "S3 predictor",
+          "S4 calibration corrections",
+          "S5 lookup tables"
+        ],
+        "produces": [
+          "mandatory recent 128-token FP16 region",
+          "prompt-specific C_{i,a}=(U,m,t) [N,4] for earlier 64-token blocks"
+        ],
+        "note": "Action-feature conventions, including FP16/omit sampled-channel error, must be fixed in implementation."
+      },
+      {
+        "step": "S7",
+        "consumes": [
+          "S6 certificates",
+          "request byte ceiling M",
+          "request TTFT ceiling T",
+          "measured feature time",
+          "mandatory-window byte/time costs",
+          "anytime stopping time"
+        ],
+        "produces": [
+          "M_remaining and T_remaining scalars",
+          "best incumbent action vector a[1..N]",
+          "predicted feasibility indicators sum m<=M_remaining and sum t<=T_remaining"
+        ],
+        "note": "The all-omit incumbent is feasible only if the residual budgets cover every omit cost; negative residual budgets have no feasible historical action map."
+      },
+      {
+        "step": "S8",
+        "consumes": [
+          "S7 selected action vector",
+          "physical full-precision KV buffers"
+        ],
+        "produces": [
+          "heterogeneous/omitted historical KV buffers",
+          "decoder-visible final cache",
+          "generated token sequence"
+        ],
+        "note": "Actual buffer rewriting connects the action choice to downstream attention."
+      },
+      {
+        "step": "S9",
+        "consumes": [
+          "wall clock",
+          "S7 incumbent",
+          "conversion completion state",
+          "TTFT deadline"
+        ],
+        "produces": [
+          "committed action state with unfinished regions marked omit",
+          "decode launch"
+        ],
+        "note": "As written, no commit cutoff, finalization bound, or cancellation semantics establishes that conversion/finalization finishes before the TTFT deadline."
+      },
+      {
+        "step": "S10",
+        "consumes": [
+          "evaluation prompts and gold answers",
+          "S3 median and q_0.9 predictions",
+          "S4 certificates",
+          "baseline/router outputs"
+        ],
+        "produces": [
+          "matched diagnostic strata",
+          "LongBench/NIAH scores",
+          "bytes and TTFT",
+          "violation counts",
+          "joint-certificate coverage curve"
+        ],
+        "note": "The original equal-mean diagnostic consumes a mean prediction that S3 never produces; the patch uses equal-median strata with a declared tolerance and unequal q_0.9 values."
+      }
+    ],
+    "dry_run": {
+      "instance": "Toy one-layer request with N=3 historical 64-token blocks plus a mandatory 128-token recent window; H_kv=2, d_h=4. Actions are FP16/INT8/INT4/omit. Total byte ceiling M=6272 B; mandatory window=2*128*2*4*2=4096 B, so M_remaining=2176 B. Total TTFT allowance for routing is 10 ms; measured features plus fixed recent-window work consume 3 ms, so T_remaining=7 ms. Historical action costs per block are m=(2048,1088,576,0) B including declared metadata and t_p99=(0,2,1.5,0.5) ms. Nine calibration residuals per action use corrected rank ceil((9+1)*0.9)=9; take c=(0,0.02,0.05,0.10). q_0.9 rows for blocks B1/B2/B3 are respectively [(0,0.03,0.15,0.90),(0,0.08,0.35,1.40),(0,0.18,0.25,0.70)]. Let c_joint=0.15 nats/token.",
+      "computed_quantities": [
+        {
+          "quantity": "mandatory-window bytes",
+          "value": "4096 B",
+          "arithmetic": "K and V factor 2 * 128 tokens * 2 KV heads * 4 dims/head * 2 B = 4096 B"
+        },
+        {
+          "quantity": "remaining byte budget",
+          "value": "2176 B",
+          "arithmetic": "6272-4096=2176"
+        },
+        {
+          "quantity": "remaining profiled-time budget",
+          "value": "7 ms",
+          "arithmetic": "10-(2 ms feature time+1 ms fixed recent work)=7 ms"
+        },
+        {
+          "quantity": "finite-sample conformal rank at n=9, alpha=0.1",
+          "value": "9th (maximum) residual",
+          "arithmetic": "ceil((n+1)*(1-alpha))=ceil(10*0.9)=9"
+        },
+        {
+          "quantity": "calibrated U table (rows B1,B2,B3; columns FP16,INT8,INT4,omit)",
+          "value": "[[0,0.05,0.20,1.00],[0,0.10,0.40,1.50],[0,0.20,0.30,0.80]] nats/token",
+          "arithmetic": "U=max(0,q_0.9+c_a), e.g. B3-INT4=max(0,0.25+0.05)=0.30"
+        },
+        {
+          "quantity": "three-INT4 candidate",
+          "value": "bytes=1728 B, p99-sum=4.5 ms, objective=0.90",
+          "arithmetic": "3*576=1728<=2176; 3*1.5=4.5<=7; 0.20+0.40+0.30=0.90"
+        },
+        {
+          "quantity": "best two-INT8-plus-omit candidate",
+          "value": "B1 INT8, B2 INT8, B3 omit: bytes=2176 B, p99-sum=4.5 ms, objective=0.95",
+          "arithmetic": "1088+1088+0=2176; 2+2+0.5=4.5; 0.05+0.10+0.80=0.95"
+        },
+        {
+          "quantity": "one-FP16-plus-two-omit best candidate",
+          "value": "B2 FP16, B1/B3 omit: bytes=2048 B, p99-sum=1.0 ms, objective=1.80",
+          "arithmetic": "2048+0+0=2048; 0+0.5+0.5=1.0; 0+1.00+0.80=1.80"
+        },
+        {
+          "quantity": "selected action map among enumerated feasible maps",
+          "value": "INT4/INT4/INT4 with objective 0.90",
+          "arithmetic": "0.90<0.95<1.80; it satisfies both written additive constraints"
+        },
+        {
+          "quantity": "joint assignment certificate",
+          "value": "1.05 nats/token",
+          "arithmetic": "max(0,0.90+0.15)=1.05"
+        },
+        {
+          "quantity": "illustrative held-out joint miss",
+          "value": "measured joint KL 1.20 exceeds certificate by 0.15",
+          "arithmetic": "1.20-1.05=0.15; one miss is compatible with empirical 90% coverage and shows the certificate is not deterministic"
+        },
+        {
+          "quantity": "probability at least one of three kernels exceeds its individual p99 under independence",
+          "value": "2.9701%",
+          "arithmetic": "1-0.99^3=0.029701"
+        },
+        {
+          "quantity": "concrete TTFT overrun realization",
+          "value": "11 ms total > 10 ms ceiling by 1 ms",
+          "arithmetic": "A tail realization is 1.5+1.5+5.0=8 ms conversion; 3 ms fixed/feature work + 8 ms = 11 ms > 10 ms by 1 ms"
+        },
+        {
+          "quantity": "equal-mean diagnostic value",
+          "value": "undefined",
+          "arithmetic": "S3 outputs only q_0.5 and q_0.9; there is no E[D|x,a] value to equate"
+        }
+      ],
+      "anomalies": [
+        "The numeric map satisfies sum of p99 times (4.5<=7 ms), yet a valid tail realization of 1.5+1.5+5.0=8 ms conversion yields 3+8=11>10 ms total TTFT; even under independence, three individual p99 costs have 1-0.99^3=2.9701% chance that at least one exceeds p99. Therefore the additive p99 constraint cannot establish zero TTFT violations.",
+        "The requested equal-predicted-mean pair cannot be computed: the only location outputs are q_0.5 and q_0.9, so the mean is undefined.",
+        "The joint certificate is statistical, not absolute: in the explicit evaluation row, 1.20>1.05 by 0.15 nats/token. This is not itself a defect because the text says coverage is reported, but any wording of guaranteed joint fidelity would be unsupported."
+      ]
+    },
+    "degenerate_probes": [
+      {
+        "probe": "empty historical set / prompt no longer than the mandatory recent window",
+        "behavior": "The action vector is empty and historical sums are zero; the physical output is just the recent FP16 window. The unqualified formula max(0,sum U+c_joint) would emit max(0,c_joint) despite no historical action.",
+        "finding": "Patch defines the empty historical certificate as 0 and bypasses joint correction."
+      },
+      {
+        "probe": "k=0 / zero admitted historical blocks",
+        "behavior": "Same as the empty set. The optimization halts immediately if the mandatory costs fit.",
+        "finding": null
+      },
+      {
+        "probe": "remaining byte or time budget is negative after mandatory costs",
+        "behavior": "No historical assignment, including all-omit, can make mandatory costs fit; nevertheless the original text calls all-omit always feasible.",
+        "finding": "Patch adds an explicit admission precondition/rejection path; this does not repair stochastic TTFT tails for admitted requests."
+      },
+      {
+        "probe": "all blocks have identical features and all action costs/damages tie",
+        "behavior": "Multiple maps are optimal. Any returned map can remain feasible, but output is not reproducible because no tie rule is specified.",
+        "finding": "Nonblocking: deterministic action-rank then block-index tie breaking should be an implementation convention, but no claimed property depends on a unique optimum."
+      },
+      {
+        "probe": "ties at the 0.9 residual threshold",
+        "behavior": "An explicit order statistic handles ties without division; using the higher tied value is well-defined.",
+        "finding": null
+      },
+      {
+        "probe": "single historical block",
+        "behavior": "The multiple-choice problem is finite and directly enumerable. A joint correction calibrated on multi-block random maps is distribution-mismatched; the single-action U is the relevant certificate.",
+        "finding": "Patch bypasses c_joint for N<=1."
+      },
+      {
+        "probe": "too-small conformal split, n<=8 at 90% target",
+        "behavior": "ceil((n+1)*0.9)=n+1, so a distribution-free finite-sample upper bound requires the +infinity sentinel and becomes vacuous; selecting the ordinary empirical 0.9 quantile would silently lose the nominal guarantee.",
+        "finding": "Patch states the corrected rank, +infinity convention, and that deployment requires enough calibration samples for a finite correction."
+      },
+      {
+        "probe": "maximum number of blocks allowed by model context across all decoder layers",
+        "behavior": "The anytime optimizer can stop, but S9 gives no bounded time for final conversion cancellation, omission bookkeeping, and decode launch after commitment. More blocks increase both the number of tail events and cleanup work.",
+        "finding": "Blocking TTFT issue remains unrepaired because a hard runtime bound/cancelable implementation changes the serving mechanism and needs implementation evidence."
+      }
+    ],
+    "claim_step_map": [
+      {
+        "claim": "counterfactually faithful per-block action damage",
+        "established_by": "S1-S2"
+      },
+      {
+        "claim": "calibrated per-action upper-tail damage estimate",
+        "established_by": "S3-S4 after the finite-sample quantile patch"
+      },
+      {
+        "claim": "joint interaction coverage is measured rather than assumed",
+        "established_by": "S4 and S10"
+      },
+      {
+        "claim": "exact final-cache byte feasibility for admitted requests",
+        "established_by": "S5-S8, conditional on the declared metadata formula and successful physical rewrite"
+      },
+      {
+        "claim": "zero TTFT violations / exact TTFT feasibility",
+        "established_by": "UNESTABLISHED"
+      },
+      {
+        "claim": "an always-feasible all-omit incumbent",
+        "established_by": "S7 only after the admission-precondition patch; false for negative residual budgets in the original"
+      },
+      {
+        "claim": "nonuniform FP16/INT8/INT4/omit treatment by action-conditioned damage",
+        "established_by": "S6-S8"
+      },
+      {
+        "claim": "precision changes and omissions affect subsequent attention and answers",
+        "established_by": "S8"
+      },
+      {
+        "claim": "matched equal-predicted-mean, unequal-tail diagnostic",
+        "established_by": "UNESTABLISHED in the original; S3 and patched S10 establish equal-predicted-median, unequal-q_0.9 strata instead"
+      },
+      {
+        "claim": "uncertain regions are protected through calibrated tail risk",
+        "established_by": "S3-S4 and S7, as a routing preference rather than an absolute outcome guarantee"
+      },
+      {
+        "claim": "joint fidelity certificate",
+        "established_by": "S4 only as a marginal empirical certificate for the calibration/evaluation map distribution, not a distribution-free guarantee for solver-selected maps"
+      }
+    ]
+  },
+  "verdict": "patched",
+  "unrepaired": [
+    {
+      "finding": "The algorithm constrains a sum of per-kernel p99 conversion times but asserts exact TTFT feasibility and zero violations. A p99 is not a hard bound, per-kernel quantiles do not compose into a request-level p100 bound, and the wall-clock guard has no commit margin or bounded/cancelable finalization path. In the dry run, 4.5<=7 ms at p99 while a permissible realization gives 11>10 ms total; under independence, at least one of three kernels exceeds p99 with probability 2.9701%.",
+      "severity": "blocking",
+      "why_not_repaired": "Repair would require redesigning/proving the serving-time mechanism (for example deterministic request-level bounds, a reserved finalization envelope, and cancelable conversions) or weakening the anchor hard-deadline claim. Both exceed a narrative patch, so the candidate is unchanged on this point."
+    },
+    {
+      "finding": "c_joint calibrated on random joint action maps does not by itself cover the adaptively solver-selected map; the dry run can produce measured joint KL 1.20 versus certificate 1.05, and selection changes the residual distribution.",
+      "severity": "note",
+      "why_not_repaired": "The candidate already limits itself to reporting empirical coverage rather than assuming it. A selection-conditional conformal construction would redesign the calibration method, so the report retains this as a scope note and maps only the weaker empirical-coverage claim."
+    }
+  ],
+  "applied_revisions": [
+    {
+      "scope": "coherence",
+      "op": "append_sentence",
+      "field": "core_mechanism",
+      "value": "For every 90% split-conformal correction, use residual order statistic r=ceil((n+1)*0.9), with a +infinity sentinel when r=n+1 and deployment requiring enough calibration rows for a finite correction; define the historical certificate as 0 for N=0 and use only the single-action U for N=1.",
+      "outcome": "applied",
+      "delta_summary": "Repairs T1/T3 ambiguity in empirical-quantile selection and prevents meaningless joint corrections for empty or single-block inputs."
+    },
+    {
+      "scope": "coherence",
+      "op": "append_sentence",
+      "field": "core_mechanism",
+      "value": "Before routing, admit a request only if the mandatory recent-window costs and the all-omit historical costs fit the declared ceilings; otherwise reject it before making a feasible-routing claim.",
+      "outcome": "applied",
+      "delta_summary": "Repairs the T3 counterexample in which negative residual budgets make the claimed always-feasible all-omit incumbent impossible."
+    },
+    {
+      "scope": "coherence",
+      "op": "replace",
+      "field": "hook",
+      "value": "KV regions with the same predicted median damage can require opposite cache actions when their calibrated upper-tail damages differ. At fixed KV bytes and TTFT, routing on calibrated upper-tail damage should raise LongBench score over point-score mixed-precision policies while keeping resource violations at zero.",
+      "outcome": "applied",
+      "delta_summary": "Repairs the T1/T2 use of an unproduced predicted mean by aligning the hook with the predictor's q_0.5 output; the unrepaired zero-TTFT blocker is intentionally left unchanged."
+    },
+    {
+      "scope": "coherence",
+      "op": "replace",
+      "field": "gap_closure[1].how_closed",
+      "value": "Closed by matched intervention pairs whose predicted medians agree within a preregistered tolerance but whose calibrated 0.9 upper damages differ by a preregistered minimum, scored by gold downstream answers, which isolates upper-tail information from ordinary point-ranking error.",
+      "outcome": "applied",
+      "delta_summary": "Repairs the T1/T4 diagnostic mapping by defining matched pairs from quantities S3-S4 actually produce and adding selection rules for both equality and tail separation."
+    },
+    {
+      "scope": "coherence",
+      "op": "replace",
+      "field": "core_mechanism_steps",
+      "value": "1. Add hooks to frozen Qwen2.5-7B prefill and decode code paths; inputs are prompts, 64-token layer-block indices, and actions, and outputs are full-cache logits, block features, and action-intervened logits.\n2. Sample prompt-layer-block tuples and run minimally paired FP16/INT8/INT4/omit interventions for a 32-token teacher-forced suffix; inputs are full-cache traces, and outputs are D_{i,a} values and pairwise action orderings.\n3. Train the small quantile predictor with pinball plus lambda_rank Bradley-Terry losses; inputs are block features, scalar damages, and pairwise orderings, and outputs are per-action median and 0.9-quantile predictions.\n4. On disjoint calibration prompts, compute corrected finite-sample c_a and c_joint order statistics from single-action and random joint-action residuals; inputs are predictor outputs and measured suffix KL, and outputs are calibrated U_{i,a} tables plus a joint-coverage curve measured on a separate evaluation split.\n5. Microbenchmark every conversion kernel and derive exact byte formulas including scales and metadata; inputs are the Qwen config, block size, action format, and target GPU, and outputs are m_{i,a} and p99 t_{i,a} lookup tables.\n6. During each real prefill, preserve the final 128 tokens in FP16 and compute features for every earlier layer-block; inputs are live Q/K/V tensors and the last 32 query positions, and outputs are prompt-specific C_{i,a} certificates.\n7. Reject requests whose mandatory-window plus all-omit costs exceed either declared ceiling; for admitted requests, subtract measured elapsed feature time and mandatory-window costs, then run the anytime two-resource solver; inputs are certificates and request ceilings, and output is a byte- and profiled-time-feasible action map.\n8. Apply the action map to the physical KV buffers and launch normal decoding; inputs are full KV tensors and selected actions, and outputs are heterogeneous buffers whose changed attention reads alter the generated answer.\n9. Enforce the wall-clock guard by committing the best feasible incumbent before the deadline and omitting any unconverted historical block; inputs are elapsed time and incumbent state, and outputs are the final cache and observed byte/TTFT violation counts.\n10. Using preregistered tolerances, build matched equal-predicted-median/unequal-calibrated-q0.9 diagnostic pairs and evaluate ProMixed, ContiguousKV, DynamicKV, and the certificate router; inputs are LongBench/NIAH prompts and gold answers, and outputs are downstream scores, joint-certificate coverage, TTFT, bytes, and violation counts.",
+      "outcome": "applied",
+      "delta_summary": "Repairs T1 input omissions, finite-sample/split ambiguity, infeasible all-omit edge behavior, the unproduced mean diagnostic, and the unsupported declaration that S9 itself outputs zero violations; it does not repair the blocking hard-TTFT claim."
+    }
+  ],
+  "final_candidate": {
+    "title": "Conformal Damage Certificates for Deadline-Constrained KV Routing",
+    "hook": "KV regions with the same predicted median damage can require opposite cache actions when their calibrated upper-tail damages differ. At fixed KV bytes and TTFT, routing on calibrated upper-tail damage should raise LongBench score over point-score mixed-precision policies while keeping resource violations at zero.",
+    "hook_shape_rationale": "This is a surprising empirical reveal: the admission-test metric is LongBench normalized average score at fixed bytes and TTFT, and the non-obvious predicted direction is an increase caused specifically by separating equal-mean, unequal-tail regions. Counter-intuitive minimalism was viable because the router keeps Qwen2.5-7B frozen, but it was rejected as the hook because fewer trainable parameters is less diagnostic than the predicted tail-risk regime split.",
+    "gap_closure": [
+      {
+        "gap": "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+        "main_pattern": "reframe_as_solvable_object",
+        "sub_pattern": "C00 (Reframe as a Solvable Object)",
+        "companion_pattern": null,
+        "how_closed": "Closed by representing every layer-block action as a counterfactually faithful damage-cost certificate and solving one anytime, exact-feasibility multiple-choice program over the certificates."
+      },
+      {
+        "gap": "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling.",
+        "main_pattern": "controlled_diagnostic_design",
+        "sub_pattern": "C02 (Design a Confound-Isolating Diagnostic)",
+        "companion_pattern": null,
+        "how_closed": "Closed by matched intervention pairs whose predicted medians agree within a preregistered tolerance but whose calibrated 0.9 upper damages differ by a preregistered minimum, scored by gold downstream answers, which isolates upper-tail information from ordinary point-ranking error."
+      },
+      {
+        "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+        "main_pattern": "heterogeneous_decomposition",
+        "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+        "companion_pattern": null,
+        "how_closed": "Closed by assigning retain-FP16, INT8, INT4, or omit per layer-block from action-specific downstream-damage distributions, with a joint fidelity certificate rather than a simple importance-ranked precision tier."
+      },
+      {
+        "gap": "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+        "main_pattern": "self_supervised_signal_engineering",
+        "sub_pattern": "C26 (Manufacture the Supervisory Signal)",
+        "companion_pattern": null,
+        "how_closed": "Closed by minimal counterfactual action pairs from a frozen full-cache teacher, whose suffix-level KL orderings supervise block-action quantiles without task labels and expose uncertainty rather than only a point score."
+      }
+    ],
+    "core_mechanism": "The shared object is a conformal block-action certificate C_{i,a}=(U_{i,a},m_{i,a},t_{i,a}) for historical KV region i=(l,b) and action a, where l ranges over every decoder layer in the Qwen2.5-7B config, b is a contiguous 64-token block outside a mandatory 128-token FP16 recent window, and a is retain-FP16, INT8, INT4, or omit. For an offline calibration prompt with a gold or teacher-forced 32-token continuation, the action damage D_{i,a} is the mean next-token KL in nats/token between frozen full-cache logits and logits from a second forward pass in which only region i receives action a; paired actions sharing the same prompt, layer, and block manufacture minimally differing preference examples. A two-layer MLP q_theta consumes layer index, block position, pooled K/V norms, last-32-query attention mass, and action-specific sampled-channel round-trip error, and outputs 0.5 and 0.9 damage quantiles; it is trained with pinball loss plus lambda_rank times a Bradley-Terry loss on the paired damage orderings, with lambda_rank selected on held-out calibration prompts. For each action, split conformal calibration supplies c_a, the empirical 0.9 quantile of D_{i,a}-q_theta,0.9, so the load-bearing value is U_{i,a}=max(0,q_theta,0.9+c_a), a computable upper-tail damage estimate rather than an importance point score. To cover interactions, held-out random joint action maps supply c_joint, the 0.9 quantile of measured joint suffix KL minus the sum of their U values; the assignment certificate is max(0,sum_i U_{i,a_i}+c_joint), and its empirical coverage is reported rather than assumed. The byte cost m_{i,a} is computed exactly from block tokens, configured KV heads and head dimension, bit width, scales, and metadata, while t_{i,a} is a hardware-profiled p99 conversion-kernel time for that layer, block length, and action; elapsed feature time and the fixed recent-window costs are subtracted from the request budgets before routing. An anytime Lagrangian multiple-choice knapsack solver minimizes sum_i U_{i,a_i} subject to sum_i m_{i,a_i}<=M_remaining and sum_i t_{i,a_i}<=T_remaining, always retaining a deterministic all-omit feasible incumbent and repairing any dual solution by the smallest damage-per-saved-resource downgrades until both inequalities hold exactly. The selected actions rewrite the actual KV buffers before decoding, so precision changes and omissions propagate through every subsequent attention computation to generated answers; a wall-clock guard commits the best feasible incumbent before the TTFT deadline and maps any not-yet-converted region to omit. Thus the same certificate makes the constrained problem solvable, identifies point-score failures, assigns nonuniform representations by action-conditioned damage rather than generic importance, and protects uncertain regions through calibrated tail risk. For every 90% split-conformal correction, use residual order statistic r=ceil((n+1)*0.9), with a +infinity sentinel when r=n+1 and deployment requiring enough calibration rows for a finite correction; define the historical certificate as 0 for N=0 and use only the single-action U for N=1. Before routing, admit a request only if the mandatory recent-window costs and the all-omit historical costs fit the declared ceilings; otherwise reject it before making a feasible-routing claim.",
+    "core_mechanism_reasoning": "The four gaps share machinery because the counterfactual block-action certificate is simultaneously the solver input, the uncertainty carrier, the differentiated-treatment discriminator, and the controlled diagnostic variable; only cost profiling and evaluation are separate support modules. We rejected attention-only layer allocation and magnitude-based mixed precision because they regress to the occupied H2O/DynamicKV and KIVI/Oaken branches, and rejected paging/offloading because it attacks placement rather than damage-aware compression. We also rejected end-to-end discrete policy learning: it weakens exact feasibility and hides whether gains come from calibration or resource allocation.",
+    "core_mechanism_steps": "1. Add hooks to frozen Qwen2.5-7B prefill and decode code paths; inputs are prompts, 64-token layer-block indices, and actions, and outputs are full-cache logits, block features, and action-intervened logits.\n2. Sample prompt-layer-block tuples and run minimally paired FP16/INT8/INT4/omit interventions for a 32-token teacher-forced suffix; inputs are full-cache traces, and outputs are D_{i,a} values and pairwise action orderings.\n3. Train the small quantile predictor with pinball plus lambda_rank Bradley-Terry losses; inputs are block features, scalar damages, and pairwise orderings, and outputs are per-action median and 0.9-quantile predictions.\n4. On disjoint calibration prompts, compute corrected finite-sample c_a and c_joint order statistics from single-action and random joint-action residuals; inputs are predictor outputs and measured suffix KL, and outputs are calibrated U_{i,a} tables plus a joint-coverage curve measured on a separate evaluation split.\n5. Microbenchmark every conversion kernel and derive exact byte formulas including scales and metadata; inputs are the Qwen config, block size, action format, and target GPU, and outputs are m_{i,a} and p99 t_{i,a} lookup tables.\n6. During each real prefill, preserve the final 128 tokens in FP16 and compute features for every earlier layer-block; inputs are live Q/K/V tensors and the last 32 query positions, and outputs are prompt-specific C_{i,a} certificates.\n7. Reject requests whose mandatory-window plus all-omit costs exceed either declared ceiling; for admitted requests, subtract measured elapsed feature time and mandatory-window costs, then run the anytime two-resource solver; inputs are certificates and request ceilings, and output is a byte- and profiled-time-feasible action map.\n8. Apply the action map to the physical KV buffers and launch normal decoding; inputs are full KV tensors and selected actions, and outputs are heterogeneous buffers whose changed attention reads alter the generated answer.\n9. Enforce the wall-clock guard by committing the best feasible incumbent before the deadline and omitting any unconverted historical block; inputs are elapsed time and incumbent state, and outputs are the final cache and observed byte/TTFT violation counts.\n10. Using preregistered tolerances, build matched equal-predicted-median/unequal-calibrated-q0.9 diagnostic pairs and evaluate ProMixed, ContiguousKV, DynamicKV, and the certificate router; inputs are LongBench/NIAH prompts and gold answers, and outputs are downstream scores, joint-certificate coverage, TTFT, bytes, and violation counts.",
+    "falsification_prediction": "Run Qwen2.5-7B on LongBench and Needle-in-a-Haystack with historical KV capped at 25% of FP16 bytes and total TTFT capped at 1.05 times uncompressed-prefill TTFT, comparing ProMixed, ContiguousKV, DynamicKV, and the proposed router while measuring LongBench normalized average score, NIAH retrieval accuracy, actual bytes, and deadline violations. If the mechanism works, LongBench score and NIAH accuracy increase over the best zero-violation baseline while byte and TTFT violation counts remain zero, with the largest gain on matched regions whose predicted means are equal but tail spreads differ. The single load-bearing variable is the conformal upper damage bound U_{i,a}; as a negative control, permute U_{i,a} across blocks within each layer and action before re-solving, preserving its marginal distribution and all resource costs. That intervention should drive the downstream LongBench and NIAH gains back toward the point-score baseline even though the selected precision histogram and hard-budget feasibility remain similar.",
+    "compute_budget": "Approximately 72 GPU-days on 80GB-class A100/H100 GPUs for counterfactual trace generation, predictor fitting, LongBench/NIAH baselines, coverage studies, and two iterations; at up to 8 concurrent GPUs this is feasible inside 5 months. Paid inference/API cost: $0, because Qwen2.5-7B, gold benchmark metrics, and the frozen full-cache teacher are all local.",
+    "differentiation_from_lit": [
+      {
+        "paper_id": "openalex:W4416034925",
+        "delta": "DynamicKV converts recent-query attention scores into layer-specific retained-token counts under a global token budget; this candidate instead constructs calibrated action-conditional downstream-damage bounds and routes FP16/INT8/INT4/omit jointly under exact byte and TTFT constraints."
+      },
+      {
+        "paper_id": "openalex:W4411487104",
+        "delta": "Oaken fixes data-agnostic outlier thresholds offline and applies a single online low-bit quantization design with hardware support; this candidate assigns representation or omission separately to each request’s layer-block from a calibrated damage distribution and a request-level two-resource solver."
+      },
+      {
+        "paper_id": "openalex:W4407123430",
+        "delta": "ChunkKV changes the atomic pruning unit to a semantic chunk and reuses indices across layers, whereas this candidate estimates an upper-tail downstream cost for every precision-or-omission action and couples all block choices through exact serving constraints."
+      },
+      {
+        "paper_id": "openalex:W4413014966",
+        "delta": "Abstract-only inference: EMPIRIC defines oracle accuracy, computation, and storage bounds, while this candidate constructs the non-oracle predictor, conformal joint-action certificate, and deadline-guarded feasible router needed to make such a bound operational."
+      }
+    ],
+    "almost_prior_paper_id": "openalex:W4416034925",
+    "what_step_was_missed": "DynamicKV would have needed to replace its per-layer attention point scores and token-count normalization with counterfactual precision-or-omission damage distributions, calibrate their upper tails on joint interventions, and solve the resulting byte-and-TTFT-constrained action assignment before its adaptive allocation became this contribution.",
+    "signature_terms": [
+      "conformal block-action damage certificates",
+      "hard-deadline KV routing",
+      "tail-risk cache action allocation",
+      "byte-feasible precision omission routing"
+    ],
+    "alias_terms": [
+      "safe resource constrained contextual bandit",
+      "chance constrained model compression",
+      "risk sensitive multiple choice knapsack",
+      "budgeted abstention policy"
+    ]
+  },
+  "falsification_rewritten": false
+}

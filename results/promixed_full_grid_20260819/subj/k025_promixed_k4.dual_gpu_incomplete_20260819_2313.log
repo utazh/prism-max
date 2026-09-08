@@ -1,0 +1,2 @@
+[2026-08-19T23:13:28+08:00] ProMixed subj k025 k4 on GPU 1; dual-GPU mode explicitly enabled
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 100.70it/s]

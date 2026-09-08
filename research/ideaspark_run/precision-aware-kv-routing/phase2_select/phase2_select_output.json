@@ -1,0 +1,48 @@
+{
+  "selected_gaps": [
+    {
+      "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+      "chosen_pattern_id": "heterogeneous_decomposition",
+      "anchor_alternates": [],
+      "companion_pattern": null,
+      "companion_rationale": "",
+      "selection_rationale": "This is the most load-bearing method gap because ProMixed already produces a useful request-specific block order, yet one method-wide cache format prevents that evidence from controlling how scarce bytes protect different regions. Decompose for Differentiated Treatment closes it by turning retained blocks into byte-priced precision promotions whose distinct treatments are selected from the same ProMixed evidence, while avoiding a new action-damage certificate or a latency-feasibility claim."
+    },
+    {
+      "gap": "No retrieved frontier leaf closes the gap between offline model-level sensitivity and prompt-specific evidence strongly enough to preserve accuracy across task shifts while keeping selection overhead inside the serving deadline.",
+      "chosen_pattern_id": "adapt_via_conditioning",
+      "anchor_alternates": [],
+      "companion_pattern": null,
+      "companion_rationale": "",
+      "selection_rationale": "Under a sequential_pipeline thread, an offline bank of task-category precision-promotion profiles becomes the reference substrate that the runtime prompt fingerprint retrieves before the anchor byte ladder is packed. Adapt by Conditioning closes the shift gap with held-out-task profile transfer using existing ProMixed GQA statistics, not per-task retraining or an online counterfactual model."
+    }
+  ],
+  "coherence_thread_type": "sequential_pipeline",
+  "deliverable_coverage": "method → anchor gap → heterogeneous_decomposition yields a runnable prompt-conditioned mixed-precision KV byte ladder with exact byte accounting.",
+  "pattern_saturation": {
+    "heterogeneous_decomposition": {
+      "share": 0.64,
+      "saturation_band": "saturated",
+      "selection_note": "saturated lane → differentiation_from_lit must defend the progressive precision-promotion representation and held-out-task conditioning beyond importance-only mixed precision"
+    },
+    "adapt_via_conditioning": {
+      "share": 0.18,
+      "saturation_band": "mid_frequency",
+      "selection_note": ""
+    }
+  },
+  "deferred_gaps": [
+    {
+      "gap": "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+      "reason": "Out of scope for this candidate: exact byte feasibility is enforced, but measured TTFT is evaluated empirically rather than promoted to a hard guarantee without a bounded scheduler."
+    },
+    {
+      "gap": "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+      "reason": "Deferred to a separate uncertainty-calibration paper; this candidate uses existing ProMixed agreement and boundary-margin readouts only as conditioning features and makes no tail-risk certificate claim."
+    },
+    {
+      "gap": "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling.",
+      "reason": "Deferred because isolating point-score failure requires a dedicated controlled diagnostic; the present method instead tests whether task-conditioned precision promotion improves held-out downstream outcomes."
+    }
+  ]
+}

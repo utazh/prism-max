@@ -1,0 +1,1392 @@
+{
+  "as_lru_independent_runs": {
+    "rte": {
+      "005": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k005_as_lru_fp16_nodefer_warm1_response_r1",
+      "010": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k010_as_lru_fp16_nodefer_warm1_response_r1",
+      "025": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k025_as_lru_fp16_nodefer_warm1_response_r1",
+      "050": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k050_as_lru_fp16_nodefer_warm1_response_r1"
+    },
+    "sst2": {
+      "005": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/full_as_lru_fp16_nodefer_warm1_response_r1",
+      "010": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k010_as_lru_fp16_nodefer_warm1_response_r1",
+      "025": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k025_as_lru_fp16_nodefer_warm1_response_r1",
+      "050": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k050_as_lru_fp16_nodefer_warm1_response_r1"
+    },
+    "subj": {
+      "005": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k005_as_lru_fp16_nodefer_warm1_response_r1",
+      "010": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k010_as_lru_fp16_nodefer_warm1_response_r1",
+      "025": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k025_as_lru_fp16_nodefer_warm1_response_r1",
+      "050": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k050_as_lru_fp16_nodefer_warm1_response_r1"
+    },
+    "trec": {
+      "005": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k005_as_lru_fp16_nodefer_warm1_response_r1",
+      "010": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k010_as_lru_fp16_nodefer_warm1_response_r1",
+      "025": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k025_as_lru_fp16_nodefer_warm1_response_r1",
+      "050": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k050_as_lru_fp16_nodefer_warm1_response_r1"
+    }
+  },
+  "budget_semantics_validation": {
+    "as_h2o_lru": "LRU naming follows the paper title/figure legend; selector-key-load=1, logical-attention=selected-value-transfer=ceil(prefix_tokens*k)/prefix_tokens, minimum-transfer=(1+logical-attention)/2",
+    "as_lru": "four independently timed budget-label runs per task; effective_mean_keep_ratio=1 and every layer retains prefix_tokens",
+    "maximum_h2o_value_ceil_error": 0.00023615848858567212,
+    "validated_as_lru_rows": 10528,
+    "validated_h2o_rows": 10528
+  },
+  "by_method_budget": {
+    "as_h2o_lru": {
+      "005": {
+        "accuracy": 0.7823399297634099,
+        "cells": 4,
+        "logits_ready_mean_ms": 4218.6368118001965,
+        "logits_ready_p95_ms": 4655.982627533376,
+        "response_ready_mean_ms": 4218.928310904559,
+        "response_ready_p95_ms": 4656.351883662865
+      },
+      "010": {
+        "accuracy": 0.8323605540044474,
+        "cells": 4,
+        "logits_ready_mean_ms": 4172.338352119444,
+        "logits_ready_p95_ms": 4746.764057315886,
+        "response_ready_mean_ms": 4172.6243859147335,
+        "response_ready_p95_ms": 4747.040540445596
+      },
+      "025": {
+        "accuracy": 0.8334093202132482,
+        "cells": 4,
+        "logits_ready_mean_ms": 4733.394610823155,
+        "logits_ready_p95_ms": 5524.745203787461,
+        "response_ready_mean_ms": 4733.674520609825,
+        "response_ready_p95_ms": 5525.091000599787
+      },
+      "050": {
+        "accuracy": 0.8204230340815145,
+        "cells": 4,
+        "logits_ready_mean_ms": 4524.512595419876,
+        "logits_ready_p95_ms": 5385.112860472873,
+        "response_ready_mean_ms": 4524.782726311976,
+        "response_ready_p95_ms": 5385.37634909153
+      }
+    },
+    "as_lru": {
+      "005": {
+        "accuracy": 0.8147967376681292,
+        "cells": 4,
+        "logits_ready_mean_ms": 4924.047236859342,
+        "logits_ready_p95_ms": 5341.744646430016,
+        "response_ready_mean_ms": 4924.367931650015,
+        "response_ready_p95_ms": 5342.04488270916
+      },
+      "010": {
+        "accuracy": 0.8147967376681292,
+        "cells": 4,
+        "logits_ready_mean_ms": 3941.070462177129,
+        "logits_ready_p95_ms": 4210.250596050173,
+        "response_ready_mean_ms": 3941.378324764707,
+        "response_ready_p95_ms": 4210.564323700964
+      },
+      "025": {
+        "accuracy": 0.8147967376681292,
+        "cells": 4,
+        "logits_ready_mean_ms": 3723.537044974239,
+        "logits_ready_p95_ms": 4037.4156560283154,
+        "response_ready_mean_ms": 3723.84636619563,
+        "response_ready_p95_ms": 4037.7355532255024
+      },
+      "050": {
+        "accuracy": 0.8147967376681292,
+        "cells": 4,
+        "logits_ready_mean_ms": 3692.2734372832147,
+        "logits_ready_p95_ms": 3998.768060700968,
+        "response_ready_mean_ms": 3692.5596821037257,
+        "response_ready_p95_ms": 3999.0760046057403
+      }
+    },
+    "contigkv": {
+      "005": {
+        "accuracy": 0.6895542577150386,
+        "cells": 4,
+        "logits_ready_mean_ms": 264.3900304994679,
+        "logits_ready_p95_ms": 295.4041159246117,
+        "response_ready_mean_ms": 264.65335987603913,
+        "response_ready_p95_ms": 295.71053944528103
+      },
+      "010": {
+        "accuracy": 0.6925876831430152,
+        "cells": 4,
+        "logits_ready_mean_ms": 372.6471052945409,
+        "logits_ready_p95_ms": 438.0555448587984,
+        "response_ready_mean_ms": 372.92043630526695,
+        "response_ready_p95_ms": 438.3434986229986
+      },
+      "025": {
+        "accuracy": 0.6957336400895882,
+        "cells": 4,
+        "logits_ready_mean_ms": 627.6899628660734,
+        "logits_ready_p95_ms": 725.0592263881117,
+        "response_ready_mean_ms": 628.0102103444558,
+        "response_ready_p95_ms": 725.3372301347554
+      },
+      "050": {
+        "accuracy": 0.7358260844677016,
+        "cells": 4,
+        "logits_ready_mean_ms": 1204.6691353139431,
+        "logits_ready_p95_ms": 1639.6914201322943,
+        "response_ready_mean_ms": 1205.0745751009504,
+        "response_ready_p95_ms": 1639.9847243446857
+      }
+    },
+    "impress": {
+      "005": {
+        "accuracy": 0.7118396670661234,
+        "cells": 4,
+        "logits_ready_mean_ms": 1057.505664547582,
+        "logits_ready_p95_ms": 1301.2563094962388,
+        "response_ready_mean_ms": 1057.7649449933306,
+        "response_ready_p95_ms": 1301.538220141083
+      },
+      "010": {
+        "accuracy": 0.7439845302607592,
+        "cells": 4,
+        "logits_ready_mean_ms": 1373.7092018915755,
+        "logits_ready_p95_ms": 1955.0666746217757,
+        "response_ready_mean_ms": 1373.9706554795748,
+        "response_ready_p95_ms": 1955.3529834374785
+      },
+      "025": {
+        "accuracy": 0.8085821970738863,
+        "cells": 4,
+        "logits_ready_mean_ms": 2754.3375027741936,
+        "logits_ready_p95_ms": 6214.301316533238,
+        "response_ready_mean_ms": 2754.6020844688665,
+        "response_ready_p95_ms": 6214.656383963302
+      },
+      "050": {
+        "accuracy": 0.8264876886431631,
+        "cells": 4,
+        "logits_ready_mean_ms": 2563.4437616197374,
+        "logits_ready_p95_ms": 3051.0271738748997,
+        "response_ready_mean_ms": 2563.714135938295,
+        "response_ready_p95_ms": 3051.343400031328
+      }
+    },
+    "promixed": {
+      "005": {
+        "accuracy": 0.7517402136768031,
+        "cells": 4,
+        "logits_ready_mean_ms": 185.98737636147683,
+        "logits_ready_p95_ms": 232.12350439280272,
+        "response_ready_mean_ms": 186.22747173191445,
+        "response_ready_p95_ms": 232.4040224775672
+      },
+      "010": {
+        "accuracy": 0.7852463411321612,
+        "cells": 4,
+        "logits_ready_mean_ms": 261.15846234466886,
+        "logits_ready_p95_ms": 319.6702643763274,
+        "response_ready_mean_ms": 261.3976038733336,
+        "response_ready_p95_ms": 319.9764078017324
+      },
+      "025": {
+        "accuracy": 0.8171299157855748,
+        "cells": 4,
+        "logits_ready_mean_ms": 469.4692826823918,
+        "logits_ready_p95_ms": 557.2933699004352,
+        "response_ready_mean_ms": 469.7239425991244,
+        "response_ready_p95_ms": 557.5755250174552
+      },
+      "050": {
+        "accuracy": 0.8191979586729294,
+        "cells": 4,
+        "logits_ready_mean_ms": 946.8678925779683,
+        "logits_ready_p95_ms": 1185.2513069752604,
+        "response_ready_mean_ms": 947.1541233863126,
+        "response_ready_p95_ms": 1185.5246997438371
+      }
+    }
+  },
+  "input": {
+    "expanded_cells": 80,
+    "manifest_entries": 80,
+    "path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/schedule_manifest.json",
+    "purpose": "Strict one-repeat five-method re-prefill grid with 80 actual executions; response-ready primary, one 32-request warm-up, nodefer. Every AS+LRU budget-label cell is independently timed with effective full K/V."
+  },
+  "metric_definitions": {
+    "accuracy": "mean exact correctness within each task/budget/method cell",
+    "as_h2o_lru_budget": "k_actual is compact K/V logical-attention and selected-value-transfer retention; the selector loads full K, so minimum transfer is (1+k_actual)/2; LRU naming follows the paper title/figure legend",
+    "as_lru_budget": "each task-budget cell is independently timed with full prefix K/V; the requested budget is only the comparison-block label",
+    "macro": "unweighted arithmetic mean of cell metrics; requests are not pooled across tasks",
+    "p95": "nearest-rank P95 within each task/budget/method cell",
+    "phase_latency": "logits_ready_ms (first-token logits ready)",
+    "primary_latency": "response_ready_ms (benchmark-only accuracy scoring excluded)"
+  },
+  "overall_by_method": {
+    "as_h2o_lru": {
+      "accuracy": 0.817133209515655,
+      "cells": 16,
+      "logits_ready_mean_ms": 4412.220592540668,
+      "logits_ready_p95_ms": 5078.151187277399,
+      "response_ready_mean_ms": 4412.502485935273,
+      "response_ready_p95_ms": 5078.464943449944
+    },
+    "as_lru": {
+      "accuracy": 0.8147967376681292,
+      "cells": 16,
+      "logits_ready_mean_ms": 4070.232045323481,
+      "logits_ready_p95_ms": 4397.044739802368,
+      "response_ready_mean_ms": 4070.538076178519,
+      "response_ready_p95_ms": 4397.355191060342
+    },
+    "contigkv": {
+      "accuracy": 0.7034254163538359,
+      "cells": 16,
+      "logits_ready_mean_ms": 617.3490584935064,
+      "logits_ready_p95_ms": 774.552576825954,
+      "response_ready_mean_ms": 617.6646454066781,
+      "response_ready_p95_ms": 774.8439981369302
+    },
+    "impress": {
+      "accuracy": 0.772723520760983,
+      "cells": 16,
+      "logits_ready_mean_ms": 1937.2490327082721,
+      "logits_ready_p95_ms": 3130.412868631538,
+      "response_ready_mean_ms": 1937.5129552200167,
+      "response_ready_p95_ms": 3130.722746893298
+    },
+    "promixed": {
+      "accuracy": 0.7933286073168672,
+      "cells": 16,
+      "logits_ready_mean_ms": 465.87075349162643,
+      "logits_ready_p95_ms": 573.5846114112064,
+      "response_ready_mean_ms": 466.1257853976712,
+      "response_ready_p95_ms": 573.870163760148
+    }
+  },
+  "schema_version": 1,
+  "scope": "re-prefill; complete 4-task x 4-budget x 5-method grid",
+  "tasks": {
+    "rte": {
+      "budgets": {
+        "005": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.8970588235294118,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4770.4953429843845,
+              "logits_ready_p95_ms": 5096.167091280222,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 4770.792285494013,
+              "response_ready_p95_ms": 5096.580228768289,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k005_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 6716.883458245053,
+              "logits_ready_p95_ms": 7134.699399583042,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 6717.191748553887,
+              "response_ready_p95_ms": 7134.967680089176,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k005_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.8639705882352942,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 296.75676903057405,
+              "logits_ready_p95_ms": 346.84424940496683,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 297.01862377730913,
+              "response_ready_p95_ms": 347.1665931865573,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k005_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.8970588235294118,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1256.9938801085193,
+              "logits_ready_p95_ms": 1678.9600308984518,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 1257.2448873166543,
+              "response_ready_p95_ms": 1679.224904626608,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k005_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.8970588235294118,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 228.37062902502058,
+              "logits_ready_p95_ms": 301.1406706646085,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 228.6009062869091,
+              "response_ready_p95_ms": 301.4272255823016,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k005_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "010": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.8970588235294118,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4991.577118289356,
+              "logits_ready_p95_ms": 5716.206477023661,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 4991.872535207008,
+              "response_ready_p95_ms": 5716.490913182497,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k010_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 5433.60483262907,
+              "logits_ready_p95_ms": 5773.3438313007355,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 5433.9138510917755,
+              "response_ready_p95_ms": 5773.631006479263,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k010_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.8529411764705882,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 406.7403125227429,
+              "logits_ready_p95_ms": 484.3504875898361,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 407.0252072107156,
+              "response_ready_p95_ms": 484.6763778477907,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k010_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1876.6463101697702,
+              "logits_ready_p95_ms": 2373.8976046442986,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 1876.9063336213173,
+              "response_ready_p95_ms": 2374.1698460653424,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k010_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.8823529411764706,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 353.7940429215429,
+              "logits_ready_p95_ms": 446.14084530621767,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 354.044612206053,
+              "response_ready_p95_ms": 446.3666630908847,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k010_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "025": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 5177.0446639103975,
+              "logits_ready_p95_ms": 6016.084543429315,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 5177.314825164263,
+              "response_ready_p95_ms": 6016.3987297564745,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k025_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4629.2508862816785,
+              "logits_ready_p95_ms": 5073.316163383424,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 4629.540085224161,
+              "response_ready_p95_ms": 5073.691571131349,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k025_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.8713235294117647,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 779.546656892361,
+              "logits_ready_p95_ms": 912.9517367109656,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 779.8640146844691,
+              "response_ready_p95_ms": 913.2744492962956,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k025_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.8823529411764706,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 2925.563630192568,
+              "logits_ready_p95_ms": 3542.713662609458,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 2925.837277636781,
+              "response_ready_p95_ms": 3542.959430254996,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k025_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 636.3818301846657,
+              "logits_ready_p95_ms": 762.3541867360473,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 636.6350150304189,
+              "response_ready_p95_ms": 762.5845689326525,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k025_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "050": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.8860294117647058,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 5410.90817518724,
+              "logits_ready_p95_ms": 6340.963893570006,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 5411.1776701791,
+              "response_ready_p95_ms": 6341.239013709128,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k050_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4604.56931178102,
+              "logits_ready_p95_ms": 4902.167005464435,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 4604.8637726926245,
+              "response_ready_p95_ms": 4902.463628910482,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k050_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.8897058823529411,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1995.910763151615,
+              "logits_ready_p95_ms": 2683.9006673544645,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 1996.2357884163366,
+              "response_ready_p95_ms": 2684.346583671868,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k050_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.8860294117647058,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3772.2621894105996,
+              "logits_ready_p95_ms": 4469.556814059615,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 3772.5633960080277,
+              "response_ready_p95_ms": 4469.866994768381,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k050_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.8823529411764706,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1472.7312129107304,
+              "logits_ready_p95_ms": 2011.4933205768466,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 1473.071088843212,
+              "response_ready_p95_ms": 2011.7146102711558,
+              "samples": 272,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/rte/k050_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        }
+      },
+      "uids": 272
+    },
+    "sst2": {
+      "budgets": {
+        "005": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.9446366782006921,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4865.653890963846,
+              "logits_ready_p95_ms": 5672.56326507777,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 4865.977031176624,
+              "response_ready_p95_ms": 5672.923118807375,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k005_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.9480968858131488,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3795.3390697900295,
+              "logits_ready_p95_ms": 4347.847647964954,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 3795.687397654064,
+              "response_ready_p95_ms": 4348.082336597145,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/full_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.8961937716262975,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 217.8449089345635,
+              "logits_ready_p95_ms": 240.26617966592312,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 218.11572287227386,
+              "response_ready_p95_ms": 240.59569090604782,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k005_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.9354094579008074,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 925.7579289737663,
+              "logits_ready_p95_ms": 1091.0662524402142,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 926.0394495504778,
+              "response_ready_p95_ms": 1091.3689890876412,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k005_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.9238754325259516,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 151.99339347155689,
+              "logits_ready_p95_ms": 187.5745002180338,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 152.23776017914008,
+              "response_ready_p95_ms": 187.8291741013527,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k005_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "010": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.9515570934256056,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3655.2673346613296,
+              "logits_ready_p95_ms": 4362.486705183983,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 3655.5903238935057,
+              "response_ready_p95_ms": 4362.783951684833,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k010_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.9480968858131488,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3132.454260732579,
+              "logits_ready_p95_ms": 3401.3517051935196,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 3132.820772827789,
+              "response_ready_p95_ms": 3401.6416799277067,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k010_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.9250288350634371,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 340.9861268512174,
+              "logits_ready_p95_ms": 424.74586982280016,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 341.27878865835095,
+              "response_ready_p95_ms": 425.05251709371805,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k010_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.9411764705882353,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1001.0493858550883,
+              "logits_ready_p95_ms": 1307.8239439055324,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 1001.3135759409134,
+              "response_ready_p95_ms": 1308.1481447443366,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k010_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.9388696655132641,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 230.57940691567725,
+              "logits_ready_p95_ms": 273.58454558998346,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 230.83827893476345,
+              "response_ready_p95_ms": 274.0840306505561,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k010_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "025": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.9469434832756632,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 5221.4342707256765,
+              "logits_ready_p95_ms": 6180.42585067451,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 5221.750244916113,
+              "response_ready_p95_ms": 6180.753129534423,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k025_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.9480968858131488,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3234.9751150749,
+              "logits_ready_p95_ms": 3436.4526364952326,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 3235.3631915995097,
+              "response_ready_p95_ms": 3436.804979108274,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k025_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.9446366782006921,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 499.6352634062902,
+              "logits_ready_p95_ms": 562.1673623099923,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 500.03707116403143,
+              "response_ready_p95_ms": 562.4007387086749,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k025_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.9411764705882353,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4345.955018819908,
+              "logits_ready_p95_ms": 16726.864444091916,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 4346.253560458535,
+              "response_ready_p95_ms": 16727.385921403766,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k025_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.9400230680507498,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 349.1644412783998,
+              "logits_ready_p95_ms": 412.87564020603895,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 349.4170199781055,
+              "response_ready_p95_ms": 413.2394501939416,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k025_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "050": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.9480968858131488,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3752.757757279115,
+              "logits_ready_p95_ms": 4126.8089432269335,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 3753.0205142464074,
+              "response_ready_p95_ms": 4127.092020586133,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k050_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.9480968858131488,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3189.4514350190484,
+              "logits_ready_p95_ms": 3329.9524057656527,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 3189.759114151337,
+              "response_ready_p95_ms": 3330.283148214221,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k050_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.9434832756632064,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 682.4738336007316,
+              "logits_ready_p95_ms": 796.3716285303235,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 683.1199364798979,
+              "response_ready_p95_ms": 796.6422233730555,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k050_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.9480968858131488,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1643.646843757184,
+              "logits_ready_p95_ms": 1960.1549794897437,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 1643.8963320922653,
+              "response_ready_p95_ms": 1960.450341925025,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k050_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.9457900807381776,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 627.9894449643903,
+              "logits_ready_p95_ms": 724.1088086739182,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 628.2559879341151,
+              "response_ready_p95_ms": 724.3852978572249,
+              "samples": 867,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/k050_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        }
+      },
+      "uids": 867
+    },
+    "subj": {
+      "budgets": {
+        "005": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.7765531062124249,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3390.0079842543,
+              "logits_ready_p95_ms": 3687.97062151134,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 3390.272778587673,
+              "response_ready_p95_ms": 3688.3550165221095,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k005_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8537074148296593,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3571.0117280807995,
+              "logits_ready_p95_ms": 3819.968795403838,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 3571.284024462007,
+              "response_ready_p95_ms": 3820.23683283478,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k005_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.4909819639278557,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 222.06451099007606,
+              "logits_ready_p95_ms": 244.16355416178703,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 222.33048478843185,
+              "response_ready_p95_ms": 244.46851015090942,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k005_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.657314629258517,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 995.1124790979396,
+              "logits_ready_p95_ms": 1167.8734198212624,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 995.3665495831482,
+              "response_ready_p95_ms": 1168.1523099541664,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k005_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.6042084168336673,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 168.22034056356293,
+              "logits_ready_p95_ms": 207.74799399077892,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 168.45442318471376,
+              "response_ready_p95_ms": 208.04920326918364,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k005_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "010": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.872745490981964,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3690.288571576459,
+              "logits_ready_p95_ms": 4240.581377409399,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 3690.5496634901288,
+              "response_ready_p95_ms": 4240.847776643932,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k010_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8537074148296593,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3366.071431594294,
+              "logits_ready_p95_ms": 3596.6136315837502,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 3366.349006284454,
+              "response_ready_p95_ms": 3596.94186411798,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k010_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.44288577154308617,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 274.37428472645746,
+              "logits_ready_p95_ms": 320.4435585066676,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 274.6223931747651,
+              "response_ready_p95_ms": 320.6630013883114,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k010_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.6743486973947895,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1183.7733451767874,
+              "logits_ready_p95_ms": 1419.0162410959601,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 1184.0404069316173,
+              "response_ready_p95_ms": 1419.297082349658,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k010_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.6793587174348698,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 238.17480629952047,
+              "logits_ready_p95_ms": 295.6203408539295,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 238.40669979003513,
+              "response_ready_p95_ms": 295.82197591662407,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k010_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "025": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.872745490981964,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3892.0336823307634,
+              "logits_ready_p95_ms": 4557.038531638682,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 3892.2938897698104,
+              "response_ready_p95_ms": 4557.308280840516,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k025_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8537074148296593,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3308.86368041873,
+              "logits_ready_p95_ms": 3704.076496884227,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 3309.1357347484536,
+              "response_ready_p95_ms": 3704.364376142621,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k025_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.4619238476953908,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 490.894391682962,
+              "logits_ready_p95_ms": 562.0218394324183,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 491.1948615080399,
+              "response_ready_p95_ms": 562.3614694923162,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k025_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.7885771543086172,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1538.7221477470382,
+              "logits_ready_p95_ms": 1992.7583653479815,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 1538.9586589196492,
+              "response_ready_p95_ms": 1993.1123284623027,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k025_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.8246492985971944,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 407.7423320969339,
+              "logits_ready_p95_ms": 486.2090116366744,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 407.98182091311753,
+              "response_ready_p95_ms": 486.4742821082473,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k025_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "050": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.8637274549098196,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4308.659424632041,
+              "logits_ready_p95_ms": 5627.583737485111,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 4308.932101191628,
+              "response_ready_p95_ms": 5627.788960002363,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k050_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.8537074148296593,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3297.1951908680176,
+              "logits_ready_p95_ms": 3692.004168406129,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 3297.463370002769,
+              "response_ready_p95_ms": 3692.2830333933234,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k050_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.6232464929859719,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 886.2349277153193,
+              "logits_ready_p95_ms": 1310.742829926312,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 886.5710267907228,
+              "response_ready_p95_ms": 1310.9638700261712,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k050_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.8617234468937875,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 2248.4309728796743,
+              "logits_ready_p95_ms": 2597.4445659667253,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 2248.703716535547,
+              "response_ready_p95_ms": 2597.780143842101,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k050_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.8547094188376754,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 795.5554127730504,
+              "logits_ready_p95_ms": 979.2402824386954,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 795.8268274642707,
+              "response_ready_p95_ms": 979.5687608420849,
+              "samples": 998,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/subj/k050_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        }
+      },
+      "uids": 998
+    },
+    "trec": {
+      "budgets": {
+        "005": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.5111111111111111,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3848.3900289982557,
+              "logits_ready_p95_ms": 4167.229532264173,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 3848.671148359926,
+              "response_ready_p95_ms": 4167.549170553684,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k005_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.5676767676767677,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 5612.954691321485,
+              "logits_ready_p95_ms": 6064.462742768228,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 5613.308555930101,
+              "response_ready_p95_ms": 6064.892681315541,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k005_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.5070707070707071,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 320.8939330426581,
+              "logits_ready_p95_ms": 350.34248046576977,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 321.1486080661416,
+              "response_ready_p95_ms": 350.6113635376096,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k005_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.3575757575757576,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1052.1583700101032,
+              "logits_ready_p95_ms": 1267.125534825027,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 1052.4088935230416,
+              "response_ready_p95_ms": 1267.4066768959165,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k005_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.5818181818181818,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 195.36514238576697,
+              "logits_ready_p95_ms": 232.03085269778967,
+              "requested_budget_label": "005",
+              "response_ready_mean_ms": 195.61679727689486,
+              "response_ready_p95_ms": 232.31048695743084,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k005_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "010": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.6080808080808081,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4352.220383950631,
+              "logits_ready_p95_ms": 4667.7816696465015,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 4352.485021068292,
+              "response_ready_p95_ms": 4668.0395202711225,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k010_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.5676767676767677,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3832.151323752572,
+              "logits_ready_p95_ms": 4069.693216122687,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 3832.4296688548093,
+              "response_ready_p95_ms": 4070.042744278908,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k010_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.5494949494949495,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 468.48769707774574,
+              "logits_ready_p95_ms": 522.6822635158896,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 468.7553561772361,
+              "response_ready_p95_ms": 522.9820981621742,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k010_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.4707070707070707,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1433.3677663646563,
+              "logits_ready_p95_ms": 2719.528908841312,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 1433.6223054244513,
+              "response_ready_p95_ms": 2719.796860590577,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k010_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.6404040404040404,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 222.08559324193482,
+              "logits_ready_p95_ms": 263.3353257551789,
+              "requested_budget_label": "010",
+              "response_ready_mean_ms": 222.30082456248277,
+              "response_ready_p95_ms": 263.63296154886484,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k010_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "025": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.6242424242424243,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4643.065826325781,
+              "logits_ready_p95_ms": 5345.431889407337,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 4643.339122589113,
+              "response_ready_p95_ms": 5345.903862267733,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k025_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.5676767676767677,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3721.0584981216475,
+              "logits_ready_p95_ms": 3935.817327350378,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 3721.3464532103953,
+              "response_ready_p95_ms": 3936.081286519766,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k025_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.5050505050505051,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 740.6835394826802,
+              "logits_ready_p95_ms": 863.0959670990705,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 740.944894021283,
+              "response_ready_p95_ms": 863.3122630417347,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k025_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.6222222222222222,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 2207.1092143372603,
+              "logits_ready_p95_ms": 2594.8687940835953,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 2207.3588408605015,
+              "response_ready_p95_ms": 2595.167855732143,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k025_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.6141414141414141,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 484.5885271695678,
+              "logits_ready_p95_ms": 567.7346410229802,
+              "requested_budget_label": "025",
+              "response_ready_mean_ms": 484.8619144748558,
+              "response_ready_p95_ms": 568.0037988349795,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k025_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        },
+        "050": {
+          "methods": {
+            "as_h2o_lru": {
+              "accuracy": 0.5838383838383838,
+              "budget_semantics": "compact_kv_attention_full_key_selector_transfer",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 4625.725024581106,
+              "logits_ready_p95_ms": 5445.094867609441,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 4626.000619630771,
+              "response_ready_p95_ms": 5445.385402068496,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k050_as_h2o_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "as_lru": {
+              "accuracy": 0.5676767676767677,
+              "budget_semantics": "full_kv",
+              "effective_kv_retention_ratio": 1.0,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 3677.8778114647725,
+              "logits_ready_p95_ms": 4070.9486631676555,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 3678.152471568172,
+              "response_ready_p95_ms": 4071.274207904935,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k050_as_lru_fp16_nodefer_warm1_response_r1"
+            },
+            "contigkv": {
+              "accuracy": 0.4868686868686869,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 1254.057016788107,
+              "logits_ready_p95_ms": 1767.7505547180772,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 1254.3715487168442,
+              "response_ready_p95_ms": 1767.9862203076482,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k050_contigkv_fp16_nodefer_warm1_response_r1"
+            },
+            "impress": {
+              "accuracy": 0.6101010101010101,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 2589.4350404314923,
+              "logits_ready_p95_ms": 3176.952335983515,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 2589.6930991173394,
+              "response_ready_p95_ms": 3177.2761195898056,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k050_impress_fp16_nodefer_warm1_response_r1"
+            },
+            "promixed": {
+              "accuracy": 0.593939393939394,
+              "budget_semantics": "kv_retention",
+              "effective_kv_retention_ratio": null,
+              "independent_measurement": true,
+              "logits_ready_mean_ms": 891.1954996637022,
+              "logits_ready_p95_ms": 1026.1628162115812,
+              "requested_budget_label": "050",
+              "response_ready_mean_ms": 891.4625893036524,
+              "response_ready_p95_ms": 1026.4301300048828,
+              "samples": 495,
+              "source_path": "/home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/trec/k050_promixed_k4_nodefer_warm1_response_r1"
+            }
+          }
+        }
+      },
+      "uids": 495
+    }
+  }
+}

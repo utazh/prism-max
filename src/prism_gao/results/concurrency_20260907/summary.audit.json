@@ -1,0 +1,71 @@
+{
+  "report": "/home/panzihang/src/prism_max/src/prism_gao/results/concurrency_20260907/GPT_REVIEW_REPORT_CONCURRENCY.md",
+  "thread_direct_c4": {
+    "concurrency": 4,
+    "mode": "coalesced",
+    "samples_including_repeats": 32,
+    "unique_requests": 16,
+    "mean_ms": 3540.6772323748896,
+    "p50_ms": 3462.5438704997578,
+    "p95_ms": 4409.264961448935,
+    "requests_per_s": 1.0079838645596477,
+    "mean_logical_mib": 98.18124771118164,
+    "mean_pread_calls": 5016.375,
+    "logical_bytes": 3294416000,
+    "storage_bytes": 3294423040,
+    "mean_host_wall_ms": 3495.724657624237,
+    "mean_materialize_ms": 33.23920901864767,
+    "round_mean_ms": [
+      3562.707926312555,
+      3518.646538437224
+    ],
+    "round_throughput": [
+      1.0032127047304693,
+      1.0128006233850453
+    ],
+    "latency_change_pct": -6.803411830883355,
+    "throughput_change_pct": 3.1238241217498075,
+    "byte_ratio": 0.7500426928492828,
+    "pread_ratio": 1.7824908945544995
+  },
+  "process_direct_c4": {
+    "concurrency": 4,
+    "mode": "coalesced",
+    "samples_including_repeats": 32,
+    "unique_requests": 16,
+    "mean_ms": 3068.8524174062763,
+    "p50_ms": 3073.4569094993276,
+    "p95_ms": 3847.4851343496994,
+    "requests_per_s": 1.1312092747953306,
+    "mean_logical_mib": 98.18124771118164,
+    "mean_pread_calls": 5016.375,
+    "logical_bytes": 3294416000,
+    "storage_bytes": 3294423040,
+    "mean_host_wall_ms": 3040.8286228434918,
+    "mean_materialize_ms": 17.43893398810178,
+    "round_mean_ms": [
+      3059.0709033126586,
+      3078.633931499894
+    ],
+    "round_throughput": [
+      1.1069845671487701,
+      1.1565179466384048
+    ],
+    "latency_change_pct": -13.37017630370092,
+    "throughput_change_pct": 9.442946635889871,
+    "byte_ratio": 0.7500426928492828,
+    "pread_ratio": 1.7824908945544995
+  },
+  "audit": {
+    "verified_trace_selection_hashes": 32,
+    "direct_read_byte_exact_checks_per_benchmark_invocation": 24,
+    "identical_trace_digest_all_experiments": true,
+    "original_source_verified": true,
+    "capture_vs_v4_records": 32,
+    "capture_vs_v4_mismatches": {
+      "prediction": 0,
+      "correct": 0,
+      "layer_token_selection_sha256": 0
+    }
+  }
+}

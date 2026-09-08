@@ -1,0 +1,1046 @@
+[
+ {
+  "title": "Side Information-Driven Session-based Recommendation: A Survey",
+  "title_norm": "side information driven session based recommendation a survey",
+  "abstract": "The session-based recommendation (SBR) garners increasing attention due to its ability to predict anonymous user intents within limited interactions. Emerging efforts incorporate various kinds of side information into their methods for enhancing task performance. In this survey, we thoroughly review the side information-driven session-based recommendation from a data-centric perspective. Our survey commences with an illustration of the motivation and necessity behind this research topic. This is followed by a detailed exploration of various benchmarks rich in side information, pivotal for advancing research in this field. Moreover, we delve into how these diverse types of side information enhance SBR, underscoring their characteristics and utility. A systematic review of research progress is then presented, offering an analysis of the most recent and representative developments within this topic. Finally, we present the future prospects of this vibrant topic.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Xiaokun Zhang",
+   "Bo Xu",
+   "Chenliang Li",
+   "Yao Zhou",
+   "Liangyue Li",
+   "Hongfei Lin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2402.17129v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2402.17129v1",
+  "published_iso": "2024-02-27T01:48:28Z"
+ },
+ {
+  "title": "Tight Exponential Strong Converse for Source Coding Problem with Encoded Side Information",
+  "title_norm": "tight exponential strong converse for source coding problem with encoded side in",
+  "abstract": "The source coding problem with encoded side information is considered. A lower bound on the strong converse exponent has been derived by Oohama, but its tightness has not been clarified. In this paper, we derive a tight strong converse exponent. For the special case such that the side-information does not exists, we demonstrate that our tight exponent of the WAK problem reduces to the known tight expression of that special case while Oohama's lower bound is strictly loose. The converse part is proved by a judicious use of the change-of-measure argument, which was introduced by Gu-Effros and further developed by Tyagi-Watanabe. Interestingly, the soft Markov constraint, which was introduced by Oohama as a proof technique, is naturally incorporated into the characterization of the exponent. A technical innovation of this paper is recognizing that the soft Markov constraint is a part of the exponent, rather than a penalty term that should be vanished. In fact, via numerical experiment, we provide evidence that the soft Markov constraint is strictly positive. The achievability part is derived by a careful analysis of the type argument; however, unlike the conventional analysis for the achievable rate region, we need to derive the soft Markov constraint in the analysis of the correct probability. Furthermore, we present an application of our derivation of strong converse exponent to the privacy amplification.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Daisuke Takeuchi",
+   "Shun Watanabe"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2209.10275v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2209.10275v3",
+  "published_iso": "2022-09-21T11:37:24Z"
+ },
+ {
+  "title": "Conditional and Residual Methods in Scalable Coding for Humans and Machines",
+  "title_norm": "conditional and residual methods in scalable coding for humans and machines",
+  "abstract": "We present methods for conditional and residual coding in the context of scalable coding for humans and machines. Our focus is on optimizing the rate-distortion performance of the reconstruction task using the information available in the computer vision task. We include an information analysis of both approaches to provide baselines and also propose an entropy model suitable for conditional coding with increased modelling capacity and similar tractability as previous work. We apply these methods to image reconstruction, using, in one instance, representations created for semantic segmentation on the Cityscapes dataset, and in another instance, representations created for object detection on the COCO dataset. In both experiments, we obtain similar performance between the conditional and residual methods, with the resulting rate-distortion curves contained within our baselines.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Anderson de Andrade",
+   "Alon Harell",
+   "Yalda Foroutan",
+   "Ivan V. Bajić"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2305.02562v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2305.02562v2",
+  "published_iso": "2023-05-04T05:32:44Z"
+ },
+ {
+  "title": "ASTER: Adaptive Spatio-Temporal Early Decision Model for Dynamic Resource Allocation",
+  "title_norm": "aster adaptive spatio temporal early decision model for dynamic resource allocat",
+  "abstract": "Supporting decision-making has long been a central vision in the field of spatio-temporal intelligence. While prior work has improved the timeliness and accuracy of spatio-temporal forecasting, converting these forecasts into actionable strategies remains a key challenge. A main limitation is the decoupling of the prediction and the downstream decision phases, which can significantly degrade the downstream efficiency. For example, in emergency response, the priority is successful resource allocation and intervention, not just incident prediction. To this end, it is essential to propose an Adaptive Spatio-Temporal Early Decision model (ASTER) that reforms the forecasting paradigm from event anticipation to actionable decision support. This framework ensures that information is directly used for decision-making, thereby maximizing overall effectiveness. Specifically, ASTER introduces a new Resource-aware Spatio-Temporal interaction module (RaST) that adaptively captures long- and short-term dependencies under dynamic resource conditions, producing context-aware spatiotemporal representations. To directly generate actionable decisions, we further design a Preference-oriented decision agent (Poda) based on multi-objective reinforcement learning, which transforms predictive signals into resource-efficient intervention strategies by deriving optimal actions under specific preferences and dynamic constraints. Experimental results on four benchmark datasets demonstrate the state-of-the-art performance of ASTER in improving both early prediction accuracy and resource allocation outcomes across six downstream metrics.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Shulun Chen",
+   "Wei Shao",
+   "Flora D. Salim",
+   "Hao Xue"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2506.17929v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2506.17929v1",
+  "published_iso": "2025-06-22T07:49:37Z"
+ },
+ {
+  "title": "Digital Twin Vehicular Edge Computing Network: Task Offloading and Resource Allocation",
+  "title_norm": "digital twin vehicular edge computing network task offloading and resource alloc",
+  "abstract": "With the increasing demand for multiple applications on internet of vehicles. It requires vehicles to carry out multiple computing tasks in real time. However, due to the insufficient computing capability of vehicles themselves, offloading tasks to vehicular edge computing (VEC) servers and allocating computing resources to tasks becomes a challenge. In this paper, a multi task digital twin (DT) VEC network is established. By using DT to develop offloading strategies and resource allocation strategies for multiple tasks of each vehicle in a single slot, an optimization problem is constructed. To solve it, we propose a multi-agent reinforcement learning method on the task offloading and resource allocation. Numerous experiments demonstrate that our method is effective compared to other benchmark algorithms.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yu Xie",
+   "Qiong Wu",
+   "Pingyi Fan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.11310v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.11310v2",
+  "published_iso": "2024-07-16T01:51:32Z"
+ },
+ {
+  "title": "Semantic-Aware Resource Allocation Based on Deep Reinforcement Learning for 5G-V2X HetNets",
+  "title_norm": "semantic aware resource allocation based on deep reinforcement learning for 5g v",
+  "abstract": "This letter proposes a semantic-aware resource allocation (SARA) framework with flexible duty cycle (DC) coexistence mechanism (SARADC) for 5G-V2X Heterogeneous Network (HetNets) based on deep reinforcement learning (DRL) proximal policy optimization (PPO). Specifically, we investigate V2X networks within a two-tiered HetNets structure. In response to the needs of high-speed vehicular networking in urban environments, we design a semantic communication system and introduce two resource allocation metrics: high-speed semantic transmission rate (HSR) and semantic spectrum efficiency (HSSE). Our main goal is to maximize HSSE. Additionally, we address the coexistence of vehicular users and WiFi users in 5G New Radio Unlicensed (NR-U) networks. To tackle this complex challenge, we propose a novel approach that jointly optimizes flexible DC coexistence mechanism and the allocation of resources and base stations (BSs). Unlike traditional bit transmission methods, our approach integrates the semantic communication paradigm into the communication system. Experimental results demonstrate that our proposed solution outperforms traditional bit transmission methods with traditional DC coexistence mechanism in terms of HSSE and semantic throughput (ST) for both vehicular and WiFi users.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Zhiyu Shao",
+   "Qiong Wu",
+   "Pingyi Fan",
+   "Nan Cheng",
+   "Qiang Fan",
+   "Jiangzhou Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2406.07996v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2406.07996v2",
+  "published_iso": "2024-06-12T08:42:23Z"
+ },
+ {
+  "title": "Online Resource Allocation with Cancellations",
+  "title_norm": "online resource allocation with cancellations",
+  "abstract": "We initiate the study of two-sided online resource allocation with costly cancellations. Our focus is on edge-weighted online bipartite matching (and several of its extensions), where nodes arrive online and request offline resources. In contrast to the classic literature, any fraction of an offline resource that was preallocated to an earlier online node can be reclaimed, resulting in the loss of the previously allocated edge-weight plus an additional penalty equal to a non-negative constant factor $f$ times the edge-weight. Parameterizing the problem by the buyback factor $f$, our main result is the development of optimal competitive algorithms for \\emph{all possible values} of $f$ through a novel primal-dual family of algorithms in the fractional (or equivalently, large capacity) setting, and establishing their optimality by deriving matching lower bounds. Interestingly, our results reveal a phase transition: for the small buyback regime ($f < \\frac{e-2}{2}$), the optimal competitive ratio is $\\frac{e}{e-(1+f)}$, and for the large buyback regime ($f \\geq \\frac{e-2}{2}$), the competitive ratio is $-W_{-1}\\left(\\frac{-1}{e(1+f)}\\right)$, where $W_{-1}$ is the non-principal branch of the Lambert $W$ function. We also study variants of this model, such as matching with deterministic integral allocations. We again show a phase transition: for the small buyback regime ($f < \\frac{1}{3}$), the optimal competitive ratio is $\\frac{2}{1-f}$, while for the large buyback regime ($f \\geq \\frac{1}{3}$), the competitive ratio is $1 + 2f + 2\\sqrt{f(1+f)}$. We further consider various extensions, including to configuration allocations and submodular welfare maximization, as well as negative values of $f$, modeling a secondary supply channels or overflow capacities available at discounted rates. Our unifying primal-dual framework achieves the exact optimal competitive ratio across all these variants",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Farbod Ekbatani",
+   "Yiding Feng",
+   "Rad Niazadeh"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2210.11570v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2210.11570v3",
+  "published_iso": "2022-10-20T20:12:43Z"
+ },
+ {
+  "title": "Resource Allocation for Twin Maintenance and Computing Task Processing in Digital Twin Vehicular Edge Computing Network",
+  "title_norm": "resource allocation for twin maintenance and computing task processing in digita",
+  "abstract": "As a promising technology, vehicular edge computing (VEC) can provide computing and caching services by deploying VEC servers near vehicles. However, VEC networks still face challenges such as high vehicle mobility. Digital twin (DT), an emerging technology, can predict, estimate, and analyze real-time states by digitally modeling objects in the physical world. By integrating DT with VEC, a virtual vehicle DT can be created in the VEC server to monitor the real-time operating status of vehicles. However, maintaining the vehicle DT model requires ongoing attention from the VEC server, which also needs to offer computing services for the vehicles. Therefore, effective allocation and scheduling of VEC server resources are crucial. This study focuses on a general VEC network with a single VEC service and multiple vehicles, examining the two types of delays caused by twin maintenance and computational processing within the network. By transforming the problem using satisfaction functions, we propose an optimization problem aimed at maximizing each vehicle's resource utility to determine the optimal resource allocation strategy. Given the non-convex nature of the issue, we employ multi-agent Markov decision processes to reformulate the problem. Subsequently, we propose the twin maintenance and computing task processing resource collaborative scheduling (MADRL-CSTC) algorithm, which leverages multi-agent deep reinforcement learning. Through experimental comparisons with alternative algorithms, it demonstrates that our proposed approach is effective in terms of resource allocation.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yu Xie",
+   "Qiong Wu",
+   "Pingyi Fan",
+   "Nan Cheng",
+   "Wen Chen",
+   "Jiangzhou Wang",
+   "Khaled B. Letaief"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.07575v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.07575v2",
+  "published_iso": "2024-07-10T12:08:39Z"
+ },
+ {
+  "title": "Graph Neural Networks and Deep Reinforcement Learning Based Resource Allocation for V2X Communications",
+  "title_norm": "graph neural networks and deep reinforcement learning based resource allocation ",
+  "abstract": "In the rapidly evolving landscape of Internet of Vehicles (IoV) technology, Cellular Vehicle-to-Everything (C-V2X) communication has attracted much attention due to its superior performance in coverage, latency, and throughput. Resource allocation within C-V2X is crucial for ensuring the transmission of safety information and meeting the stringent requirements for ultra-low latency and high reliability in Vehicle-to-Vehicle (V2V) communication. This paper proposes a method that integrates Graph Neural Networks (GNN) with Deep Reinforcement Learning (DRL) to address this challenge. By constructing a dynamic graph with communication links as nodes and employing the Graph Sample and Aggregation (GraphSAGE) model to adapt to changes in graph structure, the model aims to ensure a high success rate for V2V communication while minimizing interference on Vehicle-to-Infrastructure (V2I) links, thereby ensuring the successful transmission of V2V link information and maintaining high transmission rates for V2I links. The proposed method retains the global feature learning capabilities of GNN and supports distributed network deployment, allowing vehicles to extract low-dimensional features that include structural information from the graph network based on local observations and to make independent resource allocation decisions. Simulation results indicate that the introduction of GNN, with a modest increase in computational load, effectively enhances the decision-making quality of agents, demonstrating superiority to other methods. This study not only provides a theoretically efficient resource allocation strategy for V2V and V2I communications but also paves a new technical path for resource management in practical IoV environments.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Maoxin Ji",
+   "Qiong Wu",
+   "Pingyi Fan",
+   "Nan Cheng",
+   "Wen Chen",
+   "Jiangzhou Wang",
+   "Khaled B. Letaief"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.06518v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.06518v2",
+  "published_iso": "2024-07-09T03:14:11Z"
+ },
+ {
+  "title": "Efficiency, Feasibility, and Incentive-Awareness in Constrained Online Resource Allocation",
+  "title_norm": "efficiency feasibility and incentive awareness in constrained online resource al",
+  "abstract": "We study the dynamic allocation of indivisible resources to strategic agents under long-term constraints, where the planner aims to maximize social welfare, satisfy multiple constraints, and elicit near-truthful reports. We find standard primal-dual methods fragile in this setting: agents easily manipulate their reports to distort dual variables, sacrificing social efficiency for individual utility. To address this, we propose the Incentive-Aware Primal-Dual (IAPD) framework. On the primal side, we integrate three components to suppress manipulation: a VCG-based payment neutralizes immediate misreporting benefits, while epoch-based lazy updates and random exploration together ensure potential future gains are outweighed by immediate penalties. On the dual side, to overcome a learning barrier due to lazy updates -- which we call the \"price of incentives\" -- we design a novel optimistic online learning algorithm, O-FTRL-FP. It utilizes a fixed-point oracle to resolve the circular dependency between optimistic dual variables and the resulting allocations. Ultimately, our mechanism attains $\\tilde{\\mathcal O}(\\sqrt T)$ social welfare regret, satisfies all long-term constraints, and induces a near-truthful equilibrium. It also smoothly generalizes to multi-unit multi-demand allocation problems. Notably, this $\\tilde{\\mathcal O}(\\sqrt T)$ regret near-matches the non-strategic $Ω(\\sqrt T)$ lower bound, demonstrating that incentive-awareness can be accommodated at nearly no cost.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Yan Dai",
+   "Negin Golrezaei",
+   "Patrick Jaillet"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2507.09473v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2507.09473v2",
+  "published_iso": "2025-07-13T03:18:02Z"
+ },
+ {
+  "title": "Sensing-Based Beamformed Resource Allocation in Standalone Millimeter-Wave Vehicular Networks",
+  "title_norm": "sensing based beamformed resource allocation in standalone millimeter wave vehic",
+  "abstract": "In 3GPP New Radio (NR) Vehicle-to-Everything (V2X), the new standard for next-generation vehicular networks, vehicles can autonomously select sidelink resources for data transmission, which permits network operations without cellular coverage. However, standalone resource allocation is uncoordinated, and is complicated by the high mobility of the nodes that may introduce unforeseen channel collisions (e.g., when a transmitting vehicle changes path) or free up resources (e.g., when a vehicle moves outside of the communication area). Moreover, unscheduled resource allocation is prone to the hidden node and exposed node problems, which are particularly critical considering directional transmissions. In this paper, we implement and demonstrate a new channel access scheme for NR V2X in Frequency Range 2 (FR2), i.e., at millimeter wave (mmWave) frequencies, based on directional and beamformed transmissions along with Sidelink Control Information (SCI) to select resources for transmission. We prove via simulation that this approach can reduce the probability of collision for resource allocation, compared to a baseline solution that does not configure SCI transmissions.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Alessandro Traspadini",
+   "Anay Ajit Deshpande",
+   "Marco Giordani",
+   "Chinmay Mahabal",
+   "Takayuki Shimizu",
+   "Michele Zorzi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2503.15228v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2503.15228v1",
+  "published_iso": "2025-03-19T14:07:01Z"
+ },
+ {
+  "title": "Roman Observations Time Allocation Committee: Final Report and Recommendations",
+  "title_norm": "roman observations time allocation committee final report and recommendations",
+  "abstract": "The Nancy Grace Roman Space Telescope is poised to revolutionize our scientific understanding of exoplanets, dark matter, dark energy, and general astrophysics, including through an innovative community approach to defining and executing sky surveys. The Roman Observations Time Allocation Committee (ROTAC) was convened to recommend time allocations for the three Core Community Surveys (CCS) using the Wide Field Instrument (WFI): the High Latitude Wide Area Survey, the High Latitude Time Domain Survey, and the Galactic Bulge Time Domain Survey, as well as balance the time allocation for the General Astrophysics Surveys. Each CCS had a corresponding Definition Committee that collected community input and designed proposals for a nominal (in-guide) survey, as well as underguide and overguide options with smaller and larger time allocations, respectively. These options explored different ways of fulfilling the mission science requirements while maximizing general astrophysics science goals enabled by the surveys. In this report, the ROTAC lays out its recommendations for the three CCS observing designs and the WFI time allotment for CCS (74.5%) and the General Astrophysics Surveys (25.5%).",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Roman Observations Time Allocation Committee",
+   "Core Community Survey Definition Committees"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2505.10574v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2505.10574v2",
+  "published_iso": "2025-05-13T20:40:37Z"
+ },
+ {
+  "title": "Fairness in Contextual Resource Allocation Systems: Metrics and Incompatibility Results",
+  "title_norm": "fairness in contextual resource allocation systems metrics and incompatibility r",
+  "abstract": "We study critical systems that allocate scarce resources to satisfy basic needs, such as homeless services that provide housing. These systems often support communities disproportionately affected by systemic racial, gender, or other injustices, so it is crucial to design these systems with fairness considerations in mind. To address this problem, we propose a framework for evaluating fairness in contextual resource allocation systems that is inspired by fairness metrics in machine learning. This framework can be applied to evaluate the fairness properties of a historical policy, as well as to impose constraints in the design of new (counterfactual) allocation policies. Our work culminates with a set of incompatibility results that investigate the interplay between the different fairness metrics we propose. Notably, we demonstrate that: 1) fairness in allocation and fairness in outcomes are usually incompatible; 2) policies that prioritize based on a vulnerability score will usually result in unequal outcomes across groups, even if the score is perfectly calibrated; 3) policies using contextual information beyond what is needed to characterize baseline risk and treatment effects can be fairer in their outcomes than those using just baseline risk and treatment effects; and 4) policies using group status in addition to baseline risk and treatment effects are as fair as possible given all available information. Our framework can help guide the discussion among stakeholders in deciding which fairness metrics to impose when allocating scarce resources.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Nathanael Jo",
+   "Bill Tang",
+   "Kathryn Dullerud",
+   "Sina Aghaei",
+   "Eric Rice",
+   "Phebe Vayanos"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2212.01725v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2212.01725v1",
+  "published_iso": "2022-12-04T02:30:58Z"
+ },
+ {
+  "title": "Learning policies for resource allocation in business processes",
+  "title_norm": "learning policies for resource allocation in business processes",
+  "abstract": "Efficient allocation of resources to activities is pivotal in executing business processes but remains challenging. While resource allocation methodologies are well-established in domains like manufacturing, their application within business process management remains limited. Existing methods often do not scale well to large processes with numerous activities or optimize across multiple cases. This paper aims to address this gap by proposing two learning-based methods for resource allocation in business processes to minimize the average cycle time of cases. The first method leverages Deep Reinforcement Learning (DRL) to learn policies by allocating resources to activities. The second method is a score-based value function approximation approach, which learns the weights of a set of curated features to prioritize resource assignments. We evaluated the proposed approaches on six distinct business processes with archetypal process flows, referred to as scenarios, and three realistically sized business processes, referred to as composite business processes, which are a combination of the scenarios. We benchmarked our methods against traditional heuristics and existing resource allocation methods. The results show that our methods learn adaptive resource allocation policies that outperform or are competitive with the benchmarks in five out of six scenarios. The DRL approach outperforms all benchmarks in all three composite business processes and finds a policy that is, on average, 12.7% better than the best-performing benchmark.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "J. Middelhuis",
+   "R. Lo Bianco",
+   "E. Scherzer",
+   "Z. A. Bukhsh",
+   "I. J. B. F. Adan",
+   "R. M. Dijkman"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2304.09970v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2304.09970v3",
+  "published_iso": "2023-04-19T21:05:38Z"
+ },
+ {
+  "title": "Improving the FAIRness and Sustainability of the NHGRI Resources Ecosystem",
+  "title_norm": "improving the fairness and sustainability of the nhgri resources ecosystem",
+  "abstract": "In 2024, NHGRI-funded genomic resource projects completed a Self-Assessment Tool (SAT) and interviews to evaluate their application of FAIR (Findable, Accessible, Interoperable, Reusable) principles and sustainability. Key challenges were identified in metadata tools, data curation, variant identifiers, and data processing. Addressing these needs, we engaged the community through webinars and discussions, leading to a two-day workshop in March 2025. The workshop developed targeted recommendations, including improving transparency, standardizing identifiers, enhancing usability, implementing APIs, leveraging AI/ML for curation, and evaluating impact. These outcomes provide a framework for advancing FAIR practices, fostering collaboration, and strengthening the sustainability of NHGRI resources.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Larry Babb",
+   "Carol Bult",
+   "Vincent J. Carey",
+   "Robert J. Carroll",
+   "Benjamin C. Hitz",
+   "Chris J. Mungall",
+   "Heidi L. Rehm",
+   "Michael C. Schatz",
+   "Alex Wagner",
+   "NHGRI Resource Workshop Community"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2508.13498v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2508.13498v1",
+  "published_iso": "2025-08-19T04:17:24Z"
+ },
+ {
+  "title": "Generative Resource Allocation for 6G O-RAN with Diffusion Policies",
+  "title_norm": "generative resource allocation for 6g o ran with diffusion policies",
+  "abstract": "Dynamic resource allocation in O-RAN is critical for managing the conflicting QoS requirements of 6G network slices. Conventional reinforcement learning agents often fail in this domain, as their unimodal policy structures cannot model the multi-modal nature of optimal allocation strategies. This paper introduces Diffusion Q-Learning (Diffusion-QL), a novel framework that represents the policy as a conditional diffusion model. Our approach generates resource allocation actions by iteratively reversing a noising process, with each step guided by the gradient of a learned Q-function. This method enables the policy to learn and sample from the complex distribution of near-optimal actions. Simulations demonstrate that the Diffusion-QL approach consistently outperforms state-of-the-art DRL baselines, offering a robust solution for the intricate resource management challenges in next-generation wireless networks.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Salar Nouri",
+   "Mojdeh Karbalaeimotaleb",
+   "Vahid Shah-Mansouri",
+   "Tarik Taleb"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2506.07880v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2506.07880v2",
+  "published_iso": "2025-06-09T15:52:18Z"
+ },
+ {
+  "title": "Bi-Level Contextual Bandits for Individualized Resource Allocation under Delayed Feedback",
+  "title_norm": "bi level contextual bandits for individualized resource allocation under delayed",
+  "abstract": "Equitably allocating limited resources in high-stakes domains-such as education, employment, and healthcare-requires balancing short-term utility with long-term impact, while accounting for delayed outcomes, hidden heterogeneity, and ethical constraints. However, most learning-based allocation frameworks either assume immediate feedback or ignore the complex interplay between individual characteristics and intervention dynamics. We propose a novel bi-level contextual bandit framework for individualized resource allocation under delayed feedback, designed to operate in real-world settings with dynamic populations, capacity constraints, and time-sensitive impact. At the meta level, the model optimizes subgroup-level budget allocations to satisfy fairness and operational constraints. At the base level, it identifies the most responsive individuals within each group using a neural network trained on observational data, while respecting cooldown windows and delayed treatment effects modeled via resource-specific delay kernels. By explicitly modeling temporal dynamics and feedback delays, the algorithm continually refines its policy as new data arrive, enabling more responsive and adaptive decision-making. We validate our approach on two real-world datasets from education and workforce development, showing that it achieves higher cumulative outcomes, better adapts to delay structures, and ensures equitable distribution across subgroups. Our results highlight the potential of delay-aware, data-driven decision-making systems to improve institutional policy and social welfare.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Mohammadsina Almasi",
+   "Hadis Anahideh"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2511.10572v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2511.10572v2",
+  "published_iso": "2025-11-13T18:09:08Z"
+ },
+ {
+  "title": "Dynamics of Resource Allocation in O-RANs: An In-depth Exploration of On-Policy and Off-Policy Deep Reinforcement Learning for Real-Time Applications",
+  "title_norm": "dynamics of resource allocation in o rans an in depth exploration of on policy a",
+  "abstract": "Deep Reinforcement Learning (DRL) is a powerful tool used for addressing complex challenges in mobile networks. This paper investigates the application of two DRL models, on-policy and off-policy, in the field of resource allocation for Open Radio Access Networks (O-RAN). The on-policy model is the Proximal Policy Optimization (PPO), and the off-policy model is the Sample Efficient Actor-Critic with Experience Replay (ACER), which focuses on resolving the challenges of resource allocation associated with a Quality of Service (QoS) application that has strict requirements. Motivated by the original work of Nessrine Hammami and Kim Khoa Nguyen, this study is a replication to validate and prove the findings. Both PPO and ACER are used within the same experimental setup to assess their performance in a scenario of latency-sensitive and latency-tolerant users and compare them. The aim is to verify the efficacy of on-policy and off-policy DRL models in the context of O-RAN resource allocation. Results from this replication contribute to the ongoing scientific research and offer insights into the reproducibility and generalizability of the original research. This analysis reaffirms that both on-policy and off-policy DRL models have better performance than greedy algorithms in O-RAN settings. In addition, it confirms the original observations that the on-policy model (PPO) gives a favorable balance between energy consumption and user latency, while the off-policy model (ACER) shows a faster convergence. These findings give good insights to optimize resource allocation strategies in O-RANs. Index Terms: 5G, O-RAN, resource allocation, ML, DRL, PPO, ACER.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Manal Mehdaoui",
+   "Amine Abouaomar"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2412.01839v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2412.01839v1",
+  "published_iso": "2024-11-17T17:46:40Z"
+ },
+ {
+  "title": "Regret Bounds for Competitive Resource Allocation with Endogenous Costs",
+  "title_norm": "regret bounds for competitive resource allocation with endogenous costs",
+  "abstract": "We study online resource allocation among N interacting modules over T rounds. Unlike standard online optimization, costs are endogenous: they depend on the full allocation vector through an interaction matrix W encoding pairwise cooperation and competition.\n  We analyze three paradigms: (I) uniform allocation (cost-ignorant), (II) gated allocation (cost-estimating), and (III) competitive allocation via multiplicative weights update with interaction feedback (cost-revealing). Our main results establish a strict separation under adversarial sequences with bounded variation: uniform incurs Omega(T) regret, gated achieves O(T^{2/3}), and competitive achieves O(sqrt(T log N)). The performance gap stems from competitive allocation's ability to exploit endogenous cost information revealed through interactions.\n  We further show that W's topology governs a computation-regret tradeoff. Full interaction (|E|=O(N^2)) yields the tightest bound but highest per-step cost, while sparse topologies (|E|=O(N)) increase regret by at most O(sqrt(log N)) while reducing per-step cost from O(N^2) to O(N). Ring-structured topologies with both cooperative and competitive links - of which the five-element Wuxing topology is canonical - minimize the computation x regret product.\n  These results provide the first formal regret-theoretic justification for decentralized competitive allocation in modular architectures and establish cost endogeneity as a fundamental challenge distinct from partial observability.\n  Keywords: online learning, regret bounds, resource allocation, endogenous costs, interaction topology, multiplicative weights, modular systems, Wuxing topology",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Rui Chai"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.18999v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.18999v1",
+  "published_iso": "2026-03-19T15:04:50Z"
+ },
+ {
+  "title": "Improved Policy Evaluation for Randomized Trials of Algorithmic Resource Allocation",
+  "title_norm": "improved policy evaluation for randomized trials of algorithmic resource allocat",
+  "abstract": "We consider the task of evaluating policies of algorithmic resource allocation through randomized controlled trials (RCTs). Such policies are tasked with optimizing the utilization of limited intervention resources, with the goal of maximizing the benefits derived. Evaluation of such allocation policies through RCTs proves difficult, notwithstanding the scale of the trial, because the individuals' outcomes are inextricably interlinked through resource constraints controlling the policy decisions. Our key contribution is to present a new estimator leveraging our proposed novel concept, that involves retrospective reshuffling of participants across experimental arms at the end of an RCT. We identify conditions under which such reassignments are permissible and can be leveraged to construct counterfactual trials, whose outcomes can be accurately ascertained, for free. We prove theoretically that such an estimator is more accurate than common estimators based on sample means -- we show that it returns an unbiased estimate and simultaneously reduces variance. We demonstrate the value of our approach through empirical experiments on synthetic, semi-synthetic as well as real case study data and show improved estimation accuracy across the board.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Aditya Mate",
+   "Bryan Wilder",
+   "Aparna Taneja",
+   "Milind Tambe"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2302.02570v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2302.02570v1",
+  "published_iso": "2023-02-06T05:17:22Z"
+ },
+ {
+  "title": "Learning Optimal and Fair Policies for Online Allocation of Scarce Societal Resources from Data Collected in Deployment",
+  "title_norm": "learning optimal and fair policies for online allocation of scarce societal reso",
+  "abstract": "We study the problem of allocating scarce societal resources of different types (e.g., permanent housing, deceased donor kidneys for transplantation, ventilators) to heterogeneous allocatees on a waitlist (e.g., people experiencing homelessness, individuals suffering from end-stage renal disease, Covid-19 patients) based on their observed covariates. We leverage administrative data collected in deployment to design an online policy that maximizes expected outcomes while satisfying budget constraints, in the long run. Our proposed policy waitlists each individual for the resource maximizing the difference between their estimated mean treatment outcome and the estimated resource dual-price or, roughly, the opportunity cost of using the resource. Resources are then allocated as they arrive, in a first-come first-serve fashion. We demonstrate that our data-driven policy almost surely asymptotically achieves the expected outcome of the optimal out-of-sample policy under mild technical assumptions. We extend our framework to incorporate various fairness constraints. We evaluate the performance of our approach on the problem of designing policies for allocating scarce housing resources to people experiencing homelessness in Los Angeles based on data from the homeless management information system. In particular, we show that using our policies improves rates of exit from homelessness by 5.16% and that policies that are fair in either allocation or outcomes by race come at a very low price of fairness.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Bill Tang",
+   "Çağıl Koçyiğit",
+   "Eric Rice",
+   "Phebe Vayanos"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2311.13765v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2311.13765v2",
+  "published_iso": "2023-11-23T01:40:41Z"
+ },
+ {
+  "title": "SRAP-Agent: Simulating and Optimizing Scarce Resource Allocation Policy with LLM-based Agent",
+  "title_norm": "srap agent simulating and optimizing scarce resource allocation policy with llm ",
+  "abstract": "Public scarce resource allocation plays a crucial role in economics as it directly influences the efficiency and equity in society. Traditional studies including theoretical model-based, empirical study-based and simulation-based methods encounter limitations due to the idealized assumption of complete information and individual rationality, as well as constraints posed by limited available data. In this work, we propose an innovative framework, SRAP-Agent (Simulating and Optimizing Scarce Resource Allocation Policy with LLM-based Agent), which integrates Large Language Models (LLMs) into economic simulations, aiming to bridge the gap between theoretical models and real-world dynamics. Using public housing allocation scenarios as a case study, we conduct extensive policy simulation experiments to verify the feasibility and effectiveness of the SRAP-Agent and employ the Policy Optimization Algorithm with certain optimization objectives. The source code can be found in https://github.com/jijiarui-cather/SRAPAgent_Framework",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Jiarui Ji",
+   "Yang Li",
+   "Hongtao Liu",
+   "Zhicheng Du",
+   "Zhewei Wei",
+   "Weiran Shen",
+   "Qi Qi",
+   "Yankai Lin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2410.14152v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2410.14152v1",
+  "published_iso": "2024-10-18T03:43:42Z"
+ },
+ {
+  "title": "Fused Constrained Policy Reuse Optimization for Wireless Resource Allocation",
+  "title_norm": "fused constrained policy reuse optimization for wireless resource allocation",
+  "abstract": "Deep reinforcement learning (DRL) has been widely adopted for wireless resource allocation due to its model-free adaptability. However, online exploration is costly, as randomly initialized policies may violate long-term constraints before sufficient data are collected. Future wireless systems must cope with increasingly dynamic traffic, fluctuating channel conditions, and stringent energy efficiency requirements, demanding algorithms that can learn quickly with minimal environment interactions to reduce both energy consumption and signaling overhead. We develop Fused-CPRO, a knowledge-fused constrained policy reuse optimization method addressing these challenges. Fused-CPRO constructs the allocation policy as a mixture of a learnable target policy, source policies from related scenarios, and domain-knowledge (DK) policies from expert rules, jointly optimizing the target policy and reuse probabilities under a constrained Markov decision process (CMDP). This fusion of heterogeneous priors accelerates convergence and enhances robustness. Constrained stochastic successive convex approximation (CSSCA) handles non-convex objectives and constraints, while a critic trained from mixed offline-online data improves sample efficiency by reusing pre-collected experience. We prove almost-sure convergence to a Karush-Kuhn-Tucker (KKT) point. Simulations on delay-constrained multi-user multiple-input multiple-output (MU-MIMO) power control and Cramer-Rao bound (CRB)-constrained multiple-input multiple-output integrated sensing and communication (MIMO-ISAC) beamforming demonstrate that Fused-CPRO improves empirical performance and converges substantially faster than representative baselines.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "An Liu",
+   "Zheyuan Zhou",
+   "Kexuan Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.09498v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.09498v1",
+  "published_iso": "2026-07-10T15:11:57Z"
+ },
+ {
+  "title": "Compensate Quantization Errors+: Quantized Models Are Inquisitive Learners",
+  "title_norm": "compensate quantization errors quantized models are inquisitive learners",
+  "abstract": "The quantization of large language models (LLMs) has been a prominent research area aimed at enabling their lightweight deployment in practice. Existing research about LLM's quantization has mainly explored the interplay between weights and activations, or employing auxiliary components while neglecting the necessity of adjusting weights during quantization. Consequently, original weight distributions frequently fail to yield desired results after round-to-nearest (RTN) quantization. Even though incorporating techniques such as mixed precision and low-rank error approximation in LLM's quantization can yield improved results, they inevitably introduce additional computational overhead. On the other hand, traditional techniques for weight quantization, such as Generative Post-Training Quantization, rely on manually tweaking weight distributions to minimize local errors, but they fall short of achieving globally optimal outcomes. Although the recently proposed Learnable Singular-value Increment improves global weight quantization by modifying weight distributions, it disrupts the original distribution considerably. This introduces pronounced bias toward the training data and can degrade downstream task performance. In this paper, we introduce Singular-value Diagonal Expansion, a more nuanced approach to refining weight distributions to achieve better quantization alignment. Furthermore, we introduce Cross-layer Learning that improves overall quantization outcomes by distributing errors more evenly across layers. Our plug-and-play weight-quantization methods demonstrate substantial performance improvements over state-of-the-art approaches, including OmniQuant, DuQuant, and PrefixQuant.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yifei Gao",
+   "Jie Ou",
+   "Lei Wang",
+   "Jun Cheng",
+   "Mengchu Zhou"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.15508v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.15508v3",
+  "published_iso": "2024-07-22T09:45:16Z"
+ },
+ {
+  "title": "OmniDocLayout: Towards Diverse Document Layout Generation via Coarse-to-Fine LLM Learning",
+  "title_norm": "omnidoclayout towards diverse document layout generation via coarse to fine llm ",
+  "abstract": "Document AI has advanced rapidly and is attracting increasing attention. Yet, while most efforts have focused on document layout analysis (DLA), its generative counterpart, layout generation, remains underexplored. Distinct from traditional graphic layout design and room layout planning, document layout generation typically involves a larger number of elements per page and exhibits greater structural diversity and complexity. Currently, a major obstacle lies in the scarcity of diverse document layouts: academic papers with Manhattan-style structures dominate existing studies, while open-world genres such as newspapers and magazines remain severely underrepresented. To address this gap, we curate OmniDocLayout-1M, the first million-scale dataset of diverse document layouts, covering six common document types and comprising contemporary layouts collected from multiple sources. Moreover, since existing methods struggle in complex domains and often fail to arrange long sequences coherently, we introduce OmniDocLayout-LLM, a 0.5B model with designed two-stage Coarse-to-Fine learning paradigm:1) learning universal layout principles from our dataset with coarse category definitions, and 2) transferring the knowledge to a specific domain with few fine-grained annotated samples. Extensive experiments demonstrate that our approach achieves strong performance on multiple domains in M$^6$Doc dataset, substantially surpassing both existing layout generation experts and several latest general-purpose LLMs. Our code, dataset, and models will be publicly released.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Hengrui Kang",
+   "Zhuangcheng Gu",
+   "Zhiyuan Zhao",
+   "Zichen Wen",
+   "Bin Wang",
+   "Weijia Li",
+   "Conghui He"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2510.26213v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2510.26213v2",
+  "published_iso": "2025-10-30T07:39:54Z"
+ },
+ {
+  "title": "Coarse or Fine? Recognising Action End States without Labels",
+  "title_norm": "coarse or fine recognising action end states without labels",
+  "abstract": "We focus on the problem of recognising the end state of an action in an image, which is critical for understanding what action is performed and in which manner. We study this focusing on the task of predicting the coarseness of a cut, i.e., deciding whether an object was cut \"coarsely\" or \"finely\". No dataset with these annotated end states is available, so we propose an augmentation method to synthesise training data. We apply this method to cutting actions extracted from an existing action recognition dataset. Our method is object agnostic, i.e., it presupposes the location of the object but not its identity. Starting from less than a hundred images of a whole object, we can generate several thousands images simulating visually diverse cuts of different coarseness. We use our synthetic data to train a model based on UNet and test it on real images showing coarsely/finely cut objects. Results demonstrate that the model successfully recognises the end state of the cutting action despite the domain gap between training and testing, and that the model generalises well to unseen objects.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Davide Moltisanti",
+   "Hakan Bilen",
+   "Laura Sevilla-Lara",
+   "Frank Keller"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2405.07723v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2405.07723v1",
+  "published_iso": "2024-05-13T13:18:49Z"
+ },
+ {
+  "title": "Compensate Quantization Errors: Make Weights Hierarchical to Compensate Each Other",
+  "title_norm": "compensate quantization errors make weights hierarchical to compensate each othe",
+  "abstract": "Emergent Large Language Models (LLMs) use their extraordinary performance and powerful deduction capacity to discern from traditional language models. However, the expenses of computational resources and storage for these LLMs are stunning, quantization then arises as a trending conversation. To address accuracy decay caused by quantization, two streams of works in post-training quantization methods stand out. One uses other weights to compensate existing quantization error, while the other transfers the quantization difficulty to other parts in the model. Combining both merits, we introduce Learnable Singular value Increment (LSI) as an advanced solution. LSI uses Singular Value Decomposition to extract singular values of the weights and make them learnable to help weights compensate each other conditioned on activation. Incorporating LSI with existing techniques, we achieve state-of-the-art performance in diverse quantization settings, no matter in weight-only, weight-activation or extremely low bit scenarios. By unleashing the potential of LSI, efficient finetuning on quantized model is no longer a prohibitive problem.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yifei Gao",
+   "Jie Ou",
+   "Lei Wang",
+   "Yuting Xiao",
+   "Zhiyuan Xiang",
+   "Ruiting Dai",
+   "Jun Cheng"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2406.16299v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2406.16299v1",
+  "published_iso": "2024-06-24T03:52:52Z"
+ },
+ {
+  "title": "LQ-rPPG: A Label-Quantized Coarse-to-Fine Learning Framework for Remote Physiological Measurement",
+  "title_norm": "lq rppg a label quantized coarse to fine learning framework for remote physiolog",
+  "abstract": "Remote photoplethysmography (rPPG) enables non-contact measurement of physiological signals from facial videos, offering strong potential for remote healthcare and daily health monitoring. Driven by this potential, various deep learning-based rPPG methods have been proposed to improve rPPG estimation. However, previous deep learning-based rPPG methods have paid little attention to the quality of training labels and their impact on model learning. Contact-based PPG signals used as training labels often contain noise and variability caused by motion artifacts, inconsistent sensor contact, and morphological distortions. Such label inconsistency can lead models to overfit to the label noise and variability and consequently degrade generalization performance. To address this issue, we propose LQ-rPPG, a label-quantized coarse-to-fine learning framework for robust rPPG estimation. LQ-rPPG consists of a label quantization module and a coarse-to-fine rPPG estimation model. The label quantization module transforms continuous PPG signals into multi-bit quantized pseudo labels with reduced noise and variability. The coarse-to-fine estimation model progressively refines rPPG signals under hierarchical supervision guided by the multi-bit pseudo labels. This design alleviates overfitting to label-specific variations and enables the model to learn structured and consistent representations. As a result, LQ-rPPG achieves robust and generalizable rPPG estimation even under challenging conditions. Experiments on multiple benchmark datasets demonstrate that LQ-rPPG achieves strong performance in both intra- and cross-dataset evaluations, while reducing parameters and multiply-accumulate operations by 88% and 29%, respectively, and increasing throughput by 191%. The code is available at https://github.com/Anonymous-repo-code/LQ-rPPG.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Jun Seong Lee",
+   "Samyeul Noh",
+   "Changki Sung",
+   "Hyun Myung"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.23174v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.23174v1",
+  "published_iso": "2026-05-22T02:46:11Z"
+ },
+ {
+  "title": "Set-Theoretically Perfect Ideals and Residual Intersections",
+  "title_norm": "set theoretically perfect ideals and residual intersections",
+  "abstract": "This paper studies algebraic residual intersections in rings with Serre's condition \\( S_{s} \\). It demonstrates that residual intersections admit free approaches i.e. perfect subideal with the same radical. This fact leads to determining a uniform upper bound for the multiplicity of residual intersections. In positive characteristic, it follows that residual intersections are cohomologically complete intersection and, hence, their variety is connected in codimension one.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "S. Hamid Hassanzadeh"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2409.05705v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2409.05705v2",
+  "published_iso": "2024-09-09T15:17:04Z"
+ },
+ {
+  "title": "PrefixQuant: Eliminating Outliers by Prefixed Tokens for Large Language Models Quantization",
+  "title_norm": "prefixquant eliminating outliers by prefixed tokens for large language models qu",
+  "abstract": "Existing weight-activation quantization methods for Large Language Models (LLMs) primarily address channel-wise outliers but often neglect token-wise outliers, which limits the accuracy of quantized models. In this work, we propose PrefixQuant, a novel quantization method that achieves state-of-the-art performance across various precision levels (W4A4KV4 and W4A8KV4) and granularities (dynamic and static quantization) by effectively isolating token-wise outliers. First, PrefixQuant eliminates token-wise outliers by prefixing outlier tokens in the KV cache, a process that is training-free and highly efficient (e.g., 1 minutes for Llama-3-70B). Second, PrefixQuant introduces new trainable parameters for block-wise training to compensate for quantization error. Our experiments show that PrefixQuant significantly outperforms existing dynamic quantization methods, even under coarser static quantization settings. For instance, PrefixQuant achieves an average accuracy improvement of +3.08 and +2.85 points over SpinQuant (dynamic quantization) on five zero-shot reasoning tasks under dynamic and static quantization settings, respectively, on W4A4KV4 Llama-3-8B. Additionally, we demonstrate up to 2.74x prefilling speedup and 2.16x decoding speedup for LLMs using W4A4 PrefixQuant. Our code is available at https://github.com/ChenMnZ/PrefixQuant.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Mengzhao Chen",
+   "Yi Liu",
+   "Jiahao Wang",
+   "Yi Bin",
+   "Wenqi Shao",
+   "Ping Luo"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2410.05265v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2410.05265v2",
+  "published_iso": "2024-10-07T17:59:35Z"
+ },
+ {
+  "title": "Scaling Law for Quantization-Aware Training",
+  "title_norm": "scaling law for quantization aware training",
+  "abstract": "Large language models (LLMs) demand substantial computational and memory resources, creating deployment challenges. Quantization-aware training (QAT) addresses these challenges by reducing model precision while maintaining performance. However, the scaling behavior of QAT, especially at 4-bit precision (W4A4), is not well understood. Existing QAT scaling laws often ignore key factors such as the number of training tokens and quantization granularity, which limits their applicability. This paper proposes a unified scaling law for QAT that models quantization error as a function of model size, training data volume, and quantization group size. Through 268 QAT experiments, we show that quantization error decreases as model size increases, but rises with more training tokens and coarser quantization granularity. To identify the sources of W4A4 quantization error, we decompose it into weight and activation components. Both components follow the overall trend of W4A4 quantization error, but with different sensitivities. Specifically, weight quantization error increases more rapidly with more training tokens. Further analysis shows that the activation quantization error in the FC2 layer, caused by outliers, is the primary bottleneck of W4A4 QAT quantization error. By applying mixed-precision quantization to address this bottleneck, we demonstrate that weight and activation quantization errors can converge to similar levels. Additionally, with more training data, weight quantization error eventually exceeds activation quantization error, suggesting that reducing weight quantization error is also important in such scenarios. These findings offer key insights for improving QAT research and development.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Mengzhao Chen",
+   "Chaoyi Zhang",
+   "Jing Liu",
+   "Yutao Zeng",
+   "Zeyue Xue",
+   "Zhiheng Liu",
+   "Yunshui Li",
+   "Jin Ma",
+   "Jie Huang",
+   "Xun Zhou",
+   "Ping Luo"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2505.14302v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2505.14302v1",
+  "published_iso": "2025-05-20T12:54:43Z"
+ },
+ {
+  "title": "decoupleQ: Towards 2-bit Post-Training Uniform Quantization via decoupling Parameters into Integer and Floating Points",
+  "title_norm": "decoupleq towards 2 bit post training uniform quantization via decoupling parame",
+  "abstract": "Quantization emerges as one of the most promising compression technologies for deploying efficient large models for various real time application in recent years. Considering that the storage and IO of weights take up the vast majority of the overhead inside a large model, weight only quantization can lead to large gains. However, existing quantization schemes suffer from significant accuracy degradation at very low bits, or require some additional computational overhead when deployed, making it difficult to be applied to large-scale applications in industry. In this paper, we propose decoupleQ, achieving a substantial increase in model accuracy, especially at very low bits. decoupleQ abandons the traditional heuristic quantization paradigm and decouples the model parameters into integer and floating-point parts, thus transforming the quantization problem into a traditional mathematical optimization problem with constraints, which is then solved alternatively by off-the-shelf optimization methods.\n  Quantization via decoupleQ is linear and uniform, making it hardware-friendlier than non-uniform counterpart, and enabling the idea to be migrated to high-bit quantization to enhance its robustness. Our method has achieved well on-line accuracy near fp16/bf16 on the 2-bit quantization of large speech models in ByteDance. The code is available at https://github.com/bytedance/decoupleQ",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Yi Guo",
+   "Fanliu Kong",
+   "Xiaoyang Li",
+   "Hui Li",
+   "Wei Chen",
+   "Xiaogang Tian",
+   "Jinping Cai",
+   "Yang Zhang",
+   "Shouda Liu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2404.12759v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2404.12759v1",
+  "published_iso": "2024-04-19T10:02:53Z"
+ },
+ {
+  "title": "From Imitation to Refinement -- Residual RL for Precise Assembly",
+  "title_norm": "from imitation to refinement residual rl for precise assembly",
+  "abstract": "Recent advances in Behavior Cloning (BC) have made it easy to teach robots new tasks. However, we find that the ease of teaching comes at the cost of unreliable performance that saturates with increasing data for tasks requiring precision. The performance saturation can be attributed to two critical factors: (a) distribution shift resulting from the use of offline data and (b) the lack of closed-loop corrective control caused by action chucking (predicting a set of future actions executed open-loop) critical for BC performance. Our key insight is that by predicting action chunks, BC policies function more like trajectory \"planners\" than closed-loop controllers necessary for reliable execution. To address these challenges, we devise a simple yet effective method, ResiP (Residual for Precise Manipulation), that overcomes the reliability problem while retaining BC's ease of teaching and long-horizon capabilities. ResiP augments a frozen, chunked BC model with a fully closed-loop residual policy trained with reinforcement learning (RL) that addresses distribution shifts and introduces closed-loop corrections over open-loop execution of action chunks predicted by the BC trajectory planner. Videos, code, and data: https://residual-assembly.github.io.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Lars Ankile",
+   "Anthony Simeonov",
+   "Idan Shenfeld",
+   "Marcel Torne",
+   "Pulkit Agrawal"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2407.16677v4",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2407.16677v4",
+  "published_iso": "2024-07-23T17:44:54Z"
+ },
+ {
+  "title": "Post-Training Quantization for Re-parameterization via Coarse & Fine Weight Splitting",
+  "title_norm": "post training quantization for re parameterization via coarse fine weight splitt",
+  "abstract": "Although neural networks have made remarkable advancements in various applications, they require substantial computational and memory resources. Network quantization is a powerful technique to compress neural networks, allowing for more efficient and scalable AI deployments. Recently, Re-parameterization has emerged as a promising technique to enhance model performance while simultaneously alleviating the computational burden in various computer vision tasks. However, the accuracy drops significantly when applying quantization on the re-parameterized networks. We identify that the primary challenge arises from the large variation in weight distribution across the original branches. To address this issue, we propose a coarse & fine weight splitting (CFWS) method to reduce quantization error of weight, and develop an improved KL metric to determine optimal quantization scales for activation. To the best of our knowledge, our approach is the first work that enables post-training quantization applicable on re-parameterized networks. For example, the quantized RepVGG-A1 model exhibits a mere 0.3% accuracy loss. The code is in https://github.com/NeonHo/Coarse-Fine-Weight-Split.git",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Dawei Yang",
+   "Ning He",
+   "Xing Hu",
+   "Zhihang Yuan",
+   "Jiangyong Yu",
+   "Chen Xu",
+   "Zhe Jiang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2312.10588v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2312.10588v1",
+  "published_iso": "2023-12-17T02:31:20Z"
+ },
+ {
+  "title": "Residual Stream Duality in Modern Transformer Architectures",
+  "title_norm": "residual stream duality in modern transformer architectures",
+  "abstract": "Recent work has made clear that the residual pathway is not mere optimization plumbing; it is part of the model's representational machinery. We agree, but argue that the cleanest way to organize this design space is through a two-axis view of the Transformer. A decoder evolves information along two ordered dimensions: sequence position and layer depth. Self-attention already provides adaptive mixing along the sequence axis, whereas the residual stream usually performs fixed addition along the depth axis. If we fix a token position and treat layer index as the ordered variable, then a causal depth-wise residual attention read is exactly the same local operator as causal short sliding-window attention (ShortSWA), except written over depth rather than over sequence. This is the core residual stream duality behind Transformer$^2$. This perspective also clarifies the recent literature. ELC-BERT and DenseFormer already show that learned aggregation over depth can outperform uniform residual accumulation, while Vertical Attention, DeepCrossAttention (DCA), MUDDFormer, and Attention Residuals move further toward explicit attention-based routing over earlier layers. The key point, however, is that operator-level duality does not imply systems-level symmetry. For large-scale autoregressive models, sequence-axis ShortSWA is usually the more hardware-friendly placement because it reuses token-side sliding-window kernels, KV-cache layouts, and chunked execution. If the goal is instead to change the shortcut itself, Deep Delta Learning (DDL) is the cleaner intervention because it modifies the residual operator directly rather than adding a separate cross-layer retrieval path. Our recommendation is therefore simple: use DDL when the shortcut is the object of interest, and use sequence-axis ShortSWA when the goal is local adaptive mixing.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yifan Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.16039v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.16039v2",
+  "published_iso": "2026-03-17T00:56:29Z"
+ },
+ {
+  "title": "QuantMoE-Bench: Examining Post-Training Quantization for Mixture-of-Experts",
+  "title_norm": "quantmoe bench examining post training quantization for mixture of experts",
+  "abstract": "Mixture-of-Experts (MoE) is a promising way to scale up the learning capacity of large language models. It increases the number of parameters while keeping FLOPs nearly constant during inference through sparse activation. Yet, it still suffers from significant memory overheads due to the vast parameter size, necessitating model compression techniques. Post-training quantization offers a powerful approach for model compression. Existing methods adopt a fixed quantization precision for the entire MoE model. This rigid setup can lead to suboptimal performance, without considering the inherent sparse structure. For example, MoE's sparse routing mechanism leads to different activation patterns, where shared experts are accessed by all tokens while token-conditioned experts are selectively activated. This activation disparity suggests different quantization requirements, with consistently activated shared experts potentially needing higher precision to maintain model quality. In this paper, we study a fine-grained precision setup for MoE quantization. We explore MoE structure-aware quantization heuristics, ranging from coarse (e.g., MoE layers) to fine granularity (e.g., linear layers). Our investigations reveal critical principles, where different MoE structures require varying numbers of bits for effective quantization. Conclusions are supported by extensive benchmarking across two representative MoE models and six tasks including commonsense reasoning and natural language understanding. We further show that an MoE quantized in a fined-grained mixed precision achieved state-of-the-art 65.35% performance on average compared to the baseline 64.30% (i.e., GPTQ). Moreover, based on the findings, we introduce novel data-driven techniques for optimizing bit allocation in MoE quantization, including the outlier-aware linear layer scorer and MoE block importance predictor.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Pingzhi Li",
+   "Xiaolong Jin",
+   "Zhen Tan",
+   "Yu Cheng",
+   "Tianlong Chen"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2406.08155v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2406.08155v2",
+  "published_iso": "2024-06-12T12:44:48Z"
+ },
+ {
+  "title": "Deep Lossy Plus Residual Coding for Lossless and Near-lossless Image Compression",
+  "title_norm": "deep lossy plus residual coding for lossless and near lossless image compression",
+  "abstract": "Lossless and near-lossless image compression is of paramount importance to professional users in many technical fields, such as medicine, remote sensing, precision engineering and scientific research. But despite rapidly growing research interests in learning-based image compression, no published method offers both lossless and near-lossless modes. In this paper, we propose a unified and powerful deep lossy plus residual (DLPR) coding framework for both lossless and near-lossless image compression. In the lossless mode, the DLPR coding system first performs lossy compression and then lossless coding of residuals. We solve the joint lossy and residual compression problem in the approach of VAEs, and add autoregressive context modeling of the residuals to enhance lossless compression performance. In the near-lossless mode, we quantize the original residuals to satisfy a given $\\ell_\\infty$ error bound, and propose a scalable near-lossless compression scheme that works for variable $\\ell_\\infty$ bounds instead of training multiple networks. To expedite the DLPR coding, we increase the degree of algorithm parallelization by a novel design of coding context, and accelerate the entropy coding with adaptive residual interval. Experimental results demonstrate that the DLPR coding system achieves both the state-of-the-art lossless and near-lossless image compression performance with competitive coding speed.",
+  "year": 2022,
+  "venue": "arXiv",
+  "authors": [
+   "Yuanchao Bai",
+   "Xianming Liu",
+   "Kai Wang",
+   "Xiangyang Ji",
+   "Xiaolin Wu",
+   "Wen Gao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2209.04847v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2209.04847v2",
+  "published_iso": "2022-09-11T12:11:56Z"
+ },
+ {
+  "title": "APCReg: Anatomical-Prior-Guided Coarse-to-Fine CBCT--IOS Registration via Multi-View Projection and Reliability-Controlled Residual Correction",
+  "title_norm": "apcreg anatomical prior guided coarse to fine cbct ios registration via multi vi",
+  "abstract": "Registration between cone-beam computed tomography (CBCT) and intraoral scans (IOS) is essential for patient-specific surgical planning. However, disparate imaging modalities, limited overlap, and large pose offsets make automated registration unreliable. Consequently, clinical registration remains dependent on conventional geometry pipelines and manual clinician adjustment. To address these challenges, we propose APCReg, an anatomical-prior-guided coarse-to-fine framework for global registration and reliability-controlled residual correction. Specifically, multi-view anatomical coarse registration (MACR) performs ordered orthogonal projection alignment (buccal, proximal, and occlusal) to decompose the six-degree-of-freedom search before three-dimensional refinement. Overlap-aware residual registration (OARR) combines shared KPConv features, a folded arch-length cue, overlap-gated cross-attention, and Sinkhorn matching. Finally, dental-arch-structured hypothesis selection evaluates diverse poses on held-out reliable correspondences, while a ground-truth-free coarse-retention guard conditionally retains a geometrically reliable coarse pose. On 60 held-out jaw pairs, APCReg achieves a submillimeter mean Chamfer distance of 0.87 mm and a Hausdorff distance of 2.92 mm under this evaluation protocol, and ranks first across the six reported metrics among the evaluated open-source baselines.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Xincan Zheng",
+   "Yaqi Wang",
+   "Zhi Li",
+   "Jiahao Bao",
+   "Lan Feng",
+   "Yiru Xia",
+   "Shuai Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.09993v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.09993v1",
+  "published_iso": "2026-08-07T09:06:05Z"
+ },
+ {
+  "title": "Low-bit Model Quantization for Deep Neural Networks: A Survey",
+  "title_norm": "low bit model quantization for deep neural networks a survey",
+  "abstract": "With unprecedented rapid development, deep neural networks (DNNs) have deeply influenced almost all fields. However, their heavy computation costs and model sizes are usually unacceptable in real-world deployment. Model quantization, an effective weight-lighting technique, has become an indispensable procedure in the whole deployment pipeline. The essence of quantization acceleration is the conversion from continuous floating-point numbers to discrete integer ones, which significantly speeds up the memory I/O and calculation, i.e., addition and multiplication. However, performance degradation also comes with the conversion because of the loss of precision. Therefore, it has become increasingly popular and critical to investigate how to perform the conversion and how to compensate for the information loss. This article surveys the recent five-year progress towards low-bit quantization on DNNs. We discuss and compare the state-of-the-art quantization methods and classify them into 8 main categories and 24 sub-categories according to their core techniques. Furthermore, we shed light on the potential research opportunities in the field of model quantization. A curated list of model quantization is provided at https://github.com/Kai-Liu001/Awesome-Model-Quantization.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Kai Liu",
+   "Qian Zheng",
+   "Kaiwen Tao",
+   "Zhiteng Li",
+   "Haotong Qin",
+   "Wenbo Li",
+   "Yong Guo",
+   "Xianglong Liu",
+   "Linghe Kong",
+   "Guihai Chen",
+   "Yulun Zhang",
+   "Xiaokang Yang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2505.05530v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2505.05530v1",
+  "published_iso": "2025-05-08T13:26:19Z"
+ },
+ {
+  "title": "The Quantization Benefits of Residual-Free Transformers",
+  "title_norm": "the quantization benefits of residual free transformers",
+  "abstract": "Large-scale transformer training and deployment are increasingly constrained by the transfer of activations, gradients, and optimizer states across accelerators. Low-bit quantization offers a natural remedy, but transformer activations are often heavy-tailed and outlier-dominated, making simple quantization highly lossy. We show that this difficulty is not only a property of the quantizer, but also of the architecture. Specifically, residual connections can drive transformer activations away from Gaussianity during training. Using controlled comparisons between residual and residual-free transformers, we demonstrate that this effect leads to substantially higher quantization error and accuracy degradation at low precision in residual models. We explain the phenomenon through an excess kurtosis analysis, showing that residual mixing can amplify non-Gaussianity, whereas dense mixing in residual-free contracts non-Gaussianity. We then show that residual-free transformers can be made trainable using orthogonal initialization, spectral or second-order optimization, and depth-aware scaling of attention temperature. In language tasks, while there is a small drop in full precision performance, these models retain near-Gaussian activations and exhibit significantly improved robustness to low-bit quantization. Our results identify an accuracy--compressibility trade-off in transformer design and motivate architecture-level approaches to quantization-friendly foundation models.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yiping Ji",
+   "Mahalakshmi Sabanayagam",
+   "Peyman Moghadam",
+   "Hemanth Saratchandran",
+   "Simon Lucey"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.25880v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.25880v1",
+  "published_iso": "2026-05-25T14:06:02Z"
+ },
+ {
+  "title": "Progressive Fine-to-Coarse Reconstruction for Accurate Low-Bit Post-Training Quantization in Vision Transformers",
+  "title_norm": "progressive fine to coarse reconstruction for accurate low bit post training qua",
+  "abstract": "Due to its efficiency, Post-Training Quantization (PTQ) has been widely adopted for compressing Vision Transformers (ViTs). However, when quantized into low-bit representations, there is often a significant performance drop compared to their full-precision counterparts. To address this issue, reconstruction methods have been incorporated into the PTQ framework to improve performance in low-bit quantization settings. Nevertheless, existing related methods predefine the reconstruction granularity and seldom explore the progressive relationships between different reconstruction granularities, which leads to sub-optimal quantization results in ViTs. To this end, in this paper, we propose a Progressive Fine-to-Coarse Reconstruction (PFCR) method for accurate PTQ, which significantly improves the performance of low-bit quantized vision transformers. Specifically, we define multi-head self-attention and multi-layer perceptron modules along with their shortcuts as the finest reconstruction units. After reconstructing these two fine-grained units, we combine them to form coarser blocks and reconstruct them at a coarser granularity level. We iteratively perform this combination and reconstruction process, achieving progressive fine-to-coarse reconstruction. Additionally, we introduce a Progressive Optimization Strategy (POS) for PFCR to alleviate the difficulty of training, thereby further enhancing model performance. Experimental results on the ImageNet dataset demonstrate that our proposed method achieves the best Top-1 accuracy among state-of-the-art methods, particularly attaining 75.61% for 3-bit quantized ViT-B in PTQ. Besides, quantization results on the COCO dataset reveal the effectiveness and generalization of our proposed method on other computer vision tasks like object detection and instance segmentation.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Rui Ding",
+   "Liang Yong",
+   "Sihuan Zhao",
+   "Jing Nie",
+   "Lihui Chen",
+   "Haijun Liu",
+   "Xichuan Zhou"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2412.14633v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2412.14633v1",
+  "published_iso": "2024-12-19T08:38:59Z"
+ },
+ {
+  "title": "Residual Off-Policy RL for Finetuning Behavior Cloning Policies",
+  "title_norm": "residual off policy rl for finetuning behavior cloning policies",
+  "abstract": "Recent advances in behavior cloning (BC) have enabled impressive visuomotor control policies. However, these approaches are limited by the quality of human demonstrations, the manual effort required for data collection, and the diminishing returns from offline data. In comparison, reinforcement learning (RL) trains an agent through autonomous interaction with the environment and has shown remarkable success in various domains. Still, training RL policies directly on real-world robots remains challenging due to sample inefficiency, safety concerns, and the difficulty of learning from sparse rewards for long-horizon tasks, especially for high-degree-of-freedom (DoF) systems.\n  We present a recipe that combines the benefits of BC and RL through a residual learning framework. Our approach leverages BC policies as black-box bases and learns lightweight per-step residual corrections via sample-efficient off-policy RL. We demonstrate that our method requires only sparse binary reward signals and can effectively improve manipulation policies on high-degree-of-freedom (DoF) systems in both simulation and the real world. In particular, we demonstrate, to the best of our knowledge, the first successful real-world RL training on a humanoid robot with dexterous hands. Our results demonstrate state-of-the-art performance in various vision-based tasks, pointing towards a practical pathway for deploying RL in the real world.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Lars Ankile",
+   "Zhenyu Jiang",
+   "Rocky Duan",
+   "Guanya Shi",
+   "Pieter Abbeel",
+   "Anusha Nagabandi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2509.19301v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2509.19301v2",
+  "published_iso": "2025-09-23T17:59:46Z"
+ },
+ {
+  "title": "PTQTP: Post-Training Quantization to Trit-Planes for Large Language Models",
+  "title_norm": "ptqtp post training quantization to trit planes for large language models",
+  "abstract": "Post-training quantization (PTQ) of large language models (LLMs) to extremely low bit-widths remains challenging due to the fundamental trade-off between computational efficiency and representational capacity. While existing ultra-low-bit methods rely on binary approximations or quantization-aware training(QAT), they often suffer from either limited representational capacity or huge training resource overhead. We introduce PTQ to Trit-Planes (PTQTP), a structured PTQ framework that decomposes weight matrices into dual ternary {-1, 0, 1} trit-planes. This approach achieves multiplication-free additive inference by decoupling weights into discrete topology (trit-planes) and continuous magnitude (scales), effectively enabling high-fidelity sparse approximation. PTQTP provides: (1) a theoretically grounded progressive approximation algorithm ensuring global weight consistency; (2) model-agnostic deployment without architectural modifications; and (3) uniform ternary operations that eliminate mixed-precision overhead. Comprehensive experiments on LLaMA3.x and Qwen3 (0.6B-70B) demonstrate that PTQTP significantly outperforms sub-4bit PTQ methods on both language reasoning tasks and mathematical reasoning as well as coding. PTQTP rivals the 1.58-bit QAT performance while requiring only single-hour quantization compared to 10-14 GPU days for training-based methods, and the end-to-end inference speed achieves 4.63$\\times$ faster than the FP16 baseline model, establishing a new and practical solution for efficient LLM deployment in resource-constrained environments. Code will available at https://github.com/HeXiao-55/PTQTP.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "He Xiao",
+   "Runming Yang",
+   "Qingyao Yang",
+   "Wendong Xu",
+   "Zhen Li",
+   "Yupeng Su",
+   "Zhengwu Liu",
+   "Hongxia Yang",
+   "Ngai Wong"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2509.16989v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2509.16989v3",
+  "published_iso": "2025-09-21T09:07:20Z"
+ },
+ {
+  "title": "HAMP-LIC: Hessian-Aware Mixed-Precision Post-Training Quantization for Learned Image Compression",
+  "title_norm": "hamp lic hessian aware mixed precision post training quantization for learned im",
+  "abstract": "Use this plain-text version for the arXiv abstract field: Learned image compression (LIC) models achieve strong rate-distortion performance but are hindered by high computational complexity and encoding-decoding mismatches across heterogeneous hardware platforms. Uniform fixed-precision quantization alleviates these issues but suffers severe quality degradation at low bit widths because it ignores differences in the quantization sensitivities of individual layers. To enable efficient and accurate low-bit deployment of pretrained LIC models, we propose HAMP-LIC, a Hessian-aware mixed-precision post-training quantization (PTQ) framework with a four-stage optimization strategy. First, block-wise sensitivity is estimated from the Hessian trace to capture second-order importance. Second, a task-aware refinement module adjusts these sensitivities by jointly considering quantization distortion and rate-distortion performance. Third, guided by the refined sensitivity profile, bit widths are allocated under a global model-size constraint to balance efficiency and reconstruction quality. Finally, block-wise reconstruction using a small calibration set further suppresses quantization error. Experiments on representative LIC models, including Minnen2018 and Cheng2020, demonstrate that HAMP-LIC achieves up to 4.85x model compression with as little as 0.59% BD-rate loss. It consistently outperforms existing fixed- and mixed-precision PTQ methods across multiple datasets while completely eliminating cross-platform encoding-decoding errors.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yuefeng Zhang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.12239v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.12239v1",
+  "published_iso": "2026-08-12T16:41:33Z"
+ },
+ {
+  "title": "Quantization Variation: A New Perspective on Training Transformers with Low-Bit Precision",
+  "title_norm": "quantization variation a new perspective on training transformers with low bit p",
+  "abstract": "Despite the outstanding performance of transformers in both language and vision tasks, the expanding computation and model size have increased the demand for efficient deployment. To address the heavy computation and parameter drawbacks, quantization is frequently studied in the community as a representative model compression technique and has seen extensive use on ConvNets. However, due to the unique properties of transformers, the low-bit quantization applications are still limited and underexplored. In this paper, we identify the difficulty of transformer low-bit quantization-aware training on its unique variation behaviors, which significantly differ from ConvNets. Based on comprehensive quantitative analysis, we observe variation in three hierarchies: various module quantization sensitivities, outliers in static weight and activation distribution, and oscillation in dynamic parameter fluctuations. These variations of transformers bring instability to the quantization-aware training (QAT) and negatively influence the performance. We explore the best practices to alleviate the variation's influence during low-bit transformer QAT and propose a variation-aware quantization scheme for both vision and language transformers. We extensively verify and show our scheme can alleviate the variation and improve the performance of transformers across various models and tasks. Our solution substantially improves the 2-bit Swin-T and binary BERT-base, achieving a 3.35% and 1.4% accuracy improvement over previous state-of-the-art methods on ImageNet-1K and GLUE. Codes and models are available at https://github.com/HuangOwen/Quantization-Variation.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Xijie Huang",
+   "Zhiqiang Shen",
+   "Pingcheng Dong",
+   "Kwang-Ting Cheng"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2307.00331v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2307.00331v2",
+  "published_iso": "2023-07-01T13:01:39Z"
+ },
+ {
+  "title": "R2Q: Towards Robust 2-Bit Large Language Models via Residual Refinement Quantization",
+  "title_norm": "r2q towards robust 2 bit large language models via residual refinement quantizat",
+  "abstract": "The rapid progress of Large Language Models (LLMs) has brought substantial computational and memory demands, spurring the adoption of low-bit quantization. While 8-bit and 4-bit formats have become prevalent, extending quantization to 2 bits remains challenging due to severe accuracy degradation. To address this, we propose Residual Refinement Quantization (R2Q)-a novel 2-bit quantization framework that decomposes the process into two sequential 1-bit sub-quantizations, forming an adaptive quantization lattice. Extensive evaluations on Llama, OPT, and Qwen across diverse benchmarks-covering question answering, commonsense reasoning, and language modeling-demonstrate that R2Q consistently outperforms existing 2-bit quantization methods in both fine-grained and coarse-grained settings. By refining quantization through a residual learning mechanism, R2Q enhances performance, improves training stability, and accelerates convergence under extreme compression. Furthermore, its modular design enables seamless integration with existing quantization-aware training (QAT) frameworks.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Jiayi Chen",
+   "Jieqi Shi",
+   "Jing Huo",
+   "Chen Wu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2511.21736v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2511.21736v1",
+  "published_iso": "2025-11-21T12:39:44Z"
+ },
+ {
+  "title": "Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models",
+  "title_norm": "foresight residual rl for long horizon robot manipulation with vision language a",
+  "abstract": "Vision-Language-Action (VLA) policies offer strong general-purpose manipulation priors, but often fail on tight-tolerance, contact-rich assembly due to long-horizon credit assignment and subtask coupling: a state that is geometrically successful for the current skill can be brittle for downstream skills. We show this failure mode in residual reinforcement learning (RL) over a frozen VLA base policy: constant sparse success rewards improve each subtask in isolation yet yield little or no gain when skills are chained, because terminal state quality is uncontrolled. We propose Foresight Residual RL, which optimizes handoff quality by augmenting each subtask's sparse success reward with an offline-estimated foresight value -- the probability of future subtask success conditioned on the terminal state of the current subtask. Concretely, we (i) train a visual foresight predictor from images of terminal states of the base policy, labeled using downstream rollout statistics, and (ii) train residual policies via backward foresight induction, using the predictor output as a reward multiplier. On a three-phase wrench-based nut-tightening assembly task in Isaac Gym (grasp, move-insert, rotate), our method achieves 85.6% full-task success, outperforming standard subtask residual RL (54.5%) and VLA baselines, while leaving per-subtask success unchanged. These results highlight that improving long-horizon performance requires shaping which successful states are produced at each sub-task, not only whether success occurs.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yuhan Liu",
+   "Xinyu Zhang",
+   "Litao Liu",
+   "Abdeslam Boularias"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.16506v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.16506v1",
+  "published_iso": "2026-07-17T21:00:28Z"
+ },
+ {
+  "title": "Exploring Layer-wise Information Effectiveness for Post-Training Quantization in Small Language Models",
+  "title_norm": "exploring layer wise information effectiveness for post training quantization in",
+  "abstract": "Large language models with billions of parameters are often over-provisioned: many layers contribute little unique information yet dominate the memory and energy footprint during inference. We present LieQ Layer-wise information effectiveness Quantization, a hardware-native, metric-driven post-training quantization framework that addresses the critical challenge of maintaining accuracy in sub-8B models, model parameters less than 8B, under extreme low-bit compression. LieQ keeps uniform bit-width within each layer while mixing precision across layers, preserving standard multiplication kernels and avoiding irregular memory access, codebooks, or irregular formats at inference time. Our method uncovers a strong correlation between layer-wise functional saliency and representational compactness, revealing that layers with higher training-induced energy concentration are functionally irreplaceable. Leveraging this insight, we propose a purely geometry-driven sensitivity proxy that enables automatic bit-width allocation under a target average-bit budget without expensive gradient updates or inference-based perplexity probing. At sub 2-bit, LieQ consistently reduces the large accuracy gap typically observed for naive 2-bit baselines on Qwen3 and LLaMA3.x families, while retaining standard-kernel efficiency. These properties make LieQ a practical path toward deploying small language models on resource-constrained edge devices. Code will available here: https://github.com/HeXiao-55/LieQ-official.git.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "He Xiao",
+   "Qingyao Yang",
+   "Dirui Xie",
+   "Wendong Xu",
+   "Zunhai Su",
+   "Runming yang",
+   "Wenyong Zhou",
+   "Haobo Liu",
+   "Zhengwu Liu",
+   "Ngai Wong"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2508.03332v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2508.03332v2",
+  "published_iso": "2025-08-05T11:17:04Z"
+ },
+ {
+  "title": "Residual subspace evolution strategies for nonlinear inverse problems",
+  "title_norm": "residual subspace evolution strategies for nonlinear inverse problems",
+  "abstract": "Nonlinear inverse problems pervade engineering and science, yet noisy, non-differentiable, or expensive residual evaluations routinely defeat Jacobian-based solvers. Derivative-free alternatives either demand smoothness, require large populations to stabilise covariance estimates, or stall on flat regions where gradient information fades. This paper introduces residual subspace evolution strategies (RSES), a derivative-free solver that draws Gaussian probes around the current iterate, records how residuals change along those directions, and recombines the probes through a least-squares solve to produce an optimal update. The method builds a residual-only surrogate without forming Jacobians or empirical covariances, and each iteration costs just $k+1$ residual evaluations with $O(k^3)$ linear algebra overhead, where $k$ remains far smaller than the parameter dimension. Benchmarks on calibration, regression, and deconvolution tasks show that RSES reduces misfit consistently across deterministic and stochastic settings, matching or exceeding xNES, NEWUOA, Adam, and ensemble Kalman inversion under matched evaluation budgets. The gains are most pronounced when smoothness or covariance assumptions break, suggesting that lightweight residual-difference surrogates can reliably guide descent where heavier machinery struggles.",
+  "year": 2025,
+  "venue": "arXiv",
+  "authors": [
+   "Francesco Alemanno"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2512.10325v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2512.10325v2",
+  "published_iso": "2025-12-11T06:20:13Z"
+ },
+ {
+  "title": "Dual Grained Quantization: Efficient Fine-Grained Quantization for LLM",
+  "title_norm": "dual grained quantization efficient fine grained quantization for llm",
+  "abstract": "Large Language Models (LLMs) pose significant hardware challenges related to memory requirements and computational ability. There are two mainstream quantization schemes for LLMs: coarse-grained ($\\textit{e.g.,}$ channel-wise) quantization and fine-grained ($\\textit{e.g.,}$ group-wise) quantization. Fine-grained quantization has smaller quantization loss, consequently achieving superior performance. However, when applied to weight-activation quantization, it disrupts continuous integer matrix multiplication, leading to inefficient inference. In this paper, we introduce Dual Grained Quantization (DGQ), a novel A8W4 quantization for LLM that maintains superior performance while ensuring fast inference speed. DSQ dequantizes the fine-grained INT4 weight into coarse-grained INT8 representation and preform matrix multiplication using INT8 kernels. Besides, we develop a two-phase grid search algorithm to simplify the determination of fine-grained and coarse-grained quantization scales. We also devise a percentile clipping schema for smoothing the activation outliers without the need for complex optimization techniques. Experimental results demonstrate that DGQ consistently outperforms prior methods across various LLM architectures and a wide range of tasks. Remarkably, by our implemented efficient CUTLASS kernel, we achieve $\\textbf{1.12}$ $\\times$ memory reduction and $\\textbf{3.24}$ $\\times$ speed gains comparing A16W4 implementation. These advancements enable efficient deployment of A8W4 LLMs for real-world applications.",
+  "year": 2023,
+  "venue": "arXiv",
+  "authors": [
+   "Luoming Zhang",
+   "Wen Fei",
+   "Weijia Wu",
+   "Yefei He",
+   "Zhenyu Lou",
+   "Hong Zhou"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2310.04836v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2310.04836v1",
+  "published_iso": "2023-10-07T14:50:28Z"
+ },
+ {
+  "title": "Technical Report: Activation Residual Hessian Quantization (ARHQ) for Low-Bit LLM Quantization",
+  "title_norm": "technical report activation residual hessian quantization arhq for low bit llm q",
+  "abstract": "We present Activation Residual Hessian Quantization (ARHQ), a post-training weight splitting method designed to mitigate error propagation in low-bit activation-weight quantization. By constructing an input-side residual Hessian from activation quantization residuals (G_x), ARHQ analytically identifies and isolates error-sensitive weight directions into a high-precision low-rank branch. This is achieved via a closed-form truncated SVD on the scaled weight matrix W G^{1/2}_x . Experimental results on Qwen3-4B-Thinking-2507 demonstrate that ARHQ significantly improves layer-wise SNR and preserves downstream reasoning performance on ZebraLogic even under aggressive quantization. The code is available at https://github.com/BeautMoonQ/ARHQ.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "YiFeng Wang",
+   "Zhun Sun",
+   "Keisuke Sakaguchi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.00140v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.00140v1",
+  "published_iso": "2026-04-30T18:55:22Z"
+ },
+ {
+  "title": "Reclaiming Residual Knowledge: A Novel Paradigm to Low-Bit Quantization",
+  "title_norm": "reclaiming residual knowledge a novel paradigm to low bit quantization",
+  "abstract": "This paper explores a novel paradigm in low-bit (i.e. 4-bits or lower) quantization, differing from existing state-of-the-art methods, by framing optimal quantization as an architecture search problem within convolutional neural networks (ConvNets). Our framework, dubbed \\textbf{CoRa} (Optimal Quantization Residual \\textbf{Co}nvolutional Operator Low-\\textbf{Ra}nk Adaptation), is motivated by two key aspects. Firstly, quantization residual knowledge, i.e. the lost information between floating-point weights and quantized weights, has long been neglected by the research community. Reclaiming the critical residual knowledge, with an infinitesimal extra parameter cost, can reverse performance degradation without training. Secondly, state-of-the-art quantization frameworks search for optimal quantized weights to address the performance degradation. Yet, the vast search spaces in weight optimization pose a challenge for the efficient optimization in large models. For example, state-of-the-art BRECQ necessitates $2 \\times 10^4$ iterations to quantize models. Fundamentally differing from existing methods, \\textbf{CoRa} searches for the optimal architectures of low-rank adapters, reclaiming critical quantization residual knowledge, within the search spaces smaller compared to the weight spaces, by many orders of magnitude. The low-rank adapters approximate the quantization residual weights, discarded in previous methods. We evaluate our approach over multiple pre-trained ConvNets on ImageNet. \\textbf{CoRa} achieves comparable performance against both state-of-the-art quantization-aware training and post-training quantization baselines, in $4$-bit and $3$-bit quantization, by using less than $250$ iterations on a small calibration set with $1600$ images. Thus, \\textbf{CoRa} establishes a new state-of-the-art in terms of the optimization efficiency in low-bit quantization.",
+  "year": 2024,
+  "venue": "arXiv",
+  "authors": [
+   "Róisín Luo",
+   "Alexandru Drimbarean",
+   "James McDermott",
+   "Colm O'Riordan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2408.00923v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2408.00923v2",
+  "published_iso": "2024-08-01T21:27:31Z"
+ }
+]

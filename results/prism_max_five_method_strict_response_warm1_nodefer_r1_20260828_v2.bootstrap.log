@@ -1,0 +1,7 @@
+[2026-08-28T17:56:42+08:00] five-method strict response-ready grid launcher starts
+[2026-08-28T17:56:46+08:00] launch sst2 kfull as_lru as full_as_lru_fp16_nodefer_warm1_response_r1
+[2026-08-28T17:56:52+08:00] as_lru/fp16 sst2 kfull on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-08-28T18:55:15+08:00] completed /home/panzihang/src/prism_max/results/prism_max_five_method_strict_response_warm1_nodefer_r1_20260828_v2/sst2/full_as_lru_fp16_nodefer_warm1_response_r1
+[2026-08-28T18:59:21+08:00] accepted validated output after runner status 0
+ERROR: source commit changed during the grid

@@ -1,0 +1,22 @@
+{
+  "cells": {
+    "subj": {
+      "0.250": {
+        "base_period": 4,
+        "guard_threshold": 0.95
+      }
+    },
+    "trec": {
+      "0.100": {
+        "base_period": 8,
+        "guard_threshold": 0.95
+      }
+    }
+  },
+  "selection_rule": {
+    "description": "Fastest fixed period within the calibration quality slack; runtime uncertainty can only shorten that period.",
+    "latency_tie_fraction": 0.015,
+    "quality_slack_examples": 1
+  },
+  "version": 1
+}

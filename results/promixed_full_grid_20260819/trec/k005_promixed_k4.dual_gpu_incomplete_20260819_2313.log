@@ -1,0 +1,4 @@
+[2026-08-19T23:10:39+08:00] ProMixed trec k005 k4 on GPU 0; dual-GPU mode explicitly enabled
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 102.54it/s]
+/home/panzihang/src/prism_promixed/vendor/flexgen/my_pcache_fast.py:1467: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+  return torch.from_numpy(data[:])

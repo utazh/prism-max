@@ -1,0 +1,381 @@
+{
+  "intake": {
+    "domain": "long-context LLM inference, specifically precision-aware KV-cache compression and block selection for Qwen2.5-7B long prefixes",
+    "venue": "MLSys or NeurIPS",
+    "time": "approximately 5 months",
+    "data": [
+      "LongBench",
+      "Needle-in-a-Haystack",
+      "long-prefix serving traces for Qwen2.5-7B"
+    ],
+    "compute": "80GB-class GPUs (A100/H100), up to 8 concurrent (one node), ≈150 GPU-days over 5 months, plus ~$10k inference/API budget for the full falsification campaign",
+    "expertise": "LLM inference systems, KV-cache compression, mixed-precision quantization, and constrained optimization",
+    "preference": "empirical",
+    "baseline": "ProMixed and ContiguousKV on Qwen2.5-7B",
+    "limitation": "current selection policies do not jointly decide layer-by-block retention precision or omission while satisfying exact KV-byte and TTFT limits, and they do not combine offline sensitivity with prompt-specific importance confidence",
+    "contribution_type": "method",
+    "_inferred_fields": [
+      "venue",
+      "time",
+      "data",
+      "compute",
+      "expertise",
+      "preference",
+      "contribution_type"
+    ]
+  },
+  "bottleneck_statement": "For long-prefix Qwen2.5-7B inference, the accuracy cost of compressing or removing a cache region varies simultaneously with layer, prompt, region content, and representation precision, while the useful budget is not merely a token count: every decision consumes a discrete number of KV bytes and may add scoring or conversion work to TTFT. DynamicKV redistributes retained-token counts across layers from prefill attention scores but leaves each retained item under one representation rule and normalizes against a token-count budget rather than a joint byte-and-prefill-time constraint (openalex:W4416034925); Oaken lowers KV bandwidth with offline-calibrated, fixed-size low-bit blocks and a cheap online pattern choice, but its method targets a fixed compression regime rather than allocating heterogeneous actions under a request-level constraint (openalex:W4411487104); and EMPIRIC reports that heuristic selectors still fall short of joint accuracy, computation, and storage bounds (openalex:W4413014966). Thus, under exact KV-byte and TTFT ceilings, current machinery cannot reliably compare the marginal downstream damage and runtime cost of the feasible action choices for each layer-region: static or point-estimate policies can spend scarce bytes on robust regions, irreversibly damage ambiguous but important regions, or meet memory while exceeding TTFT, preventing a consistently better accuracy-latency frontier.",
+  "closest_adjacent": [
+    {
+      "paper_id": "openalex:W4416034925",
+      "is_anchor": true,
+      "summary_and_residue": "DynamicKV computes attention scores over a recent query window, selects top-ranked tokens, and progressively renormalizes layer-specific retention counts every block of layers to satisfy a global token-count budget. Its cached method uses a single retention representation and attention point scores, so it does not compare multiple precision-or-omission actions at block granularity or enforce an exact byte ceiling together with the prefill scoring cost in a TTFT ceiling."
+    },
+    {
+      "paper_id": "openalex:W4411487104",
+      "is_anchor": false,
+      "summary_and_residue": "Oaken moves expensive KV outlier handling partly offline, then uses lightweight online statistics and a co-designed accelerator to realize low-bit KV quantization with tangible throughput gains. Its method commits to a fixed low-bit compression design and hardware path, leaving unresolved which individual layer-regions should remain high precision, use an intermediate precision, or be absent when accuracy sensitivity and runtime constraints conflict."
+    },
+    {
+      "paper_id": "openalex:W4413014966",
+      "is_anchor": false,
+      "summary_and_residue": "EMPIRIC frames KV-cache compression through oracle accuracy, computation, and storage bounds and diagnoses the gap between those bounds and heuristic token selection. It does not supply a deployable selector that can choose heterogeneous cache actions while respecting measured per-request resource constraints. [residue is abstract-level: paper fulltext fetch failed]"
+    },
+    {
+      "paper_id": "openalex:W4407123430",
+      "is_anchor": false,
+      "summary_and_residue": "ChunkKV changes the pruning unit from isolated tokens to semantic chunks and reuses selected indices across layers to reduce selector overhead. It still makes retain-or-drop decisions under one cache representation, so semantic grouping does not determine how to trade storage precision against omission or how to reserve TTFT for uncertain regions under exact budgets."
+    }
+  ],
+  "what_phase_0_did_not_address": [
+    "No retrieved frontier leaf demonstrates request-specific cache decisions that remain simultaneously feasible under an exact KV-byte ceiling and a measured TTFT ceiling when candidate regions have different storage costs and decision overheads.",
+    "No retrieved frontier leaf accounts for uncertainty in region importance, so an ambiguous region can receive the same irreversible treatment as one known to be irrelevant even when its potential downstream damage is much larger.",
+    "No retrieved frontier leaf closes the gap between offline model-level sensitivity and prompt-specific evidence strongly enough to preserve accuracy across task shifts while keeping selection overhead inside the serving deadline.",
+    "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+    "No retrieved paper tests whether a single point score or fixed calibration is sufficient for every irreversible cache decision under a hard resource ceiling."
+  ],
+  "method_lineage": {
+    "line": "memory- and latency-constrained KV-cache compression for autoregressive long-context inference",
+    "nodes": [
+      {
+        "node_id": "n0",
+        "method": "Autoregressive Transformer decoding with full-precision full KV retention",
+        "move": "Caches every past key and value to avoid recomputing the prefix at each decode step.",
+        "parent": null,
+        "provenance": "parametric",
+        "age_band": "8-16y",
+        "confidence": "high",
+        "residual_problem": "KV memory and attention traffic grow linearly with prefix length, making long-context serving capacity- and bandwidth-bound.",
+        "is_frontier_leaf": false,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n1",
+        "method": "StreamingLLM fixed attention-sink plus recent-window cache",
+        "move": "Replaces full retention with a fixed small set of sink tokens and a rolling recent window.",
+        "parent": "n0",
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "The same fixed positional retention rule is applied despite layer-, task-, and prompt-dependent importance.",
+        "is_frontier_leaf": false,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n2",
+        "method": "H2O heavy-hitter KV eviction",
+        "move": "Uses accumulated attention mass to retain dynamically important tokens instead of only a positional window.",
+        "parent": "n0",
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "A point importance score and largely uniform retention budget do not express semantic groups, layer sensitivity, precision choices, or scoring uncertainty.",
+        "is_frontier_leaf": false,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n3",
+        "method": "SnapKV observation-window token clustering",
+        "move": "Estimates prompt-specific importance from an observation window and pools nearby positions before selecting cache entries.",
+        "parent": "n2",
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "Selection remains a retain-or-evict decision under preset budgets, with no calibrated confidence or heterogeneous storage precision.",
+        "is_frontier_leaf": false,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n4",
+        "method": "PyramidKV static progressive layer budget",
+        "move": "Changes a uniform per-layer budget into a predefined layer-depth profile with fewer retained tokens in later layers.",
+        "parent": "n3",
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "The layer profile is fixed across tasks and prompts and is expressed as token counts rather than exact bytes plus latency.",
+        "is_frontier_leaf": false,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n5",
+        "method": "KIVI per-channel/per-token low-bit KV quantization",
+        "move": "Reduces retained KV precision while preserving asymmetric key/value quantization granularity and residual high-precision windows.",
+        "parent": "n0",
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "The quantization regime is method-wide and does not allocate precision or omission jointly with prompt-specific block utility under a serving deadline.",
+        "is_frontier_leaf": false,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n6",
+        "method": "DynamicKV task-aware progressive layer allocation",
+        "move": "Infers attention demand during prefill and periodically renormalizes layer-specific token-retention budgets instead of using a fixed pyramidal profile.",
+        "parent": "n4",
+        "provenance": "retrieved:openalex:W4416034925",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "It optimizes retained-token counts using point attention scores, not heterogeneous byte costs, representation error, importance uncertainty, and exact TTFT jointly.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n7",
+        "method": "ChunkKV semantic-chunk pruning with layer-wise index reuse",
+        "move": "Makes semantic chunks the atomic retention unit and reuses indices across layers to preserve coherence at lower selector cost.",
+        "parent": "n3",
+        "provenance": "retrieved:openalex:W4407123430",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "Chunks are still retained or discarded under one representation, without per-region precision choices, confidence-aware protection, or an exact TTFT constraint.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n8",
+        "method": "TreeKV smooth tree-structured cache compression",
+        "move": "Allocates retention through a tree to reduce regional bias from position-only or global-importance eviction.",
+        "parent": "n2",
+        "provenance": "retrieved:openalex:W4414359384",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "The fixed-size tree allocation does not jointly price representation precision, omission risk, and online decision latency.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n9",
+        "method": "EMPIRIC oracle-bounded KV compression diagnosis",
+        "move": "Recasts token selection as joint accuracy, computation, storage, and latency bounds rather than comparing heuristics alone.",
+        "parent": "n2",
+        "provenance": "retrieved:openalex:W4413014966",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "The oracle study leaves the deployable, low-overhead decision rule that approaches those bounds unresolved.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n10",
+        "method": "Oaken online-offline hybrid KV quantization",
+        "move": "Calibrates quantization structure offline and replaces expensive online outlier handling with cheap runtime statistics plus hardware support.",
+        "parent": "n5",
+        "provenance": "retrieved:openalex:W4411487104",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "It uses a fixed low-bit block regime and custom hardware rather than allocating multiple precision-or-omission actions under request-level byte and TTFT limits.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n11",
+        "method": "Ecco fixed-block entropy-aware cache compression",
+        "move": "Combines shared nonuniform quantization patterns and hardware-parallel entropy coding in fixed compressed blocks.",
+        "parent": "n5",
+        "provenance": "retrieved:openalex:W4411486323",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "Its target compression ratios and block format are fixed, so it does not adapt representation or omission per layer-region from prompt evidence and uncertainty.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n12",
+        "method": "CLAT clustered sparse attention with INT8 KV",
+        "move": "Routes each query to relevant key clusters and pairs sparsity with a fixed INT8 cache in an accelerator.",
+        "parent": "n2",
+        "provenance": "retrieved:openalex:W4411171608",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "Approximation error and portability remain, and fixed cache precision plus cluster routing does not solve exact byte/TTFT allocation across heterogeneous region actions.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "n13",
+        "method": "MEDA entropy-guided multimodal layer allocation",
+        "move": "Uses cross-modal attention entropy to vary cache allocation by layer and then selects or merges multimodal KV pairs.",
+        "parent": "n4",
+        "provenance": "retrieved:openalex:W4411119478",
+        "age_band": "0-2y",
+        "confidence": "high",
+        "residual_problem": "The multimodal entropy budget does not establish text-only block-level precision decisions, calibrated uncertainty, or simultaneous exact byte and TTFT feasibility.",
+        "is_frontier_leaf": true,
+        "is_collateral": false
+      },
+      {
+        "node_id": "c1",
+        "method": "Multi-Query Attention (Shazeer, 2019)",
+        "move": "Shares keys and values across attention heads to reduce the structural KV footprint and memory traffic.",
+        "parent": null,
+        "provenance": "parametric",
+        "age_band": "4-8y",
+        "confidence": "high",
+        "residual_problem": "It changes the model architecture and head sharing globally; it does not adapt an already trained model cache to prompt-specific regions.",
+        "is_frontier_leaf": false,
+        "is_collateral": true
+      },
+      {
+        "node_id": "c2",
+        "method": "Longformer sparse sliding-window/global attention",
+        "move": "Restricts attention connectivity by architectural sparsity rather than compressing stored KV representations.",
+        "parent": null,
+        "provenance": "parametric",
+        "age_band": "4-8y",
+        "confidence": "high",
+        "residual_problem": "The fixed sparse pattern can miss prompt-specific long-range evidence and generally requires an architecture/training choice.",
+        "is_frontier_leaf": false,
+        "is_collateral": true
+      },
+      {
+        "node_id": "c3",
+        "method": "vLLM PagedAttention",
+        "move": "Pages KV blocks to reduce fragmentation and enable flexible sharing without changing cached values.",
+        "parent": null,
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "It improves allocation efficiency but does not reduce the bytes or bandwidth of semantically dispensable or quantization-tolerant cache regions.",
+        "is_frontier_leaf": false,
+        "is_collateral": true
+      },
+      {
+        "node_id": "c4",
+        "method": "FlexGen tensor offloading and tiered placement",
+        "move": "Moves inference state across GPU, CPU, and storage tiers to trade capacity for transfer time.",
+        "parent": null,
+        "provenance": "parametric",
+        "age_band": "2-4y",
+        "confidence": "medium",
+        "residual_problem": "Tiering avoids immediate capacity failure but adds transfer latency and does not determine which cache regions can tolerate loss or lower precision.",
+        "is_frontier_leaf": false,
+        "is_collateral": true
+      }
+    ],
+    "notes": "Retrieved nodes are grounded recent frontier evidence; parametric nodes are awareness-only ancestry or collateral families and are not hard prior-art citations. The lineage shows two true descendant branches—importance-based retention and low-bit representation—sharing full uniform KV retention as their root. The closest leaves improve one branch at a time, while their frontier residues still expose joint byte/latency feasibility, prompt shift, point-score uncertainty, and method-wide representation uniformity. Collateral architectural sparsity, head sharing, paging, and offloading attack the same capacity/latency residual through different mechanisms and therefore guard against regressive cures without serving as gap sites."
+  },
+  "domain_pattern_distribution": {
+    "n_total": 12,
+    "n_on_topic": 11,
+    "patterns": [
+      {
+        "pattern_id": "assumption_audit_and_pivot",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "architectural_operator_substitution",
+        "count": 5,
+        "share": 0.45,
+        "saturation_band": "mid_frequency"
+      },
+      {
+        "pattern_id": "generative_process_redesign",
+        "count": 1,
+        "share": 0.09,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "controlled_diagnostic_design",
+        "count": 2,
+        "share": 0.18,
+        "saturation_band": "mid_frequency"
+      },
+      {
+        "pattern_id": "unify_into_shared_representation",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "reframe_as_solvable_object",
+        "count": 1,
+        "share": 0.09,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "self_supervised_signal_engineering",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "structural_prior_encoding",
+        "count": 3,
+        "share": 0.27,
+        "saturation_band": "mid_frequency"
+      },
+      {
+        "pattern_id": "algebraic_equivalence_unification",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "heterogeneous_decomposition",
+        "count": 7,
+        "share": 0.64,
+        "saturation_band": "saturated"
+      },
+      {
+        "pattern_id": "decompose_and_delegate",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "relax_discrete_search_to_continuous",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "adapt_via_conditioning",
+        "count": 2,
+        "share": 0.18,
+        "saturation_band": "mid_frequency"
+      },
+      {
+        "pattern_id": "characterize_limit_then_surpass",
+        "count": 1,
+        "share": 0.09,
+        "saturation_band": "untested"
+      },
+      {
+        "pattern_id": "targeted_self_supervised_objective",
+        "count": 0,
+        "share": 0.0,
+        "saturation_band": "untested"
+      }
+    ],
+    "saturation_threshold_saturated": 0.5,
+    "saturation_threshold_untested_count": 1,
+    "notes": "heterogeneous_decomposition is the most-used pattern (7/11, 0.64); its closest adjacent papers separate layers, chunks, modalities, or outliers but generally stop short of a single exact resource-feasible decision across both retention and representation choices."
+  },
+  "state": "proceed",
+  "ood_reasons": [],
+  "remedial_steps": []
+}

@@ -1,0 +1,851 @@
+{
+  "scope": "KV readiness concurrency diagnostic; not end-to-end TTFT",
+  "metadata": {
+    "thread_buffered": {
+      "schema": "prism-concurrency-replay-v1",
+      "backend": "buffered",
+      "phase": "ready",
+      "workers": "threads",
+      "torch": "2.10.0+cu130",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "pid": 63824,
+      "trace_sha256": "4464165ec9a7b3981154d904af433c4b220f3f1ab66ac8479564aa8a86932091",
+      "uids": [
+        "sst2-16",
+        "subj-16",
+        "trec-16",
+        "rte-16",
+        "sst2-17",
+        "subj-17",
+        "trec-17",
+        "rte-17",
+        "sst2-18",
+        "subj-18",
+        "trec-18",
+        "rte-18",
+        "sst2-19",
+        "subj-19",
+        "trec-19",
+        "rte-19"
+      ],
+      "verification": {
+        "checks": 24,
+        "all_byte_exact": true,
+        "digest": "59404266940ad9ead677e7af7c9bc8ddc8b8fd8a77e20c95050d802d1fe72991"
+      },
+      "gate": "bypassed_explicit_ablation",
+      "fp16_fraction": 0.25,
+      "min_int8_run_blocks": 2,
+      "measurement": "closed-loop full-28-layer KV readiness replay; no attention, selector or quality scoring",
+      "cache_policy": "no cache eviction; O_DIRECT diagnostic vs ordinary buffered reads"
+    },
+    "thread_direct": {
+      "schema": "prism-concurrency-replay-v1",
+      "backend": "direct",
+      "phase": "ready",
+      "torch": "2.10.0+cu130",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "pid": 48308,
+      "trace_sha256": "4464165ec9a7b3981154d904af433c4b220f3f1ab66ac8479564aa8a86932091",
+      "uids": [
+        "sst2-16",
+        "subj-16",
+        "trec-16",
+        "rte-16",
+        "sst2-17",
+        "subj-17",
+        "trec-17",
+        "rte-17",
+        "sst2-18",
+        "subj-18",
+        "trec-18",
+        "rte-18",
+        "sst2-19",
+        "subj-19",
+        "trec-19",
+        "rte-19"
+      ],
+      "verification": {
+        "checks": 24,
+        "all_byte_exact": true,
+        "digest": "59404266940ad9ead677e7af7c9bc8ddc8b8fd8a77e20c95050d802d1fe72991"
+      },
+      "gate": "bypassed_explicit_ablation",
+      "fp16_fraction": 0.25,
+      "min_int8_run_blocks": 2,
+      "measurement": "closed-loop full-28-layer KV readiness replay; no attention, selector or quality scoring",
+      "cache_policy": "no cache eviction; O_DIRECT diagnostic vs ordinary buffered reads"
+    },
+    "process_buffered": {
+      "schema": "prism-concurrency-replay-v1",
+      "backend": "buffered",
+      "phase": "ready",
+      "workers": "processes",
+      "torch": "2.10.0+cu130",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "pid": 59919,
+      "trace_sha256": "4464165ec9a7b3981154d904af433c4b220f3f1ab66ac8479564aa8a86932091",
+      "uids": [
+        "sst2-16",
+        "subj-16",
+        "trec-16",
+        "rte-16",
+        "sst2-17",
+        "subj-17",
+        "trec-17",
+        "rte-17",
+        "sst2-18",
+        "subj-18",
+        "trec-18",
+        "rte-18",
+        "sst2-19",
+        "subj-19",
+        "trec-19",
+        "rte-19"
+      ],
+      "verification": {
+        "checks": 24,
+        "all_byte_exact": true,
+        "digest": "59404266940ad9ead677e7af7c9bc8ddc8b8fd8a77e20c95050d802d1fe72991"
+      },
+      "gate": "bypassed_explicit_ablation",
+      "fp16_fraction": 0.25,
+      "min_int8_run_blocks": 2,
+      "measurement": "closed-loop full-28-layer KV readiness replay; no attention, selector or quality scoring",
+      "cache_policy": "no cache eviction; O_DIRECT diagnostic vs ordinary buffered reads"
+    },
+    "process_direct": {
+      "schema": "prism-concurrency-replay-v1",
+      "backend": "direct",
+      "phase": "ready",
+      "workers": "processes",
+      "torch": "2.10.0+cu130",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "pid": 61923,
+      "trace_sha256": "4464165ec9a7b3981154d904af433c4b220f3f1ab66ac8479564aa8a86932091",
+      "uids": [
+        "sst2-16",
+        "subj-16",
+        "trec-16",
+        "rte-16",
+        "sst2-17",
+        "subj-17",
+        "trec-17",
+        "rte-17",
+        "sst2-18",
+        "subj-18",
+        "trec-18",
+        "rte-18",
+        "sst2-19",
+        "subj-19",
+        "trec-19",
+        "rte-19"
+      ],
+      "verification": {
+        "checks": 24,
+        "all_byte_exact": true,
+        "digest": "59404266940ad9ead677e7af7c9bc8ddc8b8fd8a77e20c95050d802d1fe72991"
+      },
+      "gate": "bypassed_explicit_ablation",
+      "fp16_fraction": 0.25,
+      "min_int8_run_blocks": 2,
+      "measurement": "closed-loop full-28-layer KV readiness replay; no attention, selector or quality scoring",
+      "cache_policy": "no cache eviction; O_DIRECT diagnostic vs ordinary buffered reads"
+    }
+  },
+  "results": {
+    "thread_buffered": {
+      "1/fp16": {
+        "concurrency": 1,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 139.59773946874066,
+        "p50_ms": 140.13714949942369,
+        "p95_ms": 165.21006779921663,
+        "requests_per_s": 7.160520752207514,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 120.83635474948551,
+        "mean_materialize_ms": 13.785587986931205,
+        "round_mean_ms": [
+          139.59376725006223,
+          139.60171168741908
+        ],
+        "round_throughput": [
+          7.160805833746054,
+          7.1602356933670475
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "1/naive": {
+        "concurrency": 1,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 209.42511865621327,
+        "p50_ms": 211.29609550007444,
+        "p95_ms": 248.10197624974535,
+        "requests_per_s": 4.772706657008161,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 190.16226440635364,
+        "mean_materialize_ms": 13.87754602264613,
+        "round_mean_ms": [
+          210.9708074997343,
+          207.87942981269225
+        ],
+        "round_throughput": [
+          4.737825149122641,
+          4.808105593842521
+        ],
+        "latency_change_pct": 50.02042257504369,
+        "throughput_change_pct": -33.34693352383924,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "1/coalesced": {
+        "concurrency": 1,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 165.15448840635827,
+        "p50_ms": 166.18993299925933,
+        "p95_ms": 196.54196615056208,
+        "requests_per_s": 6.051656964271098,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 146.66414731334498,
+        "mean_materialize_ms": 13.462688986212015,
+        "round_mean_ms": [
+          164.56830368747433,
+          165.7406731252422
+        ],
+        "round_throughput": [
+          6.0734051292690365,
+          6.030063998874529
+        ],
+        "latency_change_pct": 18.307423196734774,
+        "throughput_change_pct": -15.485798118727113,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      },
+      "2/fp16": {
+        "concurrency": 2,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 294.7360191563462,
+        "p50_ms": 293.3837165001023,
+        "p95_ms": 383.0196922005598,
+        "requests_per_s": 6.290766428429647,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 261.04897518786174,
+        "mean_materialize_ms": 24.989183010533452,
+        "round_mean_ms": [
+          292.33043456258656,
+          297.1416037501058
+        ],
+        "round_throughput": [
+          6.219050081022512,
+          6.364156097868183
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "2/naive": {
+        "concurrency": 2,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 549.5963499998311,
+        "p50_ms": 543.7143054996341,
+        "p95_ms": 749.1521237994675,
+        "requests_per_s": 3.5160231909994195,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 517.0705565310527,
+        "mean_materialize_ms": 22.94225300103426,
+        "round_mean_ms": [
+          530.6345660000034,
+          568.5581339996588
+        ],
+        "round_throughput": [
+          3.7020986605428745,
+          3.3477576647390594
+        ],
+        "latency_change_pct": 86.47071083235716,
+        "throughput_change_pct": -44.10819045657814,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "2/coalesced": {
+        "concurrency": 2,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 423.20949071898895,
+        "p50_ms": 426.9113330001346,
+        "p95_ms": 595.393050849907,
+        "requests_per_s": 4.43742704185264,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 389.6077025633531,
+        "mean_materialize_ms": 23.952478049322963,
+        "round_mean_ms": [
+          423.3961166252129,
+          423.02286481276496
+        ],
+        "round_throughput": [
+          4.44689230301618,
+          4.428001988938821
+        ],
+        "latency_change_pct": 43.5893352737768,
+        "throughput_change_pct": -29.461265295135952,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      },
+      "4/fp16": {
+        "concurrency": 4,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 1010.990557500179,
+        "p50_ms": 956.8547055005183,
+        "p95_ms": 1448.4572209004,
+        "requests_per_s": 3.6859327018630132,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 933.6762969373922,
+        "mean_materialize_ms": 57.56039595231414,
+        "round_mean_ms": [
+          1131.555189562505,
+          890.425925437853
+        ],
+        "round_throughput": [
+          3.2810835831522134,
+          4.204752229417197
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "4/naive": {
+        "concurrency": 4,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 1894.4967647499311,
+        "p50_ms": 1837.9129229997488,
+        "p95_ms": 3158.123784149757,
+        "requests_per_s": 1.9192768462715113,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 1828.3316569705903,
+        "mean_materialize_ms": 45.995323998853564,
+        "round_mean_ms": [
+          1927.3331988123346,
+          1861.6603306875277
+        ],
+        "round_throughput": [
+          1.8803310313943051,
+          1.9598700910105888
+        ],
+        "latency_change_pct": 87.39015421017875,
+        "throughput_change_pct": -47.92968289134974,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "4/coalesced": {
+        "concurrency": 4,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 1454.3088093122947,
+        "p50_ms": 1430.0939184995514,
+        "p95_ms": 2055.911722649307,
+        "requests_per_s": 2.6305957191681184,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 1386.0992548439413,
+        "mean_materialize_ms": 47.39010703843087,
+        "round_mean_ms": [
+          1421.6040883123924,
+          1487.013530312197
+        ],
+        "round_throughput": [
+          2.6891309314381378,
+          2.5745545297497054
+        ],
+        "latency_change_pct": 43.849890438965566,
+        "throughput_change_pct": -28.63147724215058,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      }
+    },
+    "thread_direct": {
+      "1/fp16": {
+        "concurrency": 1,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 1936.7165224063,
+        "p50_ms": 1877.8422875002434,
+        "p95_ms": 2425.753236750461,
+        "requests_per_s": 0.5163154075884304,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 4392304640,
+        "mean_host_wall_ms": 1904.3978249692373,
+        "mean_materialize_ms": 22.810974011197686,
+        "round_mean_ms": [
+          1916.7942033751615,
+          1956.6388414374387
+        ],
+        "round_throughput": [
+          0.5216839220202545,
+          0.5110562596833933
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "1/naive": {
+        "concurrency": 1,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 2199.876629187713,
+        "p50_ms": 2179.0871655002775,
+        "p95_ms": 2813.503123500959,
+        "requests_per_s": 0.45454567208170765,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 2849802240,
+        "mean_host_wall_ms": 2168.411398251351,
+        "mean_materialize_ms": 21.7049239911139,
+        "round_mean_ms": [
+          2301.733525437726,
+          2098.0197329377006
+        ],
+        "round_throughput": [
+          0.4344288867089468,
+          0.47661598501221347
+        ],
+        "latency_change_pct": 13.58795175942662,
+        "throughput_change_pct": -11.963566184327611,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "1/coalesced": {
+        "concurrency": 1,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 2090.0117733438037,
+        "p50_ms": 2088.2031450000795,
+        "p95_ms": 2637.844029850203,
+        "requests_per_s": 0.47843207340018196,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 3294423040,
+        "mean_host_wall_ms": 2057.8275584690005,
+        "mean_materialize_ms": 22.549331985414028,
+        "round_mean_ms": [
+          2089.1104047501585,
+          2090.913141937449
+        ],
+        "round_throughput": [
+          0.4786415803212252,
+          0.4782227498060691
+        ],
+        "latency_change_pct": 7.915213670353771,
+        "throughput_change_pct": -7.33724650309997,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      },
+      "2/fp16": {
+        "concurrency": 2,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 2715.4565425624924,
+        "p50_ms": 2784.250985999279,
+        "p95_ms": 3105.406455899538,
+        "requests_per_s": 0.7198401005723586,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 4392304640,
+        "mean_host_wall_ms": 2679.3730257193147,
+        "mean_materialize_ms": 26.001733017154038,
+        "round_mean_ms": [
+          2735.7533078752567,
+          2695.159777249728
+        ],
+        "round_throughput": [
+          0.7178162365969569,
+          0.7218754092782369
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "2/naive": {
+        "concurrency": 2,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 2722.5557231562902,
+        "p50_ms": 2711.986854499628,
+        "p95_ms": 3455.8597078001185,
+        "requests_per_s": 0.681974938417321,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 2849802240,
+        "mean_host_wall_ms": 2685.9714131255146,
+        "mean_materialize_ms": 25.960102015174925,
+        "round_mean_ms": [
+          2707.727009812402,
+          2737.3844365001787
+        ],
+        "round_throughput": [
+          0.6883218838164681,
+          0.6757439726453159
+        ],
+        "latency_change_pct": 0.2614359862705973,
+        "throughput_change_pct": -5.260218501988179,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "2/coalesced": {
+        "concurrency": 2,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 2577.356704999943,
+        "p50_ms": 2608.824712498972,
+        "p95_ms": 3141.28277215068,
+        "requests_per_s": 0.7350896329398415,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 3294423040,
+        "mean_host_wall_ms": 2541.849264186851,
+        "mean_materialize_ms": 25.404886024072766,
+        "round_mean_ms": [
+          2527.9970636875078,
+          2626.716346312378
+        ],
+        "round_throughput": [
+          0.7482392469582299,
+          0.7223942213866975
+        ],
+        "latency_change_pct": -5.085694998168854,
+        "throughput_change_pct": 2.118461079808931,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      },
+      "4/fp16": {
+        "concurrency": 4,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 3799.148983812472,
+        "p50_ms": 3651.234858000862,
+        "p95_ms": 4487.113829649024,
+        "requests_per_s": 0.9774500442978182,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 4392304640,
+        "mean_host_wall_ms": 3762.0260186248515,
+        "mean_materialize_ms": 27.569087982177734,
+        "round_mean_ms": [
+          3807.548182749997,
+          3790.749784874947
+        ],
+        "round_throughput": [
+          0.9780656215012591,
+          0.9768352414738054
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "4/naive": {
+        "concurrency": 4,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 3804.464351750255,
+        "p50_ms": 3801.2383905006573,
+        "p95_ms": 4689.429028750601,
+        "requests_per_s": 0.9402479905203383,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 2849802240,
+        "mean_host_wall_ms": 3753.9521461567915,
+        "mean_materialize_ms": 37.30218103155494,
+        "round_mean_ms": [
+          3676.5728148127437,
+          3932.3558886877663
+        ],
+        "round_throughput": [
+          0.9604786889781745,
+          0.9208519555526964
+        ],
+        "latency_change_pct": 0.1399094365720055,
+        "throughput_change_pct": -3.8060312130023255,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "4/coalesced": {
+        "concurrency": 4,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 3540.6772323748896,
+        "p50_ms": 3462.5438704997578,
+        "p95_ms": 4409.264961448935,
+        "requests_per_s": 1.0079838645596477,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 3294423040,
+        "mean_host_wall_ms": 3495.724657624237,
+        "mean_materialize_ms": 33.23920901864767,
+        "round_mean_ms": [
+          3562.707926312555,
+          3518.646538437224
+        ],
+        "round_throughput": [
+          1.0032127047304693,
+          1.0128006233850453
+        ],
+        "latency_change_pct": -6.803411830883355,
+        "throughput_change_pct": 3.1238241217498075,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      }
+    },
+    "process_buffered": {
+      "4/fp16": {
+        "concurrency": 4,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 191.5723641874365,
+        "p50_ms": 179.78504199891177,
+        "p95_ms": 311.95472694971613,
+        "requests_per_s": 17.46469584049442,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 164.7901027183707,
+        "mean_materialize_ms": 18.355238012969494,
+        "round_mean_ms": [
+          186.93171312486356,
+          196.21301525000945
+        ],
+        "round_throughput": [
+          18.955224131839433,
+          16.191491376741162
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "4/naive": {
+        "concurrency": 4,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 287.6378379687594,
+        "p50_ms": 263.83717300086573,
+        "p95_ms": 392.8189418496004,
+        "requests_per_s": 11.110808669494318,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 260.2754024069327,
+        "mean_materialize_ms": 17.933190998621285,
+        "round_mean_ms": [
+          292.41110737496,
+          282.8645685625588
+        ],
+        "round_throughput": [
+          10.24923613932381,
+          12.130526454043276
+        ],
+        "latency_change_pct": 50.14578913236745,
+        "throughput_change_pct": -36.38132166188487,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "4/coalesced": {
+        "concurrency": 4,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 229.87135053142538,
+        "p50_ms": 217.13228950011398,
+        "p95_ms": 332.7208627498294,
+        "requests_per_s": 14.649400270667527,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 0,
+        "mean_host_wall_ms": 202.89910850004844,
+        "mean_materialize_ms": 18.28936800081283,
+        "round_mean_ms": [
+          225.0126082500401,
+          234.73009281281065
+        ],
+        "round_throughput": [
+          14.22898827688665,
+          15.09541175289546
+        ],
+        "latency_change_pct": 19.991916112971666,
+        "throughput_change_pct": -16.119923275727622,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      }
+    },
+    "process_direct": {
+      "4/fp16": {
+        "concurrency": 4,
+        "mode": "fp16",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 3542.4895105002747,
+        "p50_ms": 3409.521034500358,
+        "p95_ms": 4209.059189949585,
+        "requests_per_s": 1.0336063762599486,
+        "mean_logical_mib": 130.90087890625,
+        "mean_pread_calls": 2814.25,
+        "logical_bytes": 4392304640,
+        "storage_bytes": 4392304640,
+        "mean_host_wall_ms": 3514.43557168858,
+        "mean_materialize_ms": 17.64584498759359,
+        "round_mean_ms": [
+          3553.7119223752143,
+          3531.267098625335
+        ],
+        "round_throughput": [
+          1.040451777255785,
+          1.0268504618315677
+        ],
+        "latency_change_pct": 0.0,
+        "throughput_change_pct": 0.0,
+        "byte_ratio": 1.0,
+        "pread_ratio": 1.0
+      },
+      "4/naive": {
+        "concurrency": 4,
+        "mode": "naive",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 3031.48104312487,
+        "p50_ms": 3001.319871499618,
+        "p95_ms": 3706.736078850736,
+        "requests_per_s": 1.1546365361812343,
+        "mean_logical_mib": 84.92956161499023,
+        "mean_pread_calls": 7639.875,
+        "logical_bytes": 2849763200,
+        "storage_bytes": 2849802240,
+        "mean_host_wall_ms": 3003.621783405663,
+        "mean_materialize_ms": 17.356451019644737,
+        "round_mean_ms": [
+          3070.5477418123337,
+          2992.4143444374067
+        ],
+        "round_throughput": [
+          1.108419383836801,
+          1.2048755689312989
+        ],
+        "latency_change_pct": -14.425122949855663,
+        "throughput_change_pct": 11.709502060080856,
+        "byte_ratio": 0.6488081846709066,
+        "pread_ratio": 2.7147108465843477
+      },
+      "4/coalesced": {
+        "concurrency": 4,
+        "mode": "coalesced",
+        "samples_including_repeats": 32,
+        "unique_requests": 16,
+        "mean_ms": 3068.8524174062763,
+        "p50_ms": 3073.4569094993276,
+        "p95_ms": 3847.4851343496994,
+        "requests_per_s": 1.1312092747953306,
+        "mean_logical_mib": 98.18124771118164,
+        "mean_pread_calls": 5016.375,
+        "logical_bytes": 3294416000,
+        "storage_bytes": 3294423040,
+        "mean_host_wall_ms": 3040.8286228434918,
+        "mean_materialize_ms": 17.43893398810178,
+        "round_mean_ms": [
+          3059.0709033126586,
+          3078.633931499894
+        ],
+        "round_throughput": [
+          1.1069845671487701,
+          1.1565179466384048
+        ],
+        "latency_change_pct": -13.37017630370092,
+        "throughput_change_pct": 9.442946635889871,
+        "byte_ratio": 0.7500426928492828,
+        "pread_ratio": 1.7824908945544995
+      }
+    }
+  },
+  "audit": {
+    "verified_trace_selection_hashes": 32,
+    "direct_read_byte_exact_checks_per_benchmark_invocation": 24,
+    "identical_trace_digest_all_experiments": true,
+    "original_source_verified": true,
+    "capture_vs_v4_records": 32,
+    "capture_vs_v4_mismatches": {
+      "prediction": 0,
+      "correct": 0,
+      "layer_token_selection_sha256": 0
+    }
+  },
+  "tests": ".............................                                            [100%]\n29 passed in 3.46s\n"
+}

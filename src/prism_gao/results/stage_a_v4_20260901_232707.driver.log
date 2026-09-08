@@ -1,0 +1,74 @@
+nohup: ignoring input
+[2026-09-01T23:27:21+08:00] promixed/fp16 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:28:31+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/trec/k010_fp16_forward
+[2026-09-01T23:28:36+08:00] promixed/k4 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:29:37+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/trec/k010_exact_host_forward
+[2026-09-01T23:29:42+08:00] promixed/k4 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:30:52+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/trec/k010_exact_resident_forward
+[2026-09-01T23:30:57+08:00] promixed/k4 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:31:59+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/trec/k010_exact_resident_reverse
+[2026-09-01T23:32:04+08:00] promixed/k4 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:33:06+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/trec/k010_exact_host_reverse
+[2026-09-01T23:33:11+08:00] promixed/fp16 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:34:26+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/trec/k010_fp16_reverse
+[2026-09-01T23:34:31+08:00] promixed/fp16 subj k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:35:56+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/subj/k025_fp16_forward
+[2026-09-01T23:36:01+08:00] promixed/k4 subj k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:37:19+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/subj/k025_exact_host_forward
+[2026-09-01T23:37:24+08:00] promixed/k4 subj k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:38:47+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/subj/k025_exact_resident_forward
+[2026-09-01T23:38:52+08:00] promixed/k4 subj k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:40:13+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/subj/k025_exact_resident_reverse
+[2026-09-01T23:40:18+08:00] promixed/k4 subj k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:41:42+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/subj/k025_exact_host_reverse
+[2026-09-01T23:41:47+08:00] promixed/fp16 subj k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:43:12+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/subj/k025_fp16_reverse
+[2026-09-01T23:43:17+08:00] promixed/fp16 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:44:10+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/sst2/k010_fp16_forward
+[2026-09-01T23:44:15+08:00] promixed/k4 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:45:01+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/sst2/k010_exact_host_forward
+[2026-09-01T23:45:06+08:00] promixed/k4 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:45:54+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/sst2/k010_exact_resident_forward
+[2026-09-01T23:45:59+08:00] promixed/k4 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:46:46+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/sst2/k010_exact_resident_reverse
+[2026-09-01T23:46:52+08:00] promixed/k4 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:47:40+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/sst2/k010_exact_host_reverse
+[2026-09-01T23:47:45+08:00] promixed/fp16 sst2 k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:48:41+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/sst2/k010_fp16_reverse
+[2026-09-01T23:48:46+08:00] promixed/fp16 rte k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:50:58+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/rte/k025_fp16_forward
+[2026-09-01T23:51:03+08:00] promixed/k4 rte k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:52:52+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/rte/k025_exact_host_forward
+[2026-09-01T23:52:57+08:00] promixed/k4 rte k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:54:48+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/forward/rte/k025_exact_resident_forward
+[2026-09-01T23:54:54+08:00] promixed/k4 rte k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:56:47+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/rte/k025_exact_resident_reverse
+[2026-09-01T23:56:52+08:00] promixed/k4 rte k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:58:42+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/rte/k025_exact_host_reverse
+[2026-09-01T23:58:48+08:00] promixed/fp16 rte k025 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-02T00:00:59+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707/reverse/rte/k025_fp16_reverse
+Stage A confirmation complete: /home/panzihang/src/prism_max/src/prism_gao/results/stage_a_confirm_v4_20260901_232707

@@ -1,0 +1,791 @@
+{
+  "aggregation": "each UID is averaged over repeats before aggregate and paired metrics",
+  "bootstrap": {
+    "samples": 5000,
+    "seed": 42,
+    "unit": "matched UID"
+  },
+  "exclusions": {
+    "application_order": "validated raw run, then excluded UIDs, then matched repeats/methods and computed metrics",
+    "manifest_path": null,
+    "observed_by_task": {
+      "rte": [],
+      "sst2": [],
+      "subj": [],
+      "trec": []
+    },
+    "observed_count_by_task": {
+      "rte": 0,
+      "sst2": 0,
+      "subj": 0,
+      "trec": 0
+    },
+    "per_run": {
+      "subj/k025/contigkv/r1": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k025/contigkv/r2": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k025/promixed/r1": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k025/promixed/r2": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k050/contigkv/r1": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k050/contigkv/r2": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k050/promixed/r1": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "subj/k050/promixed/r2": {
+        "analysis_records": 998,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 998
+      },
+      "trec/k010/contigkv/r1": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k010/contigkv/r2": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k010/promixed/r1": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k010/promixed/r2": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k050/contigkv/r1": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k050/contigkv/r2": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k050/promixed/r1": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      },
+      "trec/k050/promixed/r2": {
+        "analysis_records": 495,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 495
+      }
+    },
+    "purpose": null,
+    "requested_by_task": {
+      "rte": [],
+      "sst2": [],
+      "subj": [],
+      "trec": []
+    },
+    "requested_count_by_task": {
+      "rte": 0,
+      "sst2": 0,
+      "subj": 0,
+      "trec": 0
+    }
+  },
+  "input": {
+    "kind": "manifest",
+    "path": "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/schedule_manifest.json",
+    "purpose": "Four-cell matched K4/nodefer strict ABBA re-prefill diagnostics."
+  },
+  "input_bundle_preexclusions": {
+    "application_stage": "strict bundle construction before benchmark runs",
+    "evaluation_records_by_task": {
+      "rte": 272,
+      "sst2": 867,
+      "subj": 998,
+      "trec": 495
+    },
+    "excluded_uids_by_task": {
+      "rte": [
+        "rte-0"
+      ],
+      "sst2": [
+        "sst2-0"
+      ],
+      "subj": [
+        "subj-0"
+      ],
+      "trec": [
+        "trec-0"
+      ]
+    },
+    "manifest_path": "/home/panzihang/src/prism_max/configs/strict_eval_exclusions.json",
+    "manifest_sha256": "b89e0216afdc427a5c3012467232bb595b3f8366f727078c3a89305017bb6ec9",
+    "metadata_path": "/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval_strict/metadata.json",
+    "metadata_sha256": "bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c9160abdb5",
+    "preapplied": true,
+    "source_records_by_task": {
+      "rte": 273,
+      "sst2": 868,
+      "subj": 999,
+      "trec": 496
+    }
+  },
+  "metric_definitions": {
+    "pareto": "non-dominated accuracy (higher) versus mean response_ready_ms (lower) across budgets",
+    "phase_latency": "logits_ready_ms; first-token logits ready",
+    "prefetch_stall_ratio": "prefetch_wait_ms / logits_ready_ms within each run, then averaged over repeats per UID",
+    "primary_latency": "response_ready_ms; token decoding complete and benchmark-only accuracy scoring excluded",
+    "ssd_mib_per_request": "(critical_ssd_read_bytes + selector_disk_source_bytes) / 2^20, request-time only"
+  },
+  "protocol_by_task": {
+    "subj": {
+      "accuracy_scoring": "label_continuation_loglikelihood",
+      "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
+      "cache_type": "CKLFU",
+      "cache_update_in_ttft": true,
+      "cpu_cache_mb": 131.0,
+      "defer_cache_score_updates": false,
+      "evaluation_ready_includes_accuracy_scoring": true,
+      "generation_max_tokens": 1,
+      "gpu_cache_mb": 55.0,
+      "measurement": "ttft_ms/logits_ready_ms ends when first-token logits are ready; first_token_ready_ms additionally includes cache-score maintenance and first-token ID selection; latency_ms ends when all requested token IDs are ready; response_ready_ms additionally includes token decoding and excludes benchmark-only accuracy scoring; evaluation_ready_ms/accuracy_scores_ready_ms additionally includes complete-label scoring. latency_ms and response_ready_ms describe one token only when max_tokens=1.",
+      "model_compute_dtype": "bfloat16",
+      "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+      "online_selection": true,
+      "pcache_storage_dtype": "float16",
+      "period_size": 8,
+      "prefetch_time_budget": 10000.0,
+      "response_ready_excludes_accuracy_scoring": true,
+      "response_ready_metric_valid_for_first_token": true,
+      "selector_index_bits": 4,
+      "selector_index_dir": "/home/panzihang/src/prism_max/assets/selector_index_k4_g32",
+      "selector_index_group_size": 32,
+      "selector_index_manifest_sha256": "0a8e5c9f2053a39b7533eae37dd07396f526010c3cbddeab1e29708ac6955b7a",
+      "selector_index_preloaded_bytes": 35578368,
+      "similarity_alpha": 0.6,
+      "subperiod_size": 4,
+      "warmup_passes": 1,
+      "warmup_samples_per_task": 32
+    },
+    "trec": {
+      "accuracy_scoring": "label_continuation_loglikelihood",
+      "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
+      "cache_type": "CKLFU",
+      "cache_update_in_ttft": true,
+      "cpu_cache_mb": 131.0,
+      "defer_cache_score_updates": false,
+      "evaluation_ready_includes_accuracy_scoring": true,
+      "generation_max_tokens": 1,
+      "gpu_cache_mb": 55.0,
+      "measurement": "ttft_ms/logits_ready_ms ends when first-token logits are ready; first_token_ready_ms additionally includes cache-score maintenance and first-token ID selection; latency_ms ends when all requested token IDs are ready; response_ready_ms additionally includes token decoding and excludes benchmark-only accuracy scoring; evaluation_ready_ms/accuracy_scores_ready_ms additionally includes complete-label scoring. latency_ms and response_ready_ms describe one token only when max_tokens=1.",
+      "model_compute_dtype": "bfloat16",
+      "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+      "online_selection": true,
+      "pcache_storage_dtype": "float16",
+      "period_size": 8,
+      "prefetch_time_budget": 10000.0,
+      "response_ready_excludes_accuracy_scoring": true,
+      "response_ready_metric_valid_for_first_token": true,
+      "selector_index_bits": 4,
+      "selector_index_dir": "/home/panzihang/src/prism_max/assets/selector_index_k4_g32",
+      "selector_index_group_size": 32,
+      "selector_index_manifest_sha256": "0a8e5c9f2053a39b7533eae37dd07396f526010c3cbddeab1e29708ac6955b7a",
+      "selector_index_preloaded_bytes": 39836160,
+      "similarity_alpha": 0.6,
+      "subperiod_size": 4,
+      "warmup_passes": 1,
+      "warmup_samples_per_task": 32
+    }
+  },
+  "schema_version": 1,
+  "scope": "re-prefill only; task-local analysis with no cross-task pooling",
+  "tasks": {
+    "subj": {
+      "budgets": {
+        "025": {
+          "methods": {
+            "contigkv": {
+              "accuracy": 0.48597194388777554,
+              "fairness_context": {
+                "actual_keep_ratio": 0.24932003626473254,
+                "selected_kv_mib": 60.15625
+              },
+              "logits_ready_mean_ms": 441.3713898401491,
+              "logits_ready_p95_ms": 595.3191011212766,
+              "prefetch_stall_ratio": 0.4903576191196587,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 441.7369780424639,
+              "response_ready_p95_ms": 595.6223979592323,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_contigkv_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_contigkv_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 2.5176603206412826,
+                "selector": 0.0,
+                "total": 2.5176603206412826
+              },
+              "uids": 998
+            },
+            "promixed": {
+              "accuracy": 0.8246492985971944,
+              "fairness_context": {
+                "actual_keep_ratio": 0.24932363756135506,
+                "selected_kv_mib": 60.1571189253507
+              },
+              "logits_ready_mean_ms": 440.0376743662221,
+              "logits_ready_p95_ms": 507.30313267558813,
+              "prefetch_stall_ratio": 0.3140947393492472,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 440.2964734766289,
+              "response_ready_p95_ms": 507.599301636219,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_promixed_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k025_promixed_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 0.45441664579158314,
+                "selector": 0.0,
+                "total": 0.45441664579158314
+              },
+              "uids": 998
+            }
+          },
+          "paired": {
+            "promixed_vs_contigkv": {
+              "accuracy_delta_pp": 33.86773547094188,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                30.360721442885772,
+                37.17434869739479
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_contigkv",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -1.3337154739269452,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -6.7465787344842685,
+                4.064676884661162
+              ],
+              "prefetch_stall_delta_pp": -17.626287977041148,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -17.99574029080323,
+                -17.26430133579296
+              ],
+              "response_ready_delta_ms": -1.440504565834999,
+              "response_ready_delta_ms_paired_bootstrap_95ci": [
+                -6.815584337038785,
+                3.842298003386718
+              ],
+              "ssd_delta_mib_per_request": -2.0632436748496996,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                -2.1647674254759517,
+                -1.9598795246743486
+              ],
+              "uids": 998
+            },
+            "promixed_vs_impress": {
+              "available": false,
+              "comparison": "promixed_vs_impress",
+              "reason": "missing method in this task/budget cell"
+            }
+          }
+        },
+        "050": {
+          "methods": {
+            "contigkv": {
+              "accuracy": 0.5551102204408818,
+              "fairness_context": {
+                "actual_keep_ratio": 0.499546690843155,
+                "selected_kv_mib": 120.53125
+              },
+              "logits_ready_mean_ms": 914.4753348427583,
+              "logits_ready_p95_ms": 1201.9617357291281,
+              "prefetch_stall_ratio": 0.629859744404347,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 914.8656964868509,
+              "response_ready_p95_ms": 1202.2247137501836,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_contigkv_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_contigkv_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 7.1593499498997994,
+                "selector": 0.0,
+                "total": 7.1593499498997994
+              },
+              "uids": 998
+            },
+            "promixed": {
+              "accuracy": 0.8547094188376754,
+              "fairness_context": {
+                "actual_keep_ratio": 0.499546690843155,
+                "selected_kv_mib": 120.53125
+              },
+              "logits_ready_mean_ms": 807.761050521383,
+              "logits_ready_p95_ms": 1040.2997904457152,
+              "prefetch_stall_ratio": 0.4882960394760003,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 808.0399796256576,
+              "response_ready_p95_ms": 1040.639093145728,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_promixed_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/subj/k050_promixed_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 1.6091401553106213,
+                "selector": 0.0,
+                "total": 1.6091401553106213
+              },
+              "uids": 998
+            }
+          },
+          "paired": {
+            "promixed_vs_contigkv": {
+              "accuracy_delta_pp": 29.95991983967936,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                26.95390781563126,
+                33.06613226452906
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_contigkv",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -106.71428432137536,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -116.30635551308312,
+                -97.05188794551232
+              ],
+              "prefetch_stall_delta_pp": -14.156370492834666,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -14.531091696833554,
+                -13.767349767626902
+              ],
+              "response_ready_delta_ms": -106.82571686119334,
+              "response_ready_delta_ms_paired_bootstrap_95ci": [
+                -116.14682928869922,
+                -97.15322634936142
+              ],
+              "ssd_delta_mib_per_request": -5.550209794589178,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                -5.659225286510521,
+                -5.440027124561623
+              ],
+              "uids": 998
+            },
+            "promixed_vs_impress": {
+              "available": false,
+              "comparison": "promixed_vs_impress",
+              "reason": "missing method in this task/budget cell"
+            }
+          }
+        }
+      },
+      "pareto": {
+        "by_method": {
+          "contigkv": [
+            {
+              "accuracy": 0.48597194388777554,
+              "budget": "025",
+              "logits_ready_phase_mean_ms": 441.3713898401491,
+              "method": "contigkv",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 441.7369780424639
+            },
+            {
+              "accuracy": 0.5551102204408818,
+              "budget": "050",
+              "logits_ready_phase_mean_ms": 914.4753348427583,
+              "method": "contigkv",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 914.8656964868509
+            }
+          ],
+          "impress": [],
+          "promixed": [
+            {
+              "accuracy": 0.8246492985971944,
+              "budget": "025",
+              "logits_ready_phase_mean_ms": 440.0376743662221,
+              "method": "promixed",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 440.2964734766289
+            },
+            {
+              "accuracy": 0.8547094188376754,
+              "budget": "050",
+              "logits_ready_phase_mean_ms": 807.761050521383,
+              "method": "promixed",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 808.0399796256576
+            }
+          ]
+        },
+        "joint": [
+          {
+            "accuracy": 0.48597194388777554,
+            "budget": "025",
+            "logits_ready_phase_mean_ms": 441.3713898401491,
+            "method": "contigkv",
+            "pareto_optimal": false,
+            "response_ready_mean_ms": 441.7369780424639
+          },
+          {
+            "accuracy": 0.5551102204408818,
+            "budget": "050",
+            "logits_ready_phase_mean_ms": 914.4753348427583,
+            "method": "contigkv",
+            "pareto_optimal": false,
+            "response_ready_mean_ms": 914.8656964868509
+          },
+          {
+            "accuracy": 0.8246492985971944,
+            "budget": "025",
+            "logits_ready_phase_mean_ms": 440.0376743662221,
+            "method": "promixed",
+            "pareto_optimal": true,
+            "response_ready_mean_ms": 440.2964734766289
+          },
+          {
+            "accuracy": 0.8547094188376754,
+            "budget": "050",
+            "logits_ready_phase_mean_ms": 807.761050521383,
+            "method": "promixed",
+            "pareto_optimal": true,
+            "response_ready_mean_ms": 808.0399796256576
+          }
+        ]
+      }
+    },
+    "trec": {
+      "budgets": {
+        "010": {
+          "methods": {
+            "contigkv": {
+              "accuracy": 0.5434343434343434,
+              "fairness_context": {
+                "actual_keep_ratio": 0.09959514170040484,
+                "selected_kv_mib": 26.90625
+              },
+              "logits_ready_mean_ms": 412.90379077610044,
+              "logits_ready_p95_ms": 450.779824052006,
+              "prefetch_stall_ratio": 0.570593209093136,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 413.16035481151005,
+              "response_ready_p95_ms": 451.0102877393365,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_contigkv_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 8.733080808080809,
+                "selector": 0.0,
+                "total": 8.733080808080809
+              },
+              "uids": 495
+            },
+            "promixed": {
+              "accuracy": 0.6404040404040404,
+              "fairness_context": {
+                "actual_keep_ratio": 0.09925296925296925,
+                "selected_kv_mib": 26.813809974747475
+              },
+              "logits_ready_mean_ms": 249.45482170642023,
+              "logits_ready_p95_ms": 288.3725995197892,
+              "prefetch_stall_ratio": 0.11935641496566814,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 249.7014079374647,
+              "response_ready_p95_ms": 288.624532520771,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k010_promixed_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 0.34741161616161614,
+                "selector": 0.0,
+                "total": 0.34741161616161614
+              },
+              "uids": 495
+            }
+          },
+          "paired": {
+            "promixed_vs_contigkv": {
+              "accuracy_delta_pp": 9.696969696969697,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                5.05050505050505,
+                14.141414141414142
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_contigkv",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -163.44896906968017,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -167.64062909668104,
+                -159.1082698409916
+              ],
+              "prefetch_stall_delta_pp": -45.12367941274679,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -45.52801816492176,
+                -44.718051432911714
+              ],
+              "response_ready_delta_ms": -163.45894687404535,
+              "response_ready_delta_ms_paired_bootstrap_95ci": [
+                -167.68997996191803,
+                -159.18516189617227
+              ],
+              "ssd_delta_mib_per_request": -8.385669191919192,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                -8.436020359848486,
+                -8.334558869949495
+              ],
+              "uids": 495
+            },
+            "promixed_vs_impress": {
+              "available": false,
+              "comparison": "promixed_vs_impress",
+              "reason": "missing method in this task/budget cell"
+            }
+          }
+        },
+        "050": {
+          "methods": {
+            "contigkv": {
+              "accuracy": 0.6141414141414141,
+              "fairness_context": {
+                "actual_keep_ratio": 0.5012145748987854,
+                "selected_kv_mib": 135.40625
+              },
+              "logits_ready_mean_ms": 1236.0724529524268,
+              "logits_ready_p95_ms": 1717.4724657088518,
+              "prefetch_stall_ratio": 0.6704940563282057,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 1236.4998370634787,
+              "response_ready_p95_ms": 1717.751894146204,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_contigkv_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_contigkv_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 14.952556818181819,
+                "selector": 0.0,
+                "total": 14.952556818181819
+              },
+              "uids": 495
+            },
+            "promixed": {
+              "accuracy": 0.593939393939394,
+              "fairness_context": {
+                "actual_keep_ratio": 0.49959514170040487,
+                "selected_kv_mib": 134.96875
+              },
+              "logits_ready_mean_ms": 901.6142283086524,
+              "logits_ready_p95_ms": 1157.1774506010115,
+              "prefetch_stall_ratio": 0.4920564674218905,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "response_ready_mean_ms": 901.9045251995476,
+              "response_ready_p95_ms": 1157.4616599828005,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_promixed_k4_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_k4_nodefer_strict_abba_diag_final_20260825/trec/k050_promixed_k4_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 2.4017676767676766,
+                "selector": 0.0,
+                "total": 2.4017676767676766
+              },
+              "uids": 495
+            }
+          },
+          "paired": {
+            "promixed_vs_contigkv": {
+              "accuracy_delta_pp": -2.0202020202020203,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                -3.8383838383838382,
+                -0.40404040404040403
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_contigkv",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -334.45822464377443,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -355.1262129196953,
+                -314.9783108349551
+              ],
+              "prefetch_stall_delta_pp": -17.84375889063152,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -18.407686841023082,
+                -17.264738076195542
+              ],
+              "response_ready_delta_ms": -334.59531186393116,
+              "response_ready_delta_ms_paired_bootstrap_95ci": [
+                -354.9040301020417,
+                -314.72993291571095
+              ],
+              "ssd_delta_mib_per_request": -12.55078914141414,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                -12.658113952020203,
+                -12.441894728535352
+              ],
+              "uids": 495
+            },
+            "promixed_vs_impress": {
+              "available": false,
+              "comparison": "promixed_vs_impress",
+              "reason": "missing method in this task/budget cell"
+            }
+          }
+        }
+      },
+      "pareto": {
+        "by_method": {
+          "contigkv": [
+            {
+              "accuracy": 0.5434343434343434,
+              "budget": "010",
+              "logits_ready_phase_mean_ms": 412.90379077610044,
+              "method": "contigkv",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 413.16035481151005
+            },
+            {
+              "accuracy": 0.6141414141414141,
+              "budget": "050",
+              "logits_ready_phase_mean_ms": 1236.0724529524268,
+              "method": "contigkv",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 1236.4998370634787
+            }
+          ],
+          "impress": [],
+          "promixed": [
+            {
+              "accuracy": 0.6404040404040404,
+              "budget": "010",
+              "logits_ready_phase_mean_ms": 249.45482170642023,
+              "method": "promixed",
+              "pareto_optimal": true,
+              "response_ready_mean_ms": 249.7014079374647
+            },
+            {
+              "accuracy": 0.593939393939394,
+              "budget": "050",
+              "logits_ready_phase_mean_ms": 901.6142283086524,
+              "method": "promixed",
+              "pareto_optimal": false,
+              "response_ready_mean_ms": 901.9045251995476
+            }
+          ]
+        },
+        "joint": [
+          {
+            "accuracy": 0.5434343434343434,
+            "budget": "010",
+            "logits_ready_phase_mean_ms": 412.90379077610044,
+            "method": "contigkv",
+            "pareto_optimal": false,
+            "response_ready_mean_ms": 413.16035481151005
+          },
+          {
+            "accuracy": 0.6141414141414141,
+            "budget": "050",
+            "logits_ready_phase_mean_ms": 1236.0724529524268,
+            "method": "contigkv",
+            "pareto_optimal": false,
+            "response_ready_mean_ms": 1236.4998370634787
+          },
+          {
+            "accuracy": 0.6404040404040404,
+            "budget": "010",
+            "logits_ready_phase_mean_ms": 249.45482170642023,
+            "method": "promixed",
+            "pareto_optimal": true,
+            "response_ready_mean_ms": 249.7014079374647
+          },
+          {
+            "accuracy": 0.593939393939394,
+            "budget": "050",
+            "logits_ready_phase_mean_ms": 901.6142283086524,
+            "method": "promixed",
+            "pareto_optimal": false,
+            "response_ready_mean_ms": 901.9045251995476
+          }
+        ]
+      }
+    }
+  }
+}

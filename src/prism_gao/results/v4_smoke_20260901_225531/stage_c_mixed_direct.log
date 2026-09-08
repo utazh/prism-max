@@ -1,0 +1,4 @@
+nohup: ignoring input
+[2026-09-01T23:13:31+08:00] promixed/k4 trec k010 on GPU 2; deferred=false adaptive_coverage=false
+Pcache CPU budget is fixed at 131 MiB; selector-index memory is additive and reported separately.
+[2026-09-01T23:14:09+08:00] completed /home/panzihang/src/prism_max/src/prism_gao/results/v4_smoke_20260901_225531/c_mixed_direct/trec/k010_coalesced_gated_direct_pinned_smoke

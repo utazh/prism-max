@@ -1,0 +1,325 @@
+"""Concurrent replay of frozen real KV plans, NOT an LLM-serving TTFT test."""
+from __future__ import annotations
+
+import argparse
+import concurrent.futures
+import hashlib
+import json
+import math
+import multiprocessing
+from contextlib import ExitStack
+import os
+from pathlib import Path
+import statistics
+import threading
+import time
+
+import torch
+
+from .concurrency_io import (
+    close_reader, direct_pread_into_pinned, install_direct_io, process_io,
+)
+from .mixed_precision_reader import MixedPrecisionPayloadReader
+from .precision_run_coalescer import build_coalesced_16_8_drop_plan, DROP, INT8
+
+PAYLOAD = "/home/panzihang/contiguous_fuxian_ssd/prism_ultra_payload_g32_v1"
+TASKS = ("sst2", "subj", "trec", "rte")
+
+
+def read_jsonl(path):
+    return [json.loads(line) for line in Path(path).read_text().splitlines() if line]
+
+
+def load_traces(root, samples_per_task):
+    by_task = {}
+    for task in TASKS:
+        measured = read_jsonl(root / "capture" / task / "capture_fp16" /
+                              "scored_records.jsonl")[:samples_per_task]
+        traces = {r["trace_id"]: r for r in read_jsonl(root / "capture" / "traces" / f"{task}.jsonl")}
+        by_task[task] = []
+        for row in measured:
+            trace = dict(traces[row["prism_gao_trace_id"]])
+            trace["uid"] = row["uid"]
+            selections = [[token for block in layer["selected_blocks"]
+                           for token in range(block * trace["block_size"],
+                                              min((block + 1) * trace["block_size"],
+                                                  trace["prefix_tokens"]))]
+                          for layer in trace["layers"]]
+            digest = hashlib.sha256(json.dumps(
+                selections, separators=(",", ":"), ensure_ascii=True).encode("ascii")).hexdigest()
+            if digest != row["layer_token_selection_sha256"]:
+                raise ValueError("captured trace differs from the measured selection hash")
+            if trace["source_precision"] != "fp16":
+                raise ValueError("freeze plans from the FP16 path")
+            if len(trace["layers"]) != 28:
+                raise ValueError("incomplete request trace")
+            by_task[task].append(trace)
+        if len(measured) != samples_per_task:
+            raise ValueError("not enough measured traces; warmups are not replay samples")
+    # C=4 has one different task/prefix per worker; C=2 splits the same trace list.
+    return [by_task[t][i] for i in range(samples_per_task) for t in TASKS]
+
+
+def make_plans(trace, mode, min_run=2):
+    result = []
+    n = math.ceil(trace["prefix_tokens"] / trace["block_size"])
+    for layer in trace["layers"]:
+        plan = build_coalesced_16_8_drop_plan(
+            total_blocks=n,
+            selected_blocks=layer["selected_blocks"],
+            priority_blocks=layer["priority_blocks"],
+            fp16_fraction=1.0 if mode == "fp16" else 0.25,
+            min_int8_run_blocks=min_run if mode == "coalesced" else 1,
+        )
+        assert set(plan.selected_blocks) == set(layer["selected_blocks"])
+        result.append((layer["layer"], plan))
+    return result
+
+
+def percentile(values, q):
+    ordered = sorted(values)
+    p = (len(ordered) - 1) * q
+    lo, hi = math.floor(p), math.ceil(p)
+    return ordered[lo] + (ordered[hi] - ordered[lo]) * (p - lo)
+
+
+def disk_snapshot():
+    with open("/proc/diskstats") as stream:
+        for line in stream:
+            fields = line.split()
+            if fields[2] == "sda":
+                return dict(zip(
+                    ("read_ios", "read_merges", "read_sectors", "read_ms",
+                     "write_ios", "write_merges", "write_sectors", "write_ms",
+                     "inflight", "busy_ms", "weighted_ms"),
+                    map(int, fields[3:14])))
+    return {}
+
+
+def verify_direct(root):
+    reader = MixedPrecisionPayloadReader(root)
+    checks = []
+    for task, geom in reader.tasks.items():
+        for path in reader._paths(task, geom.layers - 1, "key").values():
+            size = path.stat().st_size
+            fd = os.open(path, os.O_RDONLY | os.O_DIRECT)
+            reference = os.open(path, os.O_RDONLY)
+            try:
+                for offset, nbytes in ((0, min(size, 16384)), (size - 1555, 1555)):
+                    expected = os.pread(reference, nbytes, offset)
+                    actual = direct_pread_into_pinned(
+                        fd, nbytes=nbytes, offset=offset).numpy().tobytes()
+                    assert actual == expected, f"direct read mismatch: {path}"
+                    checks.append(hashlib.sha256(actual).hexdigest())
+            finally:
+                os.close(fd)
+                os.close(reference)
+    close_reader(reader)
+    return {"checks": len(checks), "all_byte_exact": True,
+            "digest": hashlib.sha256(json.dumps(checks).encode()).hexdigest()}
+
+
+def warmup(root, traces):
+    reader = MixedPrecisionPayloadReader(root)
+    stream = torch.cuda.Stream()
+    try:
+        for trace in traces[:4]:
+            for mode in ("fp16", "naive", "coalesced"):
+                layer, plan = make_plans(trace, mode)[0]
+                payload = reader.read_kv_host(task=trace["task"], layer=layer, tiers=plan.tiers)
+                with torch.cuda.stream(stream):
+                    result = reader.materialize_kv_gpu(payload, plan, stream)
+                result[2]["materialize_finished"].synchronize()
+        torch.cuda.synchronize()
+    finally:
+        close_reader(reader)
+
+
+def replay_worker(lane, root, traces, concurrency, prepared, phase, barrier, processes):
+    if processes:
+        torch.set_num_threads(1)
+        if os.environ.get("PRISM_GAO_IO_BACKEND") == "direct":
+            install_direct_io()
+    torch.cuda.set_device(0)
+    reader = MixedPrecisionPayloadReader(root)
+    stream = torch.cuda.Stream()
+    rows = []
+    if processes:
+        warmup(root, traces[:1])
+    barrier.wait()
+    io_before = process_io()
+    barrier.wait()
+    try:
+        for trace in traces[lane::concurrency]:
+            started = time.perf_counter()
+            read_ms = byte_count = pread_calls = 0
+            host_wall_ms = materialize_ms = 0.0
+            pending = []
+            not_ready = layers = int8_blocks = promoted_blocks = 0
+
+            def retire():
+                nonlocal materialize_ms, not_ready
+                payload, result = pending.pop(0)
+                stats = result[2]
+                not_ready += int(not stats["materialize_finished"].query())
+                stats["materialize_finished"].synchronize()
+                materialize_ms += stats["materialize_started"].elapsed_time(
+                    stats["materialize_finished"])
+                # Keep BOTH source and output alive until their own stream finishes.
+
+            for layer, plan in prepared[trace["uid"]]:
+                host_start = time.perf_counter()
+                payload = reader.read_kv_host(
+                    task=trace["task"], layer=layer, tiers=plan.tiers)
+                host_wall_ms += (time.perf_counter() - host_start) * 1000
+                byte_count += payload.key.read_bytes + payload.value.read_bytes
+                pread_calls += payload.key.pread_calls + payload.value.pread_calls
+                read_ms += payload.key.read_ms + payload.value.read_ms
+                layers += 1
+                int8_blocks += len(plan.int8_blocks)
+                promoted_blocks += len(plan.promoted_int8_blocks)
+                if phase == "ready":
+                    with torch.cuda.stream(stream):
+                        result = reader.materialize_kv_gpu(payload, plan, stream)
+                    pending.append((payload, result))
+                    if len(pending) >= 2:
+                        retire()
+            while pending:
+                retire()
+            rows.append({
+                "uid": trace["uid"], "task": trace["task"], "lane": lane,
+                "latency_ms": (time.perf_counter() - started) * 1000,
+                "read_loop_ms": read_ms, "host_wall_ms": host_wall_ms,
+                "materialize_event_ms": materialize_ms,
+                "read_bytes": byte_count, "pread_calls": pread_calls,
+                "layers": layers, "int8_blocks": int8_blocks,
+                "promoted_blocks": promoted_blocks,
+                "not_ready_at_microbenchmark_retirement": not_ready,
+            })
+        return rows, process_io()["read_bytes"] - io_before["read_bytes"]
+    finally:
+        stream.synchronize()
+        close_reader(reader)
+
+
+def replay_cell(root, traces, concurrency, mode, phase, min_run, workers="threads"):
+    processes = workers == "processes"
+    prepared = {r["uid"]: make_plans(r, mode, min_run) for r in traces}
+
+    with ExitStack() as stack:
+        if processes:
+            ctx = multiprocessing.get_context("spawn")
+            manager = stack.enter_context(ctx.Manager())
+            barrier = manager.Barrier(concurrency + 1, timeout=60)
+            pool = stack.enter_context(concurrent.futures.ProcessPoolExecutor(
+                max_workers=concurrency, mp_context=ctx))
+        else:
+            barrier = threading.Barrier(concurrency + 1, timeout=60)
+            pool = stack.enter_context(concurrent.futures.ThreadPoolExecutor(
+                max_workers=concurrency))
+        futures = [pool.submit(replay_worker, i, root, traces, concurrency,
+                               prepared, phase, barrier, processes)
+                   for i in range(concurrency)]
+        barrier.wait()  # All worker initialization/JIT is outside measurement.
+        before, disk_before = process_io(), disk_snapshot()
+        started = time.perf_counter()
+        barrier.wait()
+        payloads = [future.result() for future in futures]
+        rows = [r for payload, _ in payloads for r in payload]
+        wall_s = time.perf_counter() - started
+        after, disk_after = process_io(), disk_snapshot()
+    latencies = [r["latency_ms"] for r in rows]
+    physical = (sum(delta for _, delta in payloads) if processes else
+                after["read_bytes"] - before["read_bytes"])
+    logical = sum(r["read_bytes"] for r in rows)
+    calls = sum(r["pread_calls"] for r in rows)
+    disk_delta = {k: disk_after[k] - v for k, v in disk_before.items() if k != "inflight"}
+    result = {
+        "concurrency": concurrency, "mode": mode, "phase": phase, "workers": workers,
+        "samples": len(rows), "wall_s": wall_s, "requests_per_s": len(rows) / wall_s,
+        "mean_ms": statistics.mean(latencies),
+        "p50_ms": percentile(latencies, .5), "p95_ms": percentile(latencies, .95),
+        "logical_read_bytes": logical, "process_storage_read_bytes": physical,
+        "storage_to_logical_ratio": physical / max(1, logical),
+        "pread_calls": calls, "logical_mib_per_s": logical / 2**20 / wall_s,
+        "physical_mib_per_s": physical / 2**20 / wall_s,
+        "mean_host_wall_ms": statistics.mean(r["host_wall_ms"] for r in rows),
+        "mean_read_loop_ms": statistics.mean(r["read_loop_ms"] for r in rows),
+        "mean_materialize_event_ms": statistics.mean(r["materialize_event_ms"] for r in rows),
+        "disk_global_delta": disk_delta,
+        "disk_global_busy_pct": disk_delta.get("busy_ms", 0) / (wall_s * 10),
+        "disk_global_read_await_ms": disk_delta.get("read_ms", 0) /
+                                      max(1, disk_delta.get("read_ios", 0)),
+        "requests": rows,
+    }
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-root", type=Path, required=True)
+    parser.add_argument("--payload-root", default=PAYLOAD)
+    parser.add_argument("--backend", choices=("buffered", "direct"), required=True)
+    parser.add_argument("--workers", choices=("threads", "processes"), default="threads")
+    parser.add_argument("--phase", choices=("host", "ready"), default="ready")
+    parser.add_argument("--samples-per-task", type=int, default=4)
+    parser.add_argument("--concurrency", type=int, nargs="+", default=[1, 2, 4])
+    parser.add_argument("--rounds", type=int, default=2)
+    parser.add_argument("--min-run", type=int, default=2)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if Path(__file__).resolve().parent not in args.output.resolve().parents:
+        raise ValueError("outputs must stay inside prism_gao")
+    if args.output.exists():
+        raise FileExistsError(args.output)
+    if min(args.concurrency) < 1 or args.samples_per_task < 1:
+        raise ValueError("positive counts required")
+    torch.set_num_threads(1)
+    traces = load_traces(args.run_root, args.samples_per_task)
+    verification = verify_direct(args.payload_root)
+    os.environ["PRISM_GAO_IO_BACKEND"] = args.backend
+    if args.backend == "direct":
+        install_direct_io()
+    if args.backend == "buffered":
+        # Equal warm-cache treatment for all three precision variants.
+        primer = MixedPrecisionPayloadReader(args.payload_root)
+        try:
+            for trace in traces:
+                for mode in ("fp16", "naive", "coalesced"):
+                    for layer, plan in make_plans(trace, mode, args.min_run):
+                        primer.read_kv_host(task=trace["task"], layer=layer, tiers=plan.tiers)
+        finally:
+            close_reader(primer)
+    warmup(args.payload_root, traces)
+    metadata = {
+        "schema": "prism-concurrency-replay-v1", "backend": args.backend,
+        "phase": args.phase, "workers": args.workers, "torch": torch.__version__,
+        "gpu": torch.cuda.get_device_name(), "pid": os.getpid(),
+        "trace_sha256": hashlib.sha256(json.dumps(traces, sort_keys=True).encode()).hexdigest(),
+        "uids": [r["uid"] for r in traces], "verification": verification,
+        "gate": "bypassed_explicit_ablation", "fp16_fraction": .25,
+        "min_int8_run_blocks": args.min_run,
+        "measurement": "closed-loop full-28-layer KV readiness replay; no attention, selector or quality scoring",
+        "cache_policy": "no cache eviction; O_DIRECT diagnostic vs ordinary buffered reads",
+    }
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open("x", encoding="utf-8") as log:
+        log.write(json.dumps({"metadata": metadata}) + "\n")
+        log.flush()
+        for round_index in range(args.rounds):
+            modes = ["fp16", "naive", "coalesced"]
+            if round_index % 2:
+                modes.reverse()
+            for concurrency in args.concurrency:
+                for mode in modes:
+                    result = replay_cell(args.payload_root, traces, concurrency,
+                                         mode, args.phase, args.min_run, args.workers)
+                    result.update(round=round_index, backend=args.backend)
+                    log.write(json.dumps(result) + "\n")
+                    log.flush()
+                    print(json.dumps({k: v for k, v in result.items()
+                                      if k not in {"requests", "disk_global_delta"}}), flush=True)
+
+
+if __name__ == "__main__":
+    main()

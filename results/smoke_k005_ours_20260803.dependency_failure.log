@@ -1,0 +1,27 @@
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 102.43it/s]
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/panzihang/src/prism_paper_matrix_20260803/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1727, in <module>
+    raise SystemExit(main())
+  File "/home/panzihang/src/prism_paper_matrix_20260803/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1687, in main
+    summary = run_flexgen_reprefill(
+  File "/home/panzihang/src/prism_paper_matrix_20260803/src/contiguous_fuxian/flexgen_qwen_reprefill.py", line 1074, in run_flexgen_reprefill
+    store = FlexGenPcacheStore(flexgen_config)
+  File "/home/panzihang/src/prism_paper_matrix_20260803/src/contiguous_fuxian/flexgen_pcache.py", line 384, in __init__
+    pcache_module = _load_pcache_module(config.flexgen_root)
+  File "/home/panzihang/src/prism_paper_matrix_20260803/src/contiguous_fuxian/flexgen_pcache.py", line 257, in _load_pcache_module
+    module = importlib.import_module("my_pcache_fast")
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/panzihang/src/prism_paper_matrix_20260803/vendor/flexgen/my_pcache_fast.py", line 4, in <module>
+    from myheap import Heap
+ModuleNotFoundError: No module named 'myheap'

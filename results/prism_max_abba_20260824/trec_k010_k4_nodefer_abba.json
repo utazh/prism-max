@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "design": "ABBA",
+    "task": "trec",
+    "budget": "010",
+    "backend": "k4",
+    "score_mode": "nodefer",
+    "adaptive_coverage": false,
+    "unique_uids": 128,
+    "repetitions_per_method": 2,
+    "run_order": [
+      "reference_r1",
+      "candidate_r1",
+      "candidate_r2",
+      "reference_r2"
+    ],
+    "reference_runs": [
+      "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_contigkv_k4_nodefer_r1",
+      "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_contigkv_k4_nodefer_r2"
+    ],
+    "candidate_runs": [
+      "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_promixed_k4_nodefer_r1",
+      "/home/panzihang/src/prism_max/results/prism_max_abba_20260824/trec/k010_promixed_k4_nodefer_r2"
+    ],
+    "bootstrap_samples": 10000,
+    "bootstrap_seed": 20260824,
+    "shared_runtime_config": {
+      "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+      "measurement": "ttft_ms/logits_ready_ms ends when first-token logits are ready; first_token_ready_ms additionally includes cache-score maintenance and first-token ID selection; latency_ms ends when all requested token IDs are ready; response_ready_ms additionally includes token decoding and excludes benchmark-only accuracy scoring; evaluation_ready_ms/accuracy_scores_ready_ms additionally includes complete-label scoring. latency_ms and response_ready_ms describe one token only when max_tokens=1.",
+      "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
+      "model_compute_dtype": "bfloat16",
+      "accuracy_scoring": "label_continuation_loglikelihood",
+      "accuracy_scoring_protocol": "mean token log-probability over each complete teacher-forced label continuation after the measured TTFT boundary",
+      "generation_max_tokens": 1,
+      "pcache_storage_dtype": "float16",
+      "keep_ratio": 0.1,
+      "chunk_size": 16,
+      "period_size": 8,
+      "subperiod_size": 4,
+      "gpu_cache_mb": 55.0,
+      "cpu_cache_mb": 131.0,
+      "cache_type": "CKLFU",
+      "prefetch_time_budget": 10000.0,
+      "reused_existing_kv_chunks": true,
+      "resumed_partial_kv_chunks": false,
+      "online_selection": true,
+      "registered_store_tasks": [
+        "sst2",
+        "subj",
+        "trec",
+        "rte"
+      ],
+      "selector_kv_head_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "selector_index_dir": "/home/panzihang/src/prism_max/assets/selector_index_k4_g32",
+      "selector_index_bits": 4,
+      "selector_index_group_size": 32,
+      "selector_index_manifest_sha256": "0a8e5c9f2053a39b7533eae37dd07396f526010c3cbddeab1e29708ac6955b7a",
+      "selector_index_preloaded_tasks": [
+        "trec"
+      ],
+      "selector_index_preloaded_bytes": 39836160,
+      "nominal_cpu_cache_plus_selector_bytes": 177199616,
+      "similarity_alpha": 0.6,
+      "defer_cache_score_updates": false,
+      "cache_update_in_ttft": true,
+      "warmup_passes": 1,
+      "warmup_samples_per_task": 32,
+      "response_ready_metric_valid_for_first_token": true,
+      "response_ready_excludes_accuracy_scoring": true,
+      "evaluation_ready_includes_accuracy_scoring": true
+    }
+  },
+  "integrity": {
+    "strict_validation_passed": true,
+    "identical_uid_sets": true,
+    "repeat_predictions_deterministic": true,
+    "repeat_selection_hashes_deterministic": true,
+    "ready_aliases_and_boundaries_valid": true
+  },
+  "accuracy": {
+    "reference_accuracy": 0.5546875,
+    "candidate_accuracy": 0.59375,
+    "accuracy_delta_pp": 3.90625,
+    "wrong_to_correct": 22,
+    "correct_to_wrong": 17,
+    "mcnemar_two_sided_p": 0.5223973804968409
+  },
+  "ready_metrics": {
+    "logits_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 465.04069527509273,
+      "candidate_mean_ms": 274.6061079833453,
+      "mean_reduction_percent": 40.95009086873499,
+      "reference_p95_ms": 520.5441743601114,
+      "candidate_p95_ms": 330.6002349127084,
+      "p95_reduction_percent": 36.48949480241424,
+      "mean_paired_delta_ms": -190.43458729174745,
+      "median_paired_delta_ms": -191.9705008622259,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -197.2494804652797,
+        -183.58163236316614
+      ],
+      "candidate_faster_uids": 128,
+      "tied_uids": 0,
+      "total_uids": 128,
+      "forward_order_mean_delta_ms": -217.05614524398698,
+      "reverse_order_mean_delta_ms": -163.81302933950792,
+      "reference_repeat_means_ms": [
+        479.6091559546767,
+        450.4722345955088
+      ],
+      "candidate_repeat_means_ms": [
+        262.5530107106897,
+        286.65920525600086
+      ]
+    },
+    "first_token_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 465.1819554910617,
+      "candidate_mean_ms": 274.7579824317654,
+      "mean_reduction_percent": 40.935373956687194,
+      "reference_p95_ms": 520.7013874314725,
+      "candidate_p95_ms": 330.72857884690166,
+      "p95_reduction_percent": 36.48402196922751,
+      "mean_paired_delta_ms": -190.42397305929626,
+      "median_paired_delta_ms": -191.95722416043282,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -197.34487260598144,
+        -183.43564868678186
+      ],
+      "candidate_faster_uids": 128,
+      "tied_uids": 0,
+      "total_uids": 128,
+      "forward_order_mean_delta_ms": -217.05603720329236,
+      "reverse_order_mean_delta_ms": -163.79190891530016,
+      "reference_repeat_means_ms": [
+        479.75410158687737,
+        450.609809395246
+      ],
+      "candidate_repeat_means_ms": [
+        262.698064383585,
+        286.8179004799458
+      ]
+    },
+    "latency_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 465.21916665551544,
+      "candidate_mean_ms": 274.7919476187235,
+      "mean_reduction_percent": 40.93279741799613,
+      "reference_p95_ms": 520.752816926688,
+      "candidate_p95_ms": 330.75607125647366,
+      "p95_reduction_percent": 36.48501544197354,
+      "mean_paired_delta_ms": -190.42721903679194,
+      "median_paired_delta_ms": -191.95402425248176,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -197.33225550621682,
+        -183.410548447182
+      ],
+      "candidate_faster_uids": 128,
+      "tied_uids": 0,
+      "total_uids": 128,
+      "forward_order_mean_delta_ms": -217.06171937694307,
+      "reverse_order_mean_delta_ms": -163.7927186966408,
+      "reference_repeat_means_ms": [
+        479.79132464752183,
+        450.64700866350904
+      ],
+      "candidate_repeat_means_ms": [
+        262.72960527057876,
+        286.85428996686824
+      ]
+    },
+    "response_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 465.3245233985217,
+      "candidate_mean_ms": 274.8982311004511,
+      "mean_reduction_percent": 40.92333043341072,
+      "reference_p95_ms": 520.8494258113205,
+      "candidate_p95_ms": 330.8406905271113,
+      "p95_reduction_percent": 36.48055001466788,
+      "mean_paired_delta_ms": -190.42629229807062,
+      "median_paired_delta_ms": -191.9504958204925,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -197.46377232004306,
+        -183.53564999442824
+      ],
+      "candidate_faster_uids": 128,
+      "tied_uids": 0,
+      "total_uids": 128,
+      "forward_order_mean_delta_ms": -217.0695704589889,
+      "reverse_order_mean_delta_ms": -163.78301413715235,
+      "reference_repeat_means_ms": [
+        479.89900247193873,
+        450.7500443251047
+      ],
+      "candidate_repeat_means_ms": [
+        262.82943201294984,
+        286.96703018795233
+      ]
+    },
+    "evaluation_ready_ms": {
+      "aggregation": "mean each UID over repeats before paired analysis",
+      "reference_mean_ms": 563.4884101309581,
+      "candidate_mean_ms": 371.9750779764581,
+      "mean_reduction_percent": 33.98709338316135,
+      "reference_p95_ms": 623.1852059718221,
+      "candidate_p95_ms": 433.0448154360056,
+      "p95_reduction_percent": 30.511056538850813,
+      "mean_paired_delta_ms": -191.51333215449995,
+      "median_paired_delta_ms": -191.07023254036903,
+      "paired_bootstrap_mean_delta_95ci_ms": [
+        -198.89993459437392,
+        -184.1800695578513
+      ],
+      "candidate_faster_uids": 128,
+      "tied_uids": 0,
+      "total_uids": 128,
+      "forward_order_mean_delta_ms": -223.87310981866904,
+      "reverse_order_mean_delta_ms": -159.15355449033086,
+      "reference_repeat_means_ms": [
+        579.1725830931682,
+        547.8042371687479
+      ],
+      "candidate_repeat_means_ms": [
+        355.2994732744992,
+        388.65068267841707
+      ]
+    }
+  },
+  "mechanism": {
+    "reference": {
+      "mean_effective_mean_keep_ratio": 0.09959514170040486,
+      "mean_selected_kv_bytes": 28213248.0,
+      "mean_physical_prefetch_kv_bytes": 41445376.0,
+      "mean_total_ssd_read_bytes": 9595904.0,
+      "mean_selector_load_ms": 2.5164148028125055,
+      "mean_selector_compute_ms": 19.466495699700317,
+      "mean_cache_update_ms": 13.054875749730854
+    },
+    "candidate": {
+      "mean_effective_mean_keep_ratio": 0.09925309065934065,
+      "mean_selected_kv_bytes": 28116352.0,
+      "mean_physical_prefetch_kv_bytes": 31085888.0,
+      "mean_total_ssd_read_bytes": 561408.0,
+      "mean_selector_load_ms": 10.268973419442773,
+      "mean_selector_compute_ms": 53.854502258007415,
+      "mean_cache_update_ms": 21.52652661425236
+    }
+  }
+}

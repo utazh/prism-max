@@ -1,0 +1,134 @@
+[2026-08-03T21:25:23+08:00] starting k005_impress
+[2026-08-03T21:53:55+08:00] completed k005_impress
+[2026-08-03T21:54:05+08:00] starting k005_contiguouskv
+[2026-08-03T22:00:08+08:00] completed k005_contiguouskv
+[2026-08-03T22:00:18+08:00] starting k005_ours
+[2026-08-03T22:09:38+08:00] completed k005_ours
+[2026-08-03T22:09:48+08:00] starting k010_contiguouskv
+[2026-08-03T22:17:40+08:00] completed k010_contiguouskv
+[2026-08-03T22:17:50+08:00] starting k010_ours
+[2026-08-03T22:28:18+08:00] completed k010_ours
+[2026-08-03T22:28:28+08:00] starting k010_impress
+[2026-08-03T23:07:17+08:00] completed k010_impress
+[2026-08-03T23:07:27+08:00] starting k025_ours
+[2026-08-03T23:26:19+08:00] completed k025_ours
+[2026-08-03T23:26:29+08:00] starting k025_impress
+[2026-08-04T00:57:35+08:00] completed k025_impress
+[2026-08-04T00:57:46+08:00] starting k025_contiguouskv
+[2026-08-04T01:17:40+08:00] completed k025_contiguouskv
+[2026-08-04T01:17:51+08:00] starting k050_impress
+[2026-08-04T05:07:33+08:00] completed k050_impress
+[2026-08-04T05:07:43+08:00] starting k050_contiguouskv
+[2026-08-04T05:57:47+08:00] completed k050_contiguouskv
+[2026-08-04T05:57:57+08:00] starting k050_ours
+[2026-08-04T06:42:25+08:00] completed k050_ours
+# Qwen2.5-7B Figure 9-11 paper-count matrix
+
+## Protocol
+
+- Four datasets with Table 1 counts: SST2=100, SUBJ=110, TREC=120, RTE=80 (410 requests total).
+- Sequential batch-size-1 single-request execution; one complete 410-request warmup pass before measurement.
+- Qwen2.5-7B, BF16 model compute, FP16 KV storage, 55/131 MiB GPU/CPU caches, CKLFU, seed 42 task bundle.
+- Methods: reproduced IMPRESS, reproduced ContiguousKV, and the sensitivity-aware HyperInfer-derived method with 16-token blocks.
+- All methods use identical request UIDs at 5%, 10%, 25%, and 50% KV budgets.
+
+## Overall
+
+| KV budget | Method | Correct | Accuracy | Effective budget | Mean TTFT (ms) | P95 TTFT (ms) |
+|---:|---|---:|---:|---:|---:|---:|
+| 5% | IMPRESS | 338/410 | 0.8244 | 5.55% | 2033.6 | 3255.4 |
+| 5% | ContiguousKV | 264/410 | 0.6439 | 4.97% | 295.3 | 409.3 |
+| 5% | Ours | 342/410 | 0.8341 | 4.91% | 587.4 | 800.5 |
+| 10% | ContiguousKV | 305/410 | 0.7439 | 9.95% | 440.5 | 601.3 |
+| 10% | Ours | 339/410 | 0.8268 | 9.90% | 682.2 | 898.2 |
+| 10% | IMPRESS | 332/410 | 0.8098 | 13.27% | 2831.6 | 4150.3 |
+| 25% | ContiguousKV | 317/410 | 0.7732 | 24.99% | 1368.1 | 2352.8 |
+| 25% | Ours | 344/410 | 0.8390 | 24.91% | 1287.1 | 2471.1 |
+| 25% | IMPRESS | 343/410 | 0.8366 | 29.44% | 9224.8 | 34240.5 |
+| 50% | Ours | 353/410 | 0.8610 | 49.94% | 3158.0 | 5410.3 |
+| 50% | IMPRESS | 350/410 | 0.8537 | 55.15% | 16198.3 | 43934.3 |
+| 50% | ContiguousKV | 333/410 | 0.8122 | 50.02% | 3611.0 | 5976.4 |
+
+## Ours Versus Baselines
+
+Negative TTFT change means Ours is faster. Confidence intervals use paired request-level bootstrap deltas (Ours minus baseline).
+
+| KV budget | Baseline | Accuracy delta | Mean TTFT change | P95 change | Mean delta 95% CI (ms) | Faster requests |
+|---:|---|---:|---:|---:|---:|---:|
+| 5% | ContiguousKV | +19.02 pp | +98.96% | +95.61% | [281.2, 303.1] | 1/410 |
+| 5% | IMPRESS | +0.98 pp | -71.11% | -75.41% | [-1497.6, -1397.4] | 410/410 |
+| 10% | ContiguousKV | +8.29 pp | +54.88% | +49.38% | [229.0, 254.1] | 7/410 |
+| 10% | IMPRESS | +1.71 pp | -75.91% | -78.36% | [-2203.3, -2097.7] | 410/410 |
+| 25% | ContiguousKV | +6.59 pp | -5.92% | +5.03% | [-101.4, -60.4] | 282/410 |
+| 25% | IMPRESS | +0.24 pp | -86.05% | -92.78% | [-8927.1, -7000.8] | 410/410 |
+| 50% | ContiguousKV | +4.88 pp | -12.55% | -9.47% | [-517.3, -388.3] | 309/410 |
+| 50% | IMPRESS | +0.73 pp | -80.50% | -87.69% | [-14370.0, -11760.2] | 393/410 |
+
+## Paper-Trend Checks
+
+- Figure 9 direction: ContiguousKV beats IMPRESS in overall accuracy at 0/4 budgets.
+- Proposed method has accuracy no worse than ContiguousKV at 4/4 budgets.
+- Figure 10 direction: ContiguousKV mean TTFT beats IMPRESS in 8/8 dataset-budget cells; Ours beats ContiguousKV in 3/8.
+- Figure 11 direction: ContiguousKV P95 beats IMPRESS in 2/2 representative datasets; Ours beats ContiguousKV in 0/2.
+
+## Per Dataset
+
+| KV budget | Dataset | Method | Correct | Accuracy | Mean TTFT (ms) | P95 TTFT (ms) |
+|---:|---|---|---:|---:|---:|---:|
+| 5% | SST2 | IMPRESS | 91/100 | 0.9100 | 1691.4 | 2009.4 |
+| 5% | SUBJ | IMPRESS | 86/110 | 0.7818 | 1687.1 | 2053.7 |
+| 5% | TREC | IMPRESS | 90/120 | 0.7500 | 1931.3 | 2274.9 |
+| 5% | RTE | IMPRESS | 71/80 | 0.8875 | 3091.1 | 3885.1 |
+| 5% | SST2 | ContiguousKV | 87/100 | 0.8700 | 222.7 | 251.6 |
+| 5% | SUBJ | ContiguousKV | 25/110 | 0.2273 | 237.6 | 268.7 |
+| 5% | TREC | ContiguousKV | 84/120 | 0.7000 | 378.0 | 449.1 |
+| 5% | RTE | ContiguousKV | 68/80 | 0.8500 | 341.1 | 411.4 |
+| 5% | SST2 | Ours | 92/100 | 0.9200 | 433.4 | 505.2 |
+| 5% | SUBJ | Ours | 88/110 | 0.8000 | 577.8 | 686.8 |
+| 5% | TREC | Ours | 89/120 | 0.7417 | 608.5 | 679.3 |
+| 5% | RTE | Ours | 73/80 | 0.9125 | 761.7 | 873.3 |
+| 10% | SST2 | ContiguousKV | 91/100 | 0.9100 | 335.1 | 374.5 |
+| 10% | SUBJ | ContiguousKV | 60/110 | 0.5455 | 350.8 | 399.9 |
+| 10% | TREC | ContiguousKV | 86/120 | 0.7167 | 566.3 | 647.4 |
+| 10% | RTE | ContiguousKV | 68/80 | 0.8500 | 507.0 | 585.6 |
+| 10% | SST2 | Ours | 92/100 | 0.9200 | 561.4 | 659.1 |
+| 10% | SUBJ | Ours | 88/110 | 0.8000 | 641.1 | 736.9 |
+| 10% | TREC | Ours | 85/120 | 0.7083 | 695.1 | 778.1 |
+| 10% | RTE | Ours | 74/80 | 0.9250 | 870.5 | 1006.0 |
+| 10% | SST2 | IMPRESS | 91/100 | 0.9100 | 2493.7 | 2890.2 |
+| 10% | SUBJ | IMPRESS | 84/110 | 0.7636 | 2452.5 | 2960.0 |
+| 10% | TREC | IMPRESS | 87/120 | 0.7250 | 2698.5 | 3022.1 |
+| 10% | RTE | IMPRESS | 70/80 | 0.8750 | 3975.2 | 4332.6 |
+| 25% | SST2 | ContiguousKV | 93/100 | 0.9300 | 982.6 | 1203.7 |
+| 25% | SUBJ | ContiguousKV | 68/110 | 0.6182 | 1178.2 | 1420.2 |
+| 25% | TREC | ContiguousKV | 89/120 | 0.7417 | 1284.5 | 1512.2 |
+| 25% | RTE | ContiguousKV | 67/80 | 0.8375 | 2236.5 | 2555.1 |
+| 25% | SST2 | Ours | 95/100 | 0.9500 | 951.7 | 1096.0 |
+| 25% | SUBJ | Ours | 89/110 | 0.8091 | 1062.8 | 1281.0 |
+| 25% | TREC | Ours | 86/120 | 0.7167 | 1059.6 | 1190.9 |
+| 25% | RTE | Ours | 74/80 | 0.9250 | 2356.1 | 2654.0 |
+| 25% | SST2 | IMPRESS | 92/100 | 0.9200 | 4080.7 | 9055.9 |
+| 25% | SUBJ | IMPRESS | 96/110 | 0.8727 | 5732.3 | 20760.0 |
+| 25% | TREC | IMPRESS | 82/120 | 0.6833 | 8565.9 | 28727.0 |
+| 25% | RTE | IMPRESS | 73/80 | 0.9125 | 21445.7 | 44104.9 |
+| 50% | SST2 | Ours | 95/100 | 0.9500 | 2002.2 | 4005.5 |
+| 50% | SUBJ | Ours | 92/110 | 0.8364 | 2286.0 | 4264.5 |
+| 50% | TREC | Ours | 92/120 | 0.7667 | 3508.4 | 4588.0 |
+| 50% | RTE | Ours | 74/80 | 0.9250 | 5276.0 | 5800.0 |
+| 50% | SST2 | IMPRESS | 93/100 | 0.9300 | 9247.7 | 23130.7 |
+| 50% | SUBJ | IMPRESS | 95/110 | 0.8636 | 12371.6 | 37554.1 |
+| 50% | TREC | IMPRESS | 88/120 | 0.7333 | 22944.5 | 47018.7 |
+| 50% | RTE | IMPRESS | 74/80 | 0.9250 | 20029.0 | 56036.8 |
+| 50% | SST2 | ContiguousKV | 94/100 | 0.9400 | 2510.1 | 3242.5 |
+| 50% | SUBJ | ContiguousKV | 81/110 | 0.7364 | 2992.8 | 3648.6 |
+| 50% | TREC | ContiguousKV | 89/120 | 0.7417 | 3622.8 | 4348.2 |
+| 50% | RTE | ContiguousKV | 69/80 | 0.8625 | 5819.5 | 6490.7 |
+
+## Scope Relative To The Paper
+
+- Figure 9 alignment: four datasets and the same 5/10/25/50% budgets; this reproduction currently covers Qwen2.5-7B and three methods rather than three model sizes and four methods.
+- Figure 10 alignment: mean TTFT at 5% and 25% on all four datasets. Mean TTFT at 10% and 50% is retained as an extension.
+- Figure 11 alignment: P95 TTFT at 5% on SST-2 and RTE. P95 on other datasets and budgets is retained as an extension.
+- Absolute latency is not directly comparable: the paper uses A800 80GB, 10/24GB cache limits, and Samsung 990 Pro; this run uses RTX 3090 and 55/131 MiB cache limits on the available server SSD.
+- The paper reports average ContiguousKV accuracy gains over IMPRESS of 7.69%, 4.81%, 3.58%, and 1.63% at 5/10/25/50%, plus a 3.85x TTFT reduction at 5%. Those are multi-model aggregates, not Qwen2.5-7B-only targets.
+- The 5/10/25% sensitivity profiles reuse and proportionally scale the frozen 50% layer ranking; they were not independently recalibrated per budget.

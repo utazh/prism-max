@@ -1,0 +1,24 @@
+chunk size = 256
+DISK -> GPU average time = 0.00438133s
+ CPU -> GPU average time = 0.00104798s
+ GPU -> GPU average time = 0.00006856s
+
+chunk size = 128
+DISK -> GPU average time = 0.00254998s
+ CPU -> GPU average time = 0.00082123s
+ GPU -> GPU average time = 0.00005005s
+
+chunk size = 64
+DISK -> GPU average time = 0.00152609s
+ CPU -> GPU average time = 0.00045243s
+ GPU -> GPU average time = 0.00003153s
+
+chunk size = 32
+DISK -> GPU average time = 0.00101444s
+ CPU -> GPU average time = 0.00027959s
+ GPU -> GPU average time = 0.00001855s
+
+chunk size = 16
+DISK -> GPU average time = 0.00057593s
+ CPU -> GPU average time = 0.00016097s
+ GPU -> GPU average time = 0.00001042s

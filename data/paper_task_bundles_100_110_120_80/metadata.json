@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "seed": 42,
+  "total_evaluation_requests": 410,
+  "evaluation_requests_by_task": {
+    "sst2": 100,
+    "subj": 110,
+    "trec": 120,
+    "rte": 80
+  },
+  "excluded_uids_manifest": "/home/panzihang/src/contiguous_fuxian/results/impress_reorder/qwen25_7b_paper4_disjoint_history32_35_v2.json",
+  "excluded_uids_manifest_sha256": "36c5e1ec62187f8916e04e7758e79c9a28cfe1c75cb8999739e6be15287542cf",
+  "tasks": {
+    "sst2": {
+      "fewshot_examples": 100,
+      "paper_prefix_tokens": 3800,
+      "records": 100,
+      "prefix_characters": 17554,
+      "actual_prefix_tokens": 3811,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_paper_counts_20260803/data/paper_task_bundles_100_110_120_80/sst2.jsonl",
+      "evaluation_requests": 100,
+      "prefix_text_sha256": "ca642ee0f97a402ab1d528cd7fc3e9f5275dc0df502b864fc12f554376359bdf",
+      "validated_reference_records": 32,
+      "excluded_calibration_uids": [
+        "sst2-32",
+        "sst2-33",
+        "sst2-34",
+        "sst2-35"
+      ]
+    },
+    "subj": {
+      "fewshot_examples": 110,
+      "paper_prefix_tokens": 4400,
+      "records": 110,
+      "prefix_characters": 20701,
+      "actual_prefix_tokens": 4412,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_paper_counts_20260803/data/paper_task_bundles_100_110_120_80/subj.jsonl",
+      "evaluation_requests": 110,
+      "prefix_text_sha256": "1e68faa21963d2e31401cb591406c3efa94268ae27b737410a604236586f167d",
+      "validated_reference_records": 32,
+      "excluded_calibration_uids": [
+        "subj-32",
+        "subj-33",
+        "subj-34",
+        "subj-35"
+      ]
+    },
+    "trec": {
+      "fewshot_examples": 120,
+      "paper_prefix_tokens": 5000,
+      "records": 120,
+      "prefix_characters": 19833,
+      "actual_prefix_tokens": 4940,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_paper_counts_20260803/data/paper_task_bundles_100_110_120_80/trec.jsonl",
+      "evaluation_requests": 120,
+      "prefix_text_sha256": "b67ac86d2014b838287bcfa021b5bea5b3865a22c6e3b8ed98f5e47cf6e0a70d",
+      "validated_reference_records": 32,
+      "excluded_calibration_uids": [
+        "trec-32",
+        "trec-33",
+        "trec-34",
+        "trec-35"
+      ]
+    },
+    "rte": {
+      "fewshot_examples": 80,
+      "paper_prefix_tokens": 6000,
+      "records": 80,
+      "prefix_characters": 25989,
+      "actual_prefix_tokens": 6011,
+      "qwen_chat_format": true,
+      "bundle": "/home/panzihang/src/prism_paper_counts_20260803/data/paper_task_bundles_100_110_120_80/rte.jsonl",
+      "evaluation_requests": 80,
+      "prefix_text_sha256": "2538fbefd9ab6c2fdd9f78a25c166bbf9523bc2ccfc8cb0bd1efe443add916b0",
+      "validated_reference_records": 32,
+      "excluded_calibration_uids": [
+        "rte-32",
+        "rte-33",
+        "rte-34",
+        "rte-35"
+      ]
+    }
+  }
+}

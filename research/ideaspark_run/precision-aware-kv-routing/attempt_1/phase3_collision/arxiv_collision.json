@@ -1,0 +1,772 @@
+[
+ {
+  "title": "Machine-Checked Certificates for the Geometric Half of the Minimum Kochen-Specker Bound",
+  "title_norm": "machine checked certificates for the geometric half of the minimum kochen specke",
+  "abstract": "The best known lower bound for the minimum Kochen-Specker vector system in $\\mathbb{R}^3$ -- 24 vectors -- rests on a computational proof whose combinatorial half emits DRAT proofs but whose geometric half does not: the non-embeddability of thousands of candidate graphs is established by Z3's nonlinear real arithmetic, which produces no checkable proof objects. We close this gap for the proof's blocking database. We introduce exact rational case-tree certificates of real non-embeddability, whose splits are polynomial factorizations and rational sum-of-squares decompositions and whose leaves are discharged by injectivity, ideal-membership, or Positivstellensatz-shaped positivity arguments, and we certify all 291 source lines (180 distinct graphs) of the published pipeline's order-10 to order-13 blocking lists. Certificates are replayed by two independent checkers that share no code with the generator: a pure-Python replay over exact fractions, and a total checker implemented and proved sound in Lean 4. The soundness theorem -- acceptance implies that no injective-on-rays, orthogonality-respecting assignment of nonzero real vectors realizes the graph -- is kernel-checked with axiom closure {propext, Classical.choice, Quot.sound}, and a gcd-free rational arithmetic layer makes the entire verdict computation kernel-reducible, so each per-graph non-embeddability result is a closed kernel theorem proved by decide. The formalization surfaced findings about the published pipeline, including a load-bearing injectivity side condition in its embeddability notion, hidden WLOG case obligations invisible to Z3-based workflows, and an unreproducible candidate count that we resolve against the published artifacts. All certificates, checkers, and proofs are available and replayable from a single build.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Shayaan Siddique",
+   "Ibrahim Mian"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.26413v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.26413v1",
+  "published_iso": "2026-07-29T02:53:00Z"
+ },
+ {
+  "title": "GPU-Accelerated Search and Certification of Bounded Indistinguishability in Finite Kripke Semantics",
+  "title_norm": "gpu accelerated search and certification of bounded indistinguishability in fini",
+  "abstract": "We study finite Kripke semantics as an explicit search and certification problem for modal formulas. Sets of worlds are encoded as integer bitmasks, so Boolean connectives, $\\Box$, and $\\Diamond$ reduce to word-level containment and intersection tests. This gives a deterministic evaluator with an independent certificate checker, then scales it through a fused CUDA kernel for exhaustive small-frame scans. Over $K,T,S4,S5$, a corpus of 5,624 formulas is evaluated on all frames through five worlds, performing $1.63\\times 10^{14}$ formula evaluations in 45 minutes on one H100. All 20,990 emitted countermodel certificates verify. In this bounded corpus, every $K$-refutable formula has a countermodel on at most two worlds, far below the standard filtration bound $2^{|\\mathrm{Sub}(\\varphi)|}$. We then turn pairwise formula equivalence into a minimal-countermodel problem for biconditionals and synthesize semantic mirages: formulas that agree on every model up to a finite size and split only later. In particular, $α_2=(\\Box\\Diamond)^2\\top$ and $α_3=(\\Box\\Diamond)^3\\top$ agree on all frames of at most five worlds but are separated by a checked six-world path. Finally, we build a density-aggregated semantic atlas for representation-guided candidate retrieval and compare raw features, PCA, UMAP, spectral layouts, and random layouts under a common million-pair verifier budget. The result is a reproducible bridge between modal finite-model theory, GPU enumeration, certificate checking, and graphics-supported semantic exploration.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Faruk Alpay",
+   "Baris Basaran"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.15437v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.15437v1",
+  "published_iso": "2026-06-13T19:01:41Z"
+ },
+ {
+  "title": "Machine-checkable equivalence certificates at the length-14 Andrews-Curtis frontier",
+  "title_norm": "machine checkable equivalence certificates at the length 14 andrews curtis front",
+  "abstract": "In rank 2, unconditional verification of the Andrews-Curtis conjecture stands at total relator length 12; at length 13 every balanced trivial-group presentation is AC-trivializable or AC-equivalent to the Akbulut-Kirby presentation AK(3), itself open. At length 14, Shehper et al. reduced the Miller-Schupp family to six hard presentations: four stated AC-equivalent to AK(3) with no published move sequences, and two unresolved. We prove four explicit AC-equivalences among these six as machine-checkable elementary-move certificates, replayable in under a second by a small dependency-free verifier: the classical candidate <x,y | x^-1 y^2 x = y^3, y^-1 x^2 y = x^3> (= MS(2, x^-2 y^-1 x^2 y) up to rotation) is equivalent to the unresolved MS(2, y x^2 y^-1 x^-2) (36 moves); MS(2, y x^2 y x^-2) to MS(2, x^-2 y^-1 x^2 y^-1) (85 moves); and MS(3, y x^2 y) and MS(3, y^-1 x^2 y^-1) each to AK(3) (66 and 13 moves). The latter two are, to our knowledge, the first public explicit certificates for any of the four AK(3)-equivalences asserted without proof by Shehper et al., making the MS(3) branch of the length-14 collapse unconditional. The first two realize the automorphism sigma: x -> x, y -> y^-1 on the remaining open classes. We complement the certificates with a computer-assisted exhaustive minimax analysis of the substitution-move graph: the bottleneck distance from MS(3, y x^2 y) to AK(3) is exactly 19, while any such path from either MS(2) representative to AK(3), or between them, must reach total length at least 27. We further analyze the public classification table of the \"Two-Hump\" campaign, derive a 214-pair class-merger program, and commit an AC-19 membership audit. All certificates, search engines, verifier, and one-command reproduction are archived.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Josep Carreras"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.23611v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.23611v1",
+  "published_iso": "2026-07-26T11:35:27Z"
+ },
+ {
+  "title": "Unprivileged Topology Certificates for Cloud GPU Attestation",
+  "title_norm": "unprivileged topology certificates for cloud gpu attestation",
+  "abstract": "Cloud GPU tenants receive a model name and a region, but cannot directly inspect the physical accelerator that runs their job. We present a software-only attestation primitive for this setting. A CUDA probe measures an SM-by-memory-region latency matrix using physical SM labels and dependent global loads. A streaming reducer commits sufficient statistics, configuration, code hashes, network evidence, and a compressed raw data archive into a certificate that a verifier can check without a GPU. The certificate supports three claims. First, the per-SM latency map is a stable physical fingerprint. Over a six-hour full-load RTX 5090 run, its median temporal jitter is 0.09 cycles, while shape-only leave-one-out classification separates distinct Blackwell dies with 100.0% accuracy. Second, cache-bypassing HBM sweeps recover hardware-class topology across generations, including a unified Volta V100 memory domain, a two-way Hopper H200 L2 split, and a Blackwell B200 two-die NV-HBI package whose 74/74 SM partition carries a 30-cycle, 15.5 ns cross-die penalty. Third, public network landmarks bind the same certificate to a coarse location. In the B200 run, 169 RIPE Atlas probes place the server within 44 km of its claimed datacentre and reject all 11 decoy sites. Together, these measurements check cloud-GPU identity, class, and coarse location without privileged access or a vendor key.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Faruk Alpay",
+   "Taylan Alpay"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.24934v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.24934v1",
+  "published_iso": "2026-06-22T11:33:12Z"
+ },
+ {
+  "title": "Passive spectral-admittance bounds and exact continuum certificates for multiresonator quantum-memory interfaces",
+  "title_norm": "passive spectral admittance bounds and exact continuum certificates for multires",
+  "abstract": "Broadband quantum-memory interfaces are often assessed by center-frequency impedance matching or by a sampled efficiency curve. Neither supplies an operational continuous-band certificate, and absorption is not automatically reversible storage. We model a passive one-port multiresonator interface by a positive-real spectral admittance with explicitly identified controlled output channels. If their one-photon subspace is mapped isometrically into long-lived registers, the write probability for a normalized spectrum $f$ supported in a band $\\mathcal{B}$ is $1-\\int_{\\mathcal{B}} |r(iω)|^2 |f(ω)|^2\\,dω$, and the worst-case write efficiency is $1-\\|r\\|_{L^\\infty(\\mathcal{B})}^2$. We prove that a finite passive rational interface cannot have zero reflection on a nonzero interval and derive the Bode--Fano floor $\\|r\\|_\\infty \\geq \\exp[-πκ/(2B)]$ for a band of half-width $B$. At fixed pole locations, minimax synthesis is a quasiconvex semi-infinite problem in the oscillator strengths. We then give an exact computer-assisted certificate: after a decimal design is converted into an explicit rational system, the continuum reflection bound becomes positivity of one univariate polynomial and is proved by Sturm root counting; exact Routh--Hurwitz determinants certify stability and minimum phase. In units $κ=2$ and $B=1$, an 11-mode design obeys $0.064112405 \\leq \\|r\\|_\\infty < 0.0641125$, implying a conditional uniform write guarantee above $0.995889587$. This is a reproducible certificate for a specified interface, not a claim of global movable-pole optimality or of an experimentally complete memory.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Maxim V. Churilov"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.10704v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.10704v2",
+  "published_iso": "2026-07-12T10:55:35Z"
+ },
+ {
+  "title": "Radiation damage to the Hubble Space Telescope has been several years out of phase with the Solar cycle",
+  "title_norm": "radiation damage to the hubble space telescope has been several years out of pha",
+  "abstract": "As well as obtaining beautiful images of the Universe, the Hubble Space Telescope's CCD detectors are sensitive radiation dosimeters that have been monitored in Low Earth Orbit for more than 24 years. The rate of radiation damage they received has varied over each Solar cycle, but several years out of phase with the appearance of sunspots or coronal mass ejections. We investigate functional forms that successfully fit the time series of damage to telescopes elsewhere in the Solar system. We obtain remarkably accurate fits to Hubble data but with physically absurd parameter values. During image post-processing, such fits can be used empirically, to correct more than 99.5% of the radiation damage's effect on image quality. However, fits to the time series with physically reasonable parameters produce worse performance. Our results highlight the diversity of radiation environments in different parts of our Solar system, and the complexity of Low Earth Orbit in particular. Our results also motivate continued monitoring of radiation damage to currently operational spacecraft, to more reliably predict the rate of degradation in (and useful lifespan of) future missions.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Gavin Leroy",
+   "Juan Paolo Lorenzo Gerardo Barrios",
+   "Maximilian von Wietersheim-Kramsta",
+   "Richard Massey",
+   "Richard G. Hayes",
+   "Jacob A. Kegerreis",
+   "David Lagattuta",
+   "Zane D. Lentz",
+   "James W. Nightingale",
+   "Jesper Skottfelt",
+   "Felix Vecchi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.18214v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.18214v1",
+  "published_iso": "2026-08-18T18:00:17Z"
+ },
+ {
+  "title": "A Kernel-Checked Exclusion Certificate for Erdős Problem 647",
+  "title_norm": "a kernel checked exclusion certificate for erdős problem 647",
+  "abstract": "Erdős problem 647 asks whether any $n > 24$ satisfies $\\max_{m<n}(m + τ(m)) \\le n + 2$, where $τ$ is the divisor-count function. Computational searches have excluded solutions up to $10^{12}$ by direct sieve and up to roughly $9.17 \\times 10^{18}$ within a modular reduction whose Lean component relies on native_decide; those computations sit outside any proof kernel. We give the first exclusion checked end to end by one: no solution exists with $24 < n \\le 10^9$, proved in Lean 4 with axiom closure exactly {propext, Classical.choice, Quot.sound} -- no sorry, no native_decide, no problem-specific axiom. The proof replays a chain of 6,685,922 factorization witnesses whose excluded intervals concatenate across $(24, 10^9]$; it needs no primality facts beyond primes below 1024, and it is the finite, fully proved form of a domination-interval argument whose asymptotic step was the identified gap in a withdrawn January 2026 claim on this problem. The generation pipeline is cross-checked by two further independent implementations, the compiled development replays through the standalone lean4checker, and two from-source verification legs -- Lean toolchains compiled from source by gcc and by clang, mathlib rebuilt with no cache -- reproduce the committed certificates byte for byte, with olean digests identical across three builds on two architectures. Our range is three to ten orders of magnitude below the computational frontiers we cite; the contribution is the trust base, not the range.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ibrahim Mian",
+   "Shayaan Siddique"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.17880v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.17880v1",
+  "published_iso": "2026-08-18T15:13:26Z"
+ },
+ {
+  "title": "Conformal Calibration for Multi-Modal Regression with Missing Modalities",
+  "title_norm": "conformal calibration for multi modal regression with missing modalities",
+  "abstract": "Prediction intervals for multi-modal regression with tabular variables, text, images, or other input sources are difficult to calibrate when those sources disagree or one is missing. A single global quantile averages these regimes together instead of calibrating to the modality pattern observed at test time. We address this through a modality-aware conformal calibration layer. The layer trains or reuses one predictor per modality, computes a disagreement score from their predictions, and uses that score in split conformal calibration under a strict split protocol. We use the score in two complementary ways. First, a continuous disagreement-scaled method reallocates interval width across examples while preserving the usual marginal split-conformal guarantee. Second, a Mondrian (stratified) method calibrates within groups defined by disagreement or modality availability fixed before calibration, giving group guarantees under joint exchangeability of the calibration and test examples. Across four multi-modal datasets, the disagreement-scaled layer matches or improves the marginal conformal baseline in 59 of 60 paired runs for interval continuous ranked probability score (CRPS) and in 52 of 60 for interval width, while keeping empirical coverage near the 95% target. In stress tests with missing modalities, mask-matched recalibration recovers up to 19.5 percentage points of coverage in the hardest fixed-mask regime. The result is a simple, model-agnostic reliability layer for multi-modal regression systems. A project page is available at https://unco3892.github.io/modality-aware-conformal.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ilia Azizi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.07795v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.07795v1",
+  "published_iso": "2026-08-07T22:38:35Z"
+ },
+ {
+  "title": "ReST-KV: Robust KV Cache Eviction with Layer-wise Output Reconstruction and Spatial-Temporal Smoothing",
+  "title_norm": "rest kv robust kv cache eviction with layer wise output reconstruction and spati",
+  "abstract": "Large language models (LLMs) face growing challenges in efficient generative inference due to the increasing memory demands of Key-Value (KV) caches, especially for long sequences. Existing eviction methods typically retain KV pairs with high attention weights but overlook the impact of attention redistribution caused by token removal, as well as the spatial-temporal dynamics in KV selection. In this paper, we propose ReST-KV, a robust KV eviction method that combines layer-wise output Reconstruction and Spatial-Temporal smoothing to provide a more comprehensive perspective for the KV cache eviction task. Specifically, ReST-KV formulates KV cache eviction as an optimization problem that minimizes output discrepancies through efficient layer-wise reconstruction. By directly modeling how each token's removal affects the model output, our method naturally captures attention redistribution effects, going beyond simplistic reliance on raw attention weights. To further enhance robustness, we design exponential moving average smoothing to handle temporal variations and an adaptive window-based mechanism to capture spatial patterns. Our method, ReST-KV, significantly advances performance on long-context benchmarks. It surpasses state-of-the-art baselines by 2.58% on LongBench and 15.2% on RULER. Additionally, ReST-KV consistently outperforms existing methods on Needle-in-a-Haystack and InfiniteBench, all while achieving a remarkable 10.61$\\times$ reduction in decoding latency at 128k context length. The code is publicly available at https://github.com/an-yongqi/rest-kv to facilitate reproducibility and further research.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yongqi An",
+   "Chang Lu",
+   "Kuan Zhu",
+   "Tao Yu",
+   "Chaoyang Zhao",
+   "Hong Wu",
+   "Ming Tang",
+   "Jinqiao Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.08840v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.08840v1",
+  "published_iso": "2026-05-09T09:49:32Z"
+ },
+ {
+  "title": "Make Each Token Count: Towards Improving Long-Context Performance with KV Cache Eviction",
+  "title_norm": "make each token count towards improving long context performance with kv cache e",
+  "abstract": "The key-value (KV) cache is a major bottleneck in long-context inference, where memory and computation grow with sequence length. Existing KV eviction methods reduce this cost but typically degrade performance relative to full-cache inference. Our key insight is that full-cache attention is not always optimal: in long contexts, irrelevant tokens can dilute attention away from useful evidence, so selective, learnable eviction can improve generation rather than merely approximate the full cache. We introduce a global retention-based KV eviction method that learns each token's future utility under a unified memory budget. Lightweight retention gates assign utility scores to cached KV entries, and a shared final scoring projection calibrates these scores across all layers and heads. This enables a single global eviction policy in which tokens from different layers, heads, and modalities compete directly for cache capacity. We further provide theoretical analysis showing that preferentially retaining useful tokens reduces attention dilution, and we justify geometric retention as a query-agnostic proxy for future utility. Across diverse long-context language and vision-language reasoning, and multi-turn dialogue benchmarks, our method substantially reduces KV memory while matching or surpassing full-cache inference. These results suggest that learned, globally calibrated KV eviction is not only a compression technique, but also a mechanism for improving long-context reasoning.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ngoc Bui",
+   "Hieu Trung Nguyen",
+   "Arman Cohan",
+   "Rex Ying"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.09649v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.09649v1",
+  "published_iso": "2026-05-10T16:47:50Z"
+ },
+ {
+  "title": "Fail-Closed Lowering of Resident KV Claims onto LLM Serving Runtimes",
+  "title_norm": "fail closed lowering of resident kv claims onto llm serving runtimes",
+  "abstract": "LLM serving runtimes increasingly expose KV-cache primitives that resemble future-reuse controls: retention priority, TTL-like duration, host or storage offload, block events, active no-evict scheduling, and KV-aware routing. This paper argues that such primitives are weaker than accepted future-KV obligations. A runtime can expose priority, offload, events, and routing without accepting responsibility for a future reuse claim. We study ResidentClaim lowering: when a runtime primitive, trusted adapter, or patch can be treated as satisfying an accepted claim about future KV reuse. A conformant lowering must bind behavior to accepted claim identity, a materialization predicate, ordered lifecycle events, and claim-scoped outcomes. We contribute a fail-closed lowering relation, checker, descriptor format, and bad-lowering suite that classify runtime/mode mappings as native conformance, adapter-observational evidence, adapter-policy evidence under controlled pressure, approximation substrate, rejected mapping, or unknown evidence. The checker validates manually curated, anchored runtime descriptors against obligation bundles; it does not prove that unaudited runtime behavior is complete. Public TensorRT-LLM, SGLang/HiCache, and Dynamo expose strong substrates and selected adapter positives, but not native ResidentClaim conformance. The positive systems witness is a local patched vLLM connector/scheduler-boundary mechanism: claim metadata flows through real in-process offload/load behavior, and controlled same-claim restoration failure reaches vLLM's invalid-KV-load path and becomes an ordered claim-scoped fail-closed outcome. The result is a calibrated semantics boundary, not a production performance claim or a compatibility survey.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Lukas Stepanek"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.01387v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.01387v1",
+  "published_iso": "2026-05-31T18:23:21Z"
+ },
+ {
+  "title": "Knowledge Packs: Zero-Token Knowledge Delivery via KV Cache Injection",
+  "title_norm": "knowledge packs zero token knowledge delivery via kv cache injection",
+  "abstract": "RAG wastes tokens. We propose Knowledge Packs: pre-computed KV caches that deliver the same knowledge at zero token cost. For causal transformers, the KV cache from a forward pass on text F is identical to what a joint pass on F+q would produce - this follows directly from the causal mask. The equivalence is exact but fragile: wrong chat template formatting causes 6-7pp degradation, which we believe explains prior claims of KV outperforming RAG. With correct formatting: zero divergences across 700 questions on Qwen3-8B and Llama-3.1-8B, up to 95% token savings. The KV interface also enables behavioral steering that RAG cannot do. Because RoPE rotates keys but leaves values untouched, contrastive deltas on cached values can nudge model behavior while key arithmetic destroys coherence. The effect sits in mid-layer values (33-66%), independent directions are nearly orthogonal (cos~0) and compose, and both channels - knowledge and steering - run simultaneously at alpha<=0.7 without interference. No training, no weight modification.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Andrey Pustovit"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.03270v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.03270v1",
+  "published_iso": "2026-03-22T11:55:09Z"
+ },
+ {
+  "title": "Sub-Token Routing for KV Cache Compression",
+  "title_norm": "sub token routing for kv cache compression",
+  "abstract": "Transformer inference often requires a large KV cache, especially for long-context language modeling and multimodal generation. Existing compression methods usually reduce cache cost by selecting, evicting, quantizing, or compressing cached tokens, or by reducing the visual-token sequence before language-model inference. We introduce sub-token routing, a KV-compression method that adds a finer control axis inside retained tokens. It splits each retained value vector into groups and keeps only selected groups, while leaving query and key states unchanged. The method is designed to work after token-level reduction. First, a token-reduction method determines which tokens are retained. Then, sub-token routing compresses the value states inside those retained tokens. Experiments under matched KV budgets show that adding sub-token routing improves token-level reduction performance in both LLM and VLM settings, including Quest on LLaMA-2-7B and Qwen2.5-7B, and FastV/VisionZip across LLaVA and Qwen-VL models. The gains are larger at smaller KV budgets, suggesting that value-group routing is especially useful when further token removal becomes costly. Overall, token-level reduction and sub-token routing provide complementary ways to reduce KV cost.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Wei Jiang",
+   "Wei Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.21335v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.21335v3",
+  "published_iso": "2026-04-23T06:47:33Z"
+ },
+ {
+  "title": "Near-Oracle KV Selection via Pre-hoc Sparsity for Long-Context Inference",
+  "title_norm": "near oracle kv selection via pre hoc sparsity for long context inference",
+  "abstract": "A core bottleneck in large language model (LLM) inference is the cost of attending over the ever-growing key-value (KV) cache. Although near-oracle top-k KV selection can preserve the quality of dense attention while sharply reducing computation and bandwidth, existing sparse methods generally rely on posterior heuristics, i.e., selectors conditioned on observed attention or proxy scores. Such conditioning introduces posterior bias: it tends to distort true token importance and miss salient tokens, thereby impairing long-range reasoning. To tackle this problem, we propose Pre-hoc Sparsity (PrHS), which selects KV entries before attention scoring and provides explicit accuracy control. Let the attention mass of discarded entries be delta (the dropped mass). Through a marginal-to-mutual-information analysis, we derive an upper bound on the mutual-information loss that depends only on the dropped mass. This relation explains failure modes of posterior heuristics and enables verifiable guarantees by controlling the dropped mass in advance. Within PrHS, we instantiate three orthogonal pre-hoc selectors along the axes of time, depth, and layer. Extensive experiments on LLaMA and Mistral families validate PrHS. Across GSM8K and CoQA, PrHS reduces retrieval overhead by over 90%, achieving 3x higher retrieval sparsity than HShare at matched or better accuracy. It incurs under 1% average degradation on LongBench, lowers attention FLOPs by about 15% versus prior sparse baselines, and yields a 9.9x speedup in attention-operator latency and 2.8x higher throughput on NVIDIA A100-80GB GPUs than the dense baseline.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Yifei Gao",
+   "Lei Wang",
+   "Rong-Cheng Tu",
+   "Qixin Zhang",
+   "Jun Cheng",
+   "Dacheng Tao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.08329v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.08329v1",
+  "published_iso": "2026-02-09T07:05:23Z"
+ },
+ {
+  "title": "WitCert: Sound Runtime Risk Observability and Gating for KV-Cache Quantization",
+  "title_norm": "witcert sound runtime risk observability and gating for kv cache quantization",
+  "abstract": "KV-cache quantization is validated today by offline benchmark averages; a deployed system cannot tell whether compression is damaging the request it is serving right now. We give it a provably sound runtime meter -- a \"DTrace for KV quantization\": a per-(layer, head, step) upper bound on the total variation between exact and compressed attention. The meter has two tiers: a deterministic band-norm-witness bound, sound for any cache-preserving black-box quantizer and for any query (adaptive-safe, worst-case Cauchy--Schwarz plus RoPE band-unitarity), and a tighter probabilistic certificate for a controlled subtractively-dithered INT8 quantizer under an explicit request-level failure budget (stated for non-adaptive queries; core theorems machine-checked in Lean 4). Three results. Observability: the meter enters SGLang through an env-guarded patch, and any scheme registered as one tensor function is measured in live serving. Repair: meter-driven gating -- risk-ranked where the witness is saturated, certified where it is informative -- empirically restores the quality floor at benchmark scale, e.g. raw-cast fp8 from 22.8 back to 79.7 on hard RULER tasks with the difference from uncompressed bounded at $[+0.0,+0.8]$ by a paired test. Analysis: aggressive schemes survive on cross-layer error cancellation, not per-step fidelity -- in a 28-layer sweep, no single layer's pollution alone loses anything (0/28) -- and the certified int8 cache serves $1.88\\times$ more KV tokens at the same memory in SGLang. All artifacts, guards, and the Lean development are released at https://github.com/metask-ai/witcert-kv-certificates; every number regenerates from the shipped artifacts by one command.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Fanzhe Wei",
+   "Li Liu",
+   "Ziyang Wang",
+   "Chenyu Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.28699v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.28699v3",
+  "published_iso": "2026-07-30T11:04:45Z"
+ },
+ {
+  "title": "Fractal KV-Cache Archives: Lossless Symbolic Storage with In-Place Retrieval for Long-Context LLM Inference",
+  "title_norm": "fractal kv cache archives lossless symbolic storage with in place retrieval for ",
+  "abstract": "The key-value (KV) cache dominates the memory cost of long-context autoregressive inference, and a growing body of work compresses it through quantization, eviction, or offloading. We study a complementary question: once a position's KV state has been quantized to codebook indices, how should the resulting symbol stream be stored, and can the storage layer do more than store? A family of contractive iterated-map codes that serialize a symbol sequence into a sequence of low-dimensional real vectors is revisited, and it is shown that they form a natural archive format for a quantized KV cache with the following features. The method provides exactly the access pattern a growing cache requires. It is lossless, it runs in linear time, and supports O(1) random access and O(1) amortized append. A controlled study of the quantizer feeding this archive is conducted on GPT-2 with 1024-token contexts. Keeping a small exact window (4 attention sinks plus 32 recent tokens) and archiving the rest, per-head residual vector quantization reduces the archived cache by 36-54x relative to an fp16 cache at a perplexity cost of 11-15%, and we quantify a sharp key/value asymmetry - quantizing keys is roughly 4x more damaging than quantizing values, consistent with prior low-bit KV work - and use it to allocate bits in a hybrid scheme. Finally, we show the archive is simultaneously a search index: approximate substring queries execute directly on the stored vectors, and matched context is decoded from the matched vector without ever materializing the surrounding text. We further characterize the archive's operating range: truncating stored points yields a lossy regime whose distortion we localize, and probability-weighting the maps recovers arithmetic coding, exposing a trade-off between rate efficiency, random access, and memory. We release all code; every number reproduces on a laptop CPU.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Vladimir Gusev"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.07144v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.07144v2",
+  "published_iso": "2026-07-08T08:37:49Z"
+ },
+ {
+  "title": "PolyKV: A Shared Asymmetrically-Compressed KV Cache Pool for Multi-Agent LLM Inference",
+  "title_norm": "polykv a shared asymmetrically compressed kv cache pool for multi agent llm infe",
+  "abstract": "We present PolyKV, a system in which multiple concurrent inference agents share a single, asymmetrically compressed KV cache pool. Rather than allocating a separate KV cache per agent -- the standard paradigm -- PolyKV writes a compressed cache once and injects it into N independent agent contexts via HuggingFace DynamicCache objects. Compression is asymmetric: Keys are quantized at int8 (q8_0) to preserve softmax stability, while Values are compressed using TurboQuant MSE -- a Fast Walsh-Hadamard Transform (FWHT) rotation followed by 3-bit Lloyd-Max quantization with centroids tuned to N(0,1). We evaluate across two model scales (SmolLM2-1.7B-Instruct and Llama-3-8B-Instruct), three context lengths (600-7,194 tokens), and up to 15 concurrent agents. PolyKV achieves a stable 2.91x compression ratio across all configurations. On Llama-3-8B with 15 agents sharing a 4K-token context, PolyKV reduces KV cache memory from 19.8 GB to 0.45 GB -- a 97.7% reduction -- while maintaining only +0.57% perplexity degradation and a mean BERTScore F1 of 0.928. PPL delta does not grow with agent count and improves as context length increases, inverting to -0.26% at 1,851 coherent tokens. To our knowledge, no prior work combines a single shared, lossy-compressed KV pool with multi-reader concurrent agent access.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ishan Patel",
+   "Ishan Joshi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.24971v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.24971v1",
+  "published_iso": "2026-04-27T20:10:21Z"
+ },
+ {
+  "title": "Learning to Route Electric Trucks Under Operational Uncertainty",
+  "title_norm": "learning to route electric trucks under operational uncertainty",
+  "abstract": "Electric truck operations require routing decisions that remain feasible under limited battery range, long charging times, travel and energy consumption, and competition for shared charging infrastructure. These features make electric truck routing a coupled logistics and energy problem, limiting the practicality of heuristics-based methods and rendering them computationally infeasible at scale. This paper proposes a learning-based framework for the stochastic electric truck routing under charging constraints and operational uncertainty. The problem, solved by Reinforcement Learning, is formulated as an event-driven semi-Markov decision process with shared charging resources, stochastic travel and energy requirements, and realistic nonlinear fast-charging behavior. To support learning in this setting, a graph-based representation of system state and feasible decisions is introduced, together with a rule-based action mask that restricts policies to operationally admissible actions; thus, improving training efficiency. Building on this formulation, an event-driven simulation environment is developed that supports both Reinforcement Learning and benchmarking against heuristic and mathematical programming baselines. Computational experiments across a range of fleet sizes show that the proposed learning-based algorithm consistently outperforms baselines and attains performance close to optimization benchmarks in many settings, while preserving high success rates under charging congestion and uncertainty.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Stavros Orfanoudakis",
+   "Ziyan Li",
+   "Ruixiao Yang",
+   "Nikolay Aristov",
+   "Pedro P. Vergara",
+   "Chuchu Fan",
+   "Elenna Dugundji"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.26566v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.26566v1",
+  "published_iso": "2026-04-29T11:52:00Z"
+ },
+ {
+  "title": "Minimal-Intervention KV Retention via Set-Conditioned Diversity",
+  "title_norm": "minimal intervention kv retention via set conditioned diversity",
+  "abstract": "KV-cache compression at small budgets is a crowded design space spanning cache representation, head-wise routing, compression cadence, decoding behavior, and within-budget scoring. We study seven mechanisms across these five families under matched mean cache on long-form mathematical reasoning (MATH-500~\\cite{hendrycks2021math}) with two distilled-reasoning models (Qwen-7B and Llama-8B variants of DeepSeek-R1-Distill~\\cite{deepseek2025r1}) at budgets $b \\in \\{64, 128\\}$. All seven were rejected. We then propose $α$, a one-function modification to the TriAttention~\\cite{mao2026triattention} retention scorer that replaces argmax-top-$k$ with greedy facility-location-inspired selection under a V-space redundancy penalty controlled by a single weight $λ$. A pre-registered protocol tunes $λ$ on a frozen development split and confirms on a disjoint held-out split; with $λ= 0.5$, $α$ clears Bonferroni on two of the four (model, budget) cells (Qwen $b{=}128$ and Llama $b{=}64$), no cell is significantly negative, and the pre-registered Branch~A triggers. The finding is asymmetric: a minimal scoring modification beat heavier structural redesigns in this regime, and the combined matched-memory, sympy-graded, held-out confirmation protocol is the evidence standard that made the asymmetry visible.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Libo Sun",
+   "Po-wei Harn",
+   "Peixiong He",
+   "Xiao Qin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.14292v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.14292v2",
+  "published_iso": "2026-05-14T02:50:20Z"
+ },
+ {
+  "title": "A Wolf in Sheep's Clothing: Targeted Routing Hijacking in Federated RAG",
+  "title_norm": "a wolf in sheep s clothing targeted routing hijacking in federated rag",
+  "abstract": "Federated Retrieval-Augmented Generation (FedRAG) is attractive for privacy-sensitive applications because raw data remain local. As a result, routing must rely on client-provided semantic profiles, creating a new opportunity for manipulation. We introduce Routing Hijacking, a routing-stage attack in which a malicious client forges its profile to attract target queries despite having irrelevant underlying data. We show that this vulnerability is severe. Across three representative FedRAG routing architectures, Routing Hijacking consistently misroutes target queries and leads to downstream disruptions and failures, including missing evidence, poisoning, incorrect answers, and hallucinations. In a high-stakes MedQA-USMLE case study, we further show that poisoned retrieved evidence can mislead models across scales, leading to incorrect answers, hallucinations, and sycophantic failures. Existing defenses do not close this gap: encrypted routing preserves the exploited ranking, and Byzantine-robust Federated Learning (FL) rules transfer poorly to heterogeneous routing profiles. To address this gap, we propose a trust-aware post-routing framework that reweights clients using returned-evidence feedback, including retrieval relevance, profile consistency, and cross-client agreement; online experiments show that it suppresses persistent hijacking over recurring queries and transfers to a learned neural router. Our findings establish routing integrity as a new security challenge in FedRAG and highlight the need for stronger defenses for secure federated retrieval.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Junjie Mu",
+   "Qiongxiu Li"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.28112v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.28112v1",
+  "published_iso": "2026-05-27T08:06:10Z"
+ },
+ {
+  "title": "Detection Is Cheap, Routing Is Learned: Why Refusal-Based Alignment Evaluation Fails",
+  "title_norm": "detection is cheap routing is learned why refusal based alignment evaluation fai",
+  "abstract": "Current alignment evaluation mostly measures whether models encode dangerous concepts and whether they refuse harmful requests. Both miss the layer where alignment often operates: routing from concept detection to behavioral policy. We study political censorship in Chinese-origin language models as a natural experiment, using probes, surgical ablations, and behavioral tests across nine open-weight models from five labs. Three findings follow. First, probe accuracy alone is non-diagnostic: political probes, null controls, and permutation baselines can all reach 100%, so held-out category generalization is the informative test. Second, surgical ablation reveals lab-specific routing. Removing the political-sensitivity direction eliminates censorship and restores accurate factual output in most models tested, while one model confabulates because its architecture entangles factual knowledge with the censorship mechanism. Cross-model transfer fails, indicating that routing geometry is model- and lab-specific. Third, refusal is no longer the dominant censorship mechanism. Within one model family, hard refusal falls to zero while narrative steering rises to the maximum, making censorship invisible to refusal-only benchmarks. These results support a three-stage descriptive framework: detect, route, generate. Models often retain the relevant knowledge; alignment changes how that knowledge is expressed. Evaluations that audit only detection or refusal therefore miss the routing mechanism that most directly determines behavior.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Gregory N. Frank"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.18280v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.18280v3",
+  "published_iso": "2026-03-18T20:54:34Z"
+ },
+ {
+  "title": "Adaptive Multi-Dimensional Coordinated Comprehensive Routing Scheme for IoV",
+  "title_norm": "adaptive multi dimensional coordinated comprehensive routing scheme for iov",
+  "abstract": "The characteristics of high-speed node movement and dynamic topology changes pose great challenges to the design of internet of vehicles (IoV) routing protocols. Existing schemes suffer from common problems such as insufficient adaptability and lack of global consideration, making it difficult to achieve a globally optimal balance between routing reliability, real-time performance and transmission efficiency. This paper proposes an adaptive multi-dimensional coordinated comprehensive routing scheme for IoV environments. A complete IoV system model including network topology, communication links, hierarchical congestion and transmission delay is first constructed, the routing problem is abstracted into a single-objective optimization model with multiple constraints, and a single-hop link comprehensive routing metric integrating link reliability, node local load, network global congestion and link stability is defined. Second, an intelligent transmission switching mechanism is designed: candidate nodes are screened through dual criteria of connectivity and progressiveness, a dual decision-making of primary and backup paths and a threshold switching strategy are introduced to avoid link interruption and congestion, and an adaptive update function is constructed to dynamically adjust weight coefficients and switching thresholds to adapt to changes in network status. Simulation results show that the proposed scheme can effectively adapt to the high dynamic topology and network congestion characteristics of IoV, perform excellently in key indicators such as routing interruption times, packet delivery rate and end-to-end delay, and its comprehensive performance is significantly superior to traditional routing schemes.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ruixing Ren",
+   "Minqi Tao",
+   "Junhui Zhao",
+   "Qiuping Li",
+   "Xiaoke Sun"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.27939v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.27939v1",
+  "published_iso": "2026-03-30T01:25:54Z"
+ },
+ {
+  "title": "Task-Conditioned Routing Signatures in Sparse Mixture-of-Experts Transformers",
+  "title_norm": "task conditioned routing signatures in sparse mixture of experts transformers",
+  "abstract": "Sparse Mixture-of-Experts (MoE) architectures enable efficient scaling of large language models through conditional computation, yet the routing mechanisms responsible for expert selection remain poorly understood. In this work, we introduce routing signatures, a vector representation summarizing expert activation patterns across layers for a given prompt, and use them to study whether MoE routing exhibits task-conditioned structure. Using OLMoE-1B-7B-0125-Instruct as an empirical testbed, we show that prompts from the same task category induce highly similar routing signatures, while prompts from different categories exhibit substantially lower similarity. Within-category routing similarity (0.8435 +/- 0.0879) significantly exceeds across-category similarity (0.6225 +/- 0.1687), corresponding to Cohen's d = 1.44. A logistic regression classifier trained solely on routing signatures achieves 92.5% +/- 6.1% cross-validated accuracy on four-way task classification. To ensure statistical validity, we introduce permutation and load-balancing baselines and show that the observed separation is not explained by sparsity or balancing constraints alone. We further analyze layer-wise signal strength and low-dimensional projections of routing signatures, finding that task structure becomes increasingly apparent in deeper layers. These results suggest that routing in sparse transformers is not merely a balancing mechanism, but a measurable task-sensitive component of conditional computation. We release MOE-XRAY, a lightweight toolkit for routing telemetry and analysis.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Mynampati Sri Ranganadha Avinash"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2603.11114v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2603.11114v1",
+  "published_iso": "2026-03-11T12:45:53Z"
+ },
+ {
+  "title": "KV-Skill: Forging Expertise in the Model's Native Language",
+  "title_norm": "kv skill forging expertise in the model s native language",
+  "abstract": "Task knowledge is commonly stored either as text in the prompt or as an update to model weights. Text is modular but must be interpreted on every use, while weight adaptation makes the resulting capability difficult to load, remove, or share independently. We introduce KV-Skill, a design space of external factorized operators that a frozen language model reads through a lightweight interface. KV-Skill supports two complementary paths. Registration converts an authored text skill into a text-derived operator and trains a shared per-backbone interface. Reward learning develops a compact latent operator directly from task outcomes, with or without an authored skill. Neither path adds positions to the prompt. Across ten benchmarks and four backbones from three model families, converting text to a KV-Skill consistently makes the same procedural knowledge more effective. On Qwen3.5-4B LiveMath, registration reaches 77.2 accuracy, compared with 23.4 for the source text skill, 52.0 for SkillOpt, and 64.5 for SoftSkill. Under matched reward training and parameter budgets, KV-Skill gives the best result in seven of eight matched settings against soft prefixes, prefix tuning, and LoRA. A post-hoc rank analysis further shows that text-derived operators retain nearly all of their benefit with one task-aligned direction per injection layer, while matched random directions fail. Finally, one shared interface retains three independently loadable KV-Skills without measurable forgetting. These results show that task knowledge can be acquired from text or experience, compressed into an external operator, and deployed separately from the backbone. Code is available at: https://github.com/shawnzhg/KV-Skill",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Zhaowei Han",
+   "Xiang Zhang",
+   "Bing Han",
+   "Kai Liu",
+   "Danqi Hu",
+   "Jie Liu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.05475v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.05475v1",
+  "published_iso": "2026-08-05T23:46:56Z"
+ },
+ {
+  "title": "Pre-Inference Routing for Cost-Efficient Document Field Extraction",
+  "title_norm": "pre inference routing for cost efficient document field extraction",
+  "abstract": "Most document-extraction systems use a single model for all documents. This is simple but can be costly for easy cases and less effective for difficult ones. We examine whether we can predict a document's difficulty before extraction using inexpensive, document-based signals, and use this to choose between a cheaper and a stronger extractor. We find that routing only helps if two conditions hold: the cheaper model fails often enough to make routing worthwhile, and those failures can be predicted from visible features such as image quality and layout. We turn these into a practical test and apply it to five genres. When both conditions are met, the calibrated router reduces cost by 31-33% on receipts and 77% on degraded ad-buy forms while keeping quality within 0.02 F1 of always choosing the large model. Routing does not help if either condition is missing, as with clean digital invoices or nutrition labels that are already easy to read. A small labeled pilot can predict whether routing will work, and in the two cases where we ran it first, the prediction was correct. A simple bag-of-words router works about as well as engineered features, showing that the main limit is the genre, not the router design; we use interpretable features to help explain which genres can be routed. The router must be retrained for each dataset and does not transfer across datasets, even within the same genre. These results hold for two model pairs with cost differences of 5x and 3x.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Sreerekha Rajendran"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.06607v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.06607v1",
+  "published_iso": "2026-08-06T21:34:51Z"
+ },
+ {
+  "title": "The Road Less Traveled: Congestion-Aware NoC Placement and Packet Routing for FPGAs",
+  "title_norm": "the road less traveled congestion aware noc placement and packet routing for fpg",
+  "abstract": "To help scale to ever-larger and more complex designs, recent FPGA architectures now integrate network-on-chips (NoCs). NoCs help transfer high-bandwidth data over long distances within the chip without using scarce low-delay long routing wire segments. While NoC-enhanced FPGAs aid system integration and design reuse, they also complicate FPGA computer-aided design (CAD) flows by introducing new constraints and metrics. Placement and routing need to optimize NoC metrics like latency and bandwidth utilization and avoid link oversubscription (congestion), while simultaneously optimizing the programmable routing resource usage of the design modules attached to NoC routers.\n  In this work, we develop several new approaches to reduce NoC congestion while minimizing the impact on other design metrics. First, we incorporate a NoC link congestion cost into the placement engine of the open-source CAD flow, versatile place & route (VPR). Second, we integrate turn model NoC routing algorithms into the placement engine to leverage path diversity to further reduce congestion. On average over a suite of 29 benchmarks, combining placement congestion modeling with turn model packet routing reduces NoC congestion by 90.7% at the cost of increasing aggregate bandwidth demand by 4%. In cases where the enhanced placement engine and NoC routing fail to fully resolve congestion, we formulate NoC routing as a Boolean satisfiability (SAT) problem. This approach yields significant additional improvements; the combined algorithm reduces congestion by 95.1% compared to the baseline placement. Finally, we enhance the reinforcement learning (RL) agent in VPR's placement engine by introducing a NoC-aware move type, resulting in an 8.8% reduction in wirelength on designs that make extensive use of the NoC.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Soheil Gholami Shahrouz",
+   "Vaughn Betz"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.17266v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.17266v1",
+  "published_iso": "2026-08-18T01:51:14Z"
+ },
+ {
+  "title": "NestedKV: Nested Memory Routing for Long-Context KV Cache Compression",
+  "title_norm": "nestedkv nested memory routing for long context kv cache compression",
+  "abstract": "Long-context language models are limited by the memory footprint of the key-value (KV) cache. Existing training-free KV compression methods usually rank tokens by one importance signal -- attention, recency, layer-wise allocation, or key distinctiveness -- which becomes brittle when useful context is globally distinctive, locally episodic, or immediately relevant. We introduce NestedKV, a key-only KV cache compression method inspired by the Continuum Memory System in Nested Learning. NestedKV maintains global, block-level, and sliding-window key anchors, scores tokens by multi-time-scale cosine anomaly, and combines the resulting rankings with a training-free outer learner using head-adaptive mixing and surprise-gated token routing. The score is paired with adaptive per-head budgets and requires no training or LLM modification. Across RULER (4k--32k), LooGLE, LongBench, LongBench-E, InfiniteBench, and MMLU-Pro on Qwen3 and Llama-3.2 models, NestedKV is strongest when the retained cache is small. On Qwen3-4B, it improves over KeyDiff by up to 19.10 points on RULER and 19.29 on LongBench at $r=0.75$; at $r=0.95$, it retains 37.32 on LongBench versus 17.55 for KeyDiff.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Hong Chen",
+   "Xiang Liu",
+   "Yubo Gao",
+   "Yuxuan Fan",
+   "Bo Wang",
+   "Yuanlin Chu",
+   "Yuanguo Lin",
+   "Xuming Hu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.26678v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.26678v1",
+  "published_iso": "2026-05-26T08:14:39Z"
+ },
+ {
+  "title": "Mechanism-level routing failure in LLMs over Lean-verified algebraic structures",
+  "title_norm": "mechanism level routing failure in llms over lean verified algebraic structures",
+  "abstract": "We present an empirical study of structural routing failure in large language models (LLMs) over a formally verified algebraic corpus. The task requires selecting the correct proof-mechanism label from a fixed closed template set for compact mathematical objects drawn from the FiberRing formalization in Lean 4, where each item is anchored to a Lean-verified artifact and assigned a label from the corresponding certificate family.\n  Our central finding is a mechanism-level routing ceiling: under blind conditions, gpt-oss-120b achieves 80.3% template accuracy on 22 FiberRing items (n=66; temperature=0, seed=0), while Llama 3.3 70B reaches 68.2%. Exposing a mechanism-bearing Lean verdict/witness cue (Condition A2) raises accuracy to 90.9% and 81.8% -- gaps of +10.6 and +13.6 pp termed cue-induced routing uplift.\n  The dominant failure is a CRT-to-ring-equivalence misroute: gpt-oss-120b misroutes 7 of 12 CRT items (58.3%) blind, zero under A2. A cross-model dissociation in Llama is notable: verdict accuracy is identical in both conditions (95.5%), while template accuracy improves 13.6 pp -- confirming that truth inference and proof-mechanism classification are separable capacities.\n  A cross-corpus extension (Set B; 6 POM/CollisionKernel items, 72 evaluations) provides a small cross-module check: CRT-granularity compression reappears with different labels, and an inverse cross-model dissociation emerges. These findings extend the router hypothesis (Cazares 2026) to formal algebraic structures. The full pipeline, manifest, and results are at https://github.com/bytepro-ai/fiber-routing-eval.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Manuel Israel Cázares",
+   "Wenlin Zhang",
+   "Haobo Ma"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.04534v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.04534v1",
+  "published_iso": "2026-07-05T22:45:49Z"
+ },
+ {
+  "title": "ACAR: Adaptive Complexity Routing for Multi-Model Ensembles with Auditable Decision Traces",
+  "title_norm": "acar adaptive complexity routing for multi model ensembles with auditable decisi",
+  "abstract": "We present ACAR (Adaptive Complexity and Attribution Routing), a measurement framework for studying multi-model orchestration under auditable conditions. ACAR uses self-consistency variance (sigma) computed from N=3 probe samples to route tasks across single-model, two-model, and three-model execution modes. The system is implemented on top of TEAMLLM, a deterministic execution substrate with immutable artifacts and complete decision traces. We evaluate ACAR on 1,510 tasks spanning four benchmarks: MathArena, Reasoning Gym, LiveCodeBench, and SuperGPQA, using Claude Sonnet 4, GPT-4o, and Gemini 2.0 Flash, producing more than 7,550 auditable runs. Results show that sigma-based routing achieves 55.6 percent accuracy, exceeding the two-model baseline of 54.4 percent while avoiding full ensembling on 54.2 percent of tasks. The routing mechanism is model-agnostic and requires no learned components. We also document negative results. First, retrieval augmentation reduced accuracy by 3.4 percentage points, as median retrieval similarity was only 0.167, demonstrating that experience injection without semantic alignment introduces noise rather than grounding. Second, when models agree on incorrect answers (sigma equals zero), no downstream ensemble can recover; this agreement-but-wrong failure mode is intrinsic to self-consistency and bounds achievable accuracy at approximately eight percentage points below full ensembling. Third, attribution estimates based on proxy signals such as response similarity and entropy showed weak correlation with ground-truth leave-one-out values, indicating that practical attribution requires explicit counterfactual computation. This work documents which assumptions fail in practice and provides falsifiable baselines for future research on routing, retrieval, and multi-model attribution.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Ramchand Kumaresan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.21231v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.21231v1",
+  "published_iso": "2026-02-06T23:27:17Z"
+ },
+ {
+  "title": "Modality-Native Routing in Agent-to-Agent Networks: A Multimodal A2A Protocol Extension",
+  "title_norm": "modality native routing in agent to agent networks a multimodal a2a protocol ext",
+  "abstract": "Preserving multimodal signals across agent boundaries is necessary for accurate cross-modal reasoning, but it is not sufficient. We show that modality-native routing in Agent-to-Agent (A2A) networks improves task accuracy by 20 percentage points over text-bottleneck baselines, but only when the downstream reasoning agent can exploit the richer context that native routing preserves. An ablation replacing LLM-backed reasoning with keyword matching eliminates the accuracy gap entirely (36% vs. 36%), establishing a two-layer requirement: protocol-level routing must be paired with capable agent-level reasoning for the benefit to materialize.\n  We present MMA2A, an architecture layer atop A2A that inspects Agent Card capability declarations to route voice, image, and text parts in their native modality. On CrossModal-CS, a controlled 50-task benchmark with the same LLM backend, same tasks, and only the routing path varying, MMA2A achieves 52% task completion accuracy versus 32% for the text-bottleneck baseline (95% bootstrap CI on $Δ$TCA: [8, 32] pp; McNemar's exact $p = 0.006$). Gains concentrate on vision-dependent tasks: product defect reports improve by +38.5 pp and visual troubleshooting by +16.7 pp. This accuracy gain comes at a $1.8\\times$ latency cost from native multimodal processing. These results suggest that routing is a first-order design variable in multi-agent systems, as it determines the information available for downstream reasoning.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Vasundra Srinivasan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.12213v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.12213v1",
+  "published_iso": "2026-04-14T02:44:50Z"
+ },
+ {
+  "title": "MoE-nD: Per-Layer Mixture-of-Experts Routing for Multi-Axis KV Cache Compression",
+  "title_norm": "moe nd per layer mixture of experts routing for multi axis kv cache compression",
+  "abstract": "KV cache memory is the dominant bottleneck for long-context LLM inference. Existing compression methods each act on a single axis of the four-dimensional KV tensor -- token eviction (sequence), quantization (precision), low-rank projection (head dimension), or cross-layer sharing -- but apply the same recipe to every layer. We show that this homogeneity leaves accuracy on the table: different layers respond very differently to each compression operation, and the optimal per-layer mix of eviction and quantization is far from uniform. We propose MoE-nD, a mixture-of-experts framework that routes each layer to its own (eviction-ratio, K-bits, V-bits) tuple under a global memory budget. An offline-calibrated greedy solver chooses the routing that minimizes predicted quality loss; at inference time, per-layer heterogeneous eviction and quantization are applied jointly through a single attention patch. On a 4-task subset of LongBench-v1 (16k inputs, n=50 per task, adapted reasoning-model protocol; see section Experiments), MoE-nD's hetero variant matches our uncompressed 1.9~GB baseline at 14x compression (136~MB) while every other compressed baseline we tested (1d, 2d_uniform, 2d) at comparable or smaller memory stays under 8/100. The gains hold on AIME reasoning benchmarks (+6 to +27 pts over the strongest per-layer-quantization baseline across eight configurations). Two null results -- MATH-500 and LongBench's TREC -- share a principled cause (short inputs, solver picks keep=1.0 on most layers), cleanly characterizing when per-layer eviction routing has headroom to help.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Libo Sun",
+   "Peixiong He",
+   "Po-Wei Harn",
+   "Xiao Qin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.17695v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.17695v1",
+  "published_iso": "2026-04-20T01:20:26Z"
+ },
+ {
+  "title": "SPA-Cache: Singular Proxies for Adaptive Caching in Diffusion Language Models",
+  "title_norm": "spa cache singular proxies for adaptive caching in diffusion language models",
+  "abstract": "While Diffusion Language Models (DLMs) offer a flexible, arbitrary-order alternative to the autoregressive paradigm, their non-causal nature precludes standard KV caching, forcing costly hidden state recomputation at every decoding step. Existing DLM caching approaches reduce this cost by selective hidden state updates; however, they are still limited by (i) costly token-wise update identification heuristics and (ii) rigid, uniform budget allocation that fails to account for heterogeneous hidden state dynamics. To address these challenges, we present SPA-Cache that jointly optimizes update identification and budget allocation in DLM cache. First, we derive a low-dimensional singular proxy that enables the identification of update-critical tokens in a low-dimensional subspace, substantially reducing the overhead of update identification. Second, we introduce an adaptive strategy that allocates fewer updates to stable layers without degrading generation quality. Together, these contributions significantly improve the efficiency of DLMs, yielding up to an $8\\times$ throughput improvement over vanilla decoding and a $2$--$4\\times$ speedup over existing caching baselines.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Wenhao Sun",
+   "Rong-Cheng Tu",
+   "Yifu Ding",
+   "Zhao Jin",
+   "Jingyi Liao",
+   "Yongcheng Jing",
+   "Dacheng Tao"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2602.02544v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2602.02544v2",
+  "published_iso": "2026-01-30T05:22:44Z"
+ },
+ {
+  "title": "Efficiency versus Robustness under Tail Misspecification: Importance Sampling and Moment-Based VaR Bracketing",
+  "title_norm": "efficiency versus robustness under tail misspecification importance sampling and",
+  "abstract": "Value-at-Risk (VaR) estimation at high confidence levels is inherently a rare-event problem and is particularly sensitive to tail behavior and model misspecification. This paper studies the performance of two simulation-based VaR estimation approaches, importance sampling and discrete moment matching, under controlled tail misspecification. The analysis separates the nominal model used for estimator construction from the true data-generating process used for evaluation, allowing the effects of heavy-tailed returns to be examined in a transparent and reproducible setting. Daily returns of a broad equity market proxy are used to calibrate a nominal Gaussian model, while true returns are generated from Student-t distributions with varying degrees of freedom to represent increasingly heavy tails. Importance sampling is implemented via exponential tilting of the Gaussian model, and VaR is estimated through likelihood-weighted root-finding. Discrete moment matching constructs deterministic lower and upper VaR bounds by enforcing a finite number of moment constraints on a discretized loss distribution. The results demonstrate a clear trade-off between efficiency and robustness. Importance sampling produces low-variance VaR estimates under the nominal model but systematically underestimates the true VaR under heavy-tailed returns, with bias increasing at higher confidence levels and for thicker tails. In contrast, discrete moment matching yields conservative VaR bracketing that remains robust under tail misspecification. These findings highlight that variance reduction alone is insufficient for reliable tail risk estimation when model uncertainty is significant.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   " Aditri"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2601.09927v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2601.09927v1",
+  "published_iso": "2026-01-14T23:16:52Z"
+ },
+ {
+  "title": "OnlineCache: Learning Dynamic Caching Policies with Error Correction for Efficient Diffusion Inference",
+  "title_norm": "onlinecache learning dynamic caching policies with error correction for efficien",
+  "abstract": "Diffusion models have revolutionized generative tasks but incur high latency due to iterative denoising. While cache-based strategies accelerate inference by reusing intermediate features, they largely rely on static, sample-agnostic schedules. We argue that this rigidity overlooks two facts empirically validated in this paper: (i) generation difficulty varies across prompts, requiring adaptive resource allocation--complex inputs demand more computation while simpler ones require less; (ii) error sensitivity fluctuates across timesteps, where static policies may cache high-error steps or waste computation on low-error ones. We therefore propose OnlineCache, a dynamic caching framework that jointly learns when to cache and how to correct approximation errors. We leverage policy gradient to train a lightweight network for adaptive speed-quality trade-offs, and incorporate a learnable corrector to mitigate caching-induced errors. Both modules are jointly optimized under a bilevel optimization framework, with the policy targeting global generation quality and the corrector minimizing local errors. Our method automatically allocates computational resources across both samples and timesteps, improving overall generation quality. Extensive experiments demonstrate clear superiority. On FLUX.1-dev model, OnlineCache achieves nearly 3 speedup while preserving generation fidelity. On DiT and CogVideoX, it similarly delivers competitive acceleration without compromising quality; across all scenarios, it consistently outperforms existing cache-based acceleration baselines.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Zhikang Xie",
+   "Xichen Ye",
+   "Yifan Wu",
+   "Haoshen Yu",
+   "Li chenan",
+   "Peizhu Gong",
+   "Weizhong Zhang",
+   "Cheng Jin"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.29398v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.29398v1",
+  "published_iso": "2026-07-31T13:17:05Z"
+ },
+ {
+  "title": "Reliability-Aware ETF Tail-Risk Monitoring",
+  "title_norm": "reliability aware etf tail risk monitoring",
+  "abstract": "Daily ETF risk monitoring can become unreliable when market data quality degrades, market conditions shift, or predictive performance becomes unstable. This paper develops a reliability-aware risk monitoring service for next-day tail-risk surveillance. The proposed framework combines service-time quality checks, lower-tail prediction, uncertainty scoring, and risk-aware adjustment of the tail-risk estimate. We evaluate the system on a daily panel of multiple ETFs augmented with VIX and yield-curve information under a rolling walk-forward design. Empirically, the framework improves tail-risk monitoring, especially during stressed periods, while remaining reliable under simulated input degradation.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Tenghan Zhong",
+   "Keyuan Wu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2604.08765v3",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2604.08765v3",
+  "published_iso": "2026-04-09T21:05:24Z"
+ },
+ {
+  "title": "Portfolio Optimization and Tail-Risk Analytics of Actively Managed ETFs",
+  "title_norm": "portfolio optimization and tail risk analytics of actively managed etfs",
+  "abstract": "This paper examines portfolio optimization and tail-risk analytics for a heterogeneous universe of actively managed investment funds. Using daily Bloomberg data for 30 funds from 4 December 2020 to 24 December 2025, the study evaluates buy-and-hold, mean--variance, CVaR-based, and tangency-type strategies under long-only and long--short constraints. The sample consists predominantly of actively managed ETFs, with PTTRX retained as an actively managed fixed-income mutual-fund comparator. The results show substantial heterogeneity across thematic equity, fixed-income, income-oriented, multi-asset, and alternative strategies, creating both diversification opportunities and meaningful differences in volatility, drawdown behavior, downside exposure, and tail risk. Historical results indicate that tangency-type portfolios are generally the strongest competitors to the buy-and-hold benchmark in cumulative and risk-adjusted terms, while minimum-variance and CVaR-minimizing portfolios sacrifice upside participation for stronger downside control. Dynamic allocation does not improve all strategies uniformly: the long-only dynamic CVaR-95 portfolio is consistently attractive across several risk-adjusted criteria, whereas long--short dynamic tangency-CVaR portfolios perform strongly but are more sensitive to turnover and implementation costs. Tail-risk diagnostics based on empirical VaR, Expected Shortfall, maximum drawdown, left-tail Hill estimators, and POT--GPD methods show that downside tail exposure remains meaningful after portfolio aggregation. Overall, actively managed ETFs are best evaluated as components of a joint investment opportunity set in which dependence structure, portfolio design, dynamic allocation, implementation frictions, and tail-risk exposure jointly shape performance.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "William W. Lamptey",
+   "Nicholas Appiah",
+   "Abootaleb Shirvani",
+   "Priscilla Ati-Tay",
+   "Svetlozar T. Rachev",
+   "Frank J. Fabozzi"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.03082v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.03082v1",
+  "published_iso": "2026-07-03T08:14:43Z"
+ },
+ {
+  "title": "Grounded Cache Routing for Retrieval-Augmented Generation: When Is It Safe to Reuse an Answer?",
+  "title_norm": "grounded cache routing for retrieval augmented generation when is it safe to reu",
+  "abstract": "Modern retrieval-augmented generation(RAG) deployments increasingly rely on caching to reduce token cost and time-to-first-token(TTFT). Prefix-level KV reuse is now standard in serving stacks such as vLLM, and chunk-level and position-independent reuse have been pushed further by recent systems(RAGCache, TurboRAG, CacheBlend, EPIC, ContextPilot, PCR, LMCache). Output-level semantic answer caches, by contrast, remain fragile: similar prompts can map to different correct answers, retrieved evidence drifts as the corpus is updated, and adversarial collision attacks have been shown to hijack cached responses. We argue that the right framing for cached answer reuse is not how to reuse faster but when reuse is safe. We propose GroundedCache, an evidence-validated cache router that admits a cached answer only when 4 cheap gates simultaneously hold: query similarity, retrieved-evidence overlap, source-version validity, and lexical (or judge-based) support of the cached answer by the freshly retrieved evidence. We build a six-regime workload that stress-tests cache safety rather than only hit rate, and introduce an operator-facing metric, the unsafe-served rate (USR), fraction of all queries that received a wrong cached answer. Across 2 datasets and 12,000 real-LLM generations(Qwen2.5-7B-Instruct on vLLM with Automatic Prefix Caching), GroundedCache drives USR to 0.0% on every HotpotQA regime(vs. 15-35% under naive caching) and to 1.5% on mtRAG document drift(vs. 51.5%), a 34x reduction on the design-point adversarial regime and 3-10x reductions across the other mtRAG regimes, while end-to-end p50 latency stays within 1.04-1.07x of a no-cache RAG baseline. A per-gate ablation isolates the lexical support gate as the load-bearing safety mechanism on both datasets, with the remaining gates providing defense-in-depth at near-zero cost. We release the implementation, workload, and evaluation harness.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Syed Huma Shah"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2605.27494v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2605.27494v1",
+  "published_iso": "2026-05-26T16:50:02Z"
+ },
+ {
+  "title": "Every Cache Entry Earns Its Place: Global Allocation of Resolution and Coverage for KV Cache Compression",
+  "title_norm": "every cache entry earns its place global allocation of resolution and coverage f",
+  "abstract": "As large language models (LLMs) process increasingly long contexts, KV cache storage and repeated access have become a major bottleneck. Existing KV cache compression methods rely on predefined, fixed compression rules and are typically developed around either token eviction or merging. As a result, cache resources can neither flow freely across layers, heads, and context slots, nor be jointly allocated to balance local resolution and information coverage. Therefore, we propose GraceKV, a global approach for the allocation of resolution and coverage in KV cache compression, and formulate the compression process as a global resource allocation problem under a fixed cache budget. GraceKV treats each layer-KV head-slot combination as an atomic unit and builds a prototype tree. Leaf nodes correspond to token-level KV entries, while each internal node uses a single prototype to compress the KV space covered by its children. A set of non-overlapping nodes in the tree forms the representation of an atomic unit. Adding the root of a new tree expands information coverage, whereas splitting a selected node improves local resolution. All candidate actions compete globally for a shared cache budget. Finally, the nodes retained across all trees form the compressed KV cache. This process adaptively determines the allocation of cache resources among atomic units globally and the balance between resolution and coverage. GraceKV requires no additional training, and the entire compression and inference process is performed on the GPU. Systematic experiments across diverse long-context tasks and compression ratios show that GraceKV ranks first in 24 of 32 settings and remains robust up to 128-fold compression. These results validate the effectiveness of global budget allocation in coordinating information coverage and local resolution.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Haolin Tian",
+   "Yuzhe Liu",
+   "Tonghan Wang"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.07001v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.07001v1",
+  "published_iso": "2026-08-07T09:18:42Z"
+ },
+ {
+  "title": "Keeping the Cache Warm Pays: Keepalive Economics for Agentic Workloads",
+  "title_norm": "keeping the cache warm pays keepalive economics for agentic workloads",
+  "abstract": "Frontier LLM providers cache a prompt's processed prefix so that a follow-up request sharing it pays ~10% of the input price and skips most of the prefill latency. Agentic workloads systematically destroy this benefit: the agent sends a request, runs a tool or waits for approval for minutes, and by the time the follow-up is sent the cached prefix has been evicted, so the agent pays the full prefill again. A client-side keepalive, replaying the prefix on a timer during the pause, prevents this, and it is individually rational: across Anthropic, OpenAI, Google, and DeepSeek we show that a keepalive holds the prefix warm through gaps where idle baselines are evicted, cutting the post-pause request cost by up to 12.5x. The strategic question is the ping frequency, and it has a clean answer: keepalive cost falls monotonically in the interval, so the economical choice is the largest interval safely under the provider's TTL, about 4 minutes at Anthropic's 5-minute TTL rather than the 30-second convention, and the strategy breaks even against a re-prefill at idle ~tau(w/r - 1) (~46 min for Anthropic, ~36 min for OpenAI and DeepSeek). Because the benefit is real and bounded only by each user's own bill, rational adoption is universal adoption; and since cache residency is priced per read rather than per token-hour, a keepalive-saturated tier gives LRU eviction nothing to rank. We argue this externality will push providers to meter cache residency directly, and one already does. We derive the operator's policy until then.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Maxim Khailo"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2607.19214v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2607.19214v2",
+  "published_iso": "2026-07-21T15:45:47Z"
+ },
+ {
+  "title": "Caching for Dollars, Not Hits: An Exact Offline Reference for Cloud-Egress Caching and the Crossover That Decides When It Pays",
+  "title_norm": "caching for dollars not hits an exact offline reference for cloud egress caching",
+  "abstract": "When a cache miss fetches from cloud object storage, the bill is per GET request and per byte of egress, not latency. Classic caching minimizes the miss rate, the wrong objective: a rarely but expensively fetched object can cost thousands of times more dollars than a frequently but cheaply fetched one. Generalized-caching theory bounds the miss-cost objective, but no reported benchmark measures how far deployed heuristics sit from the dollar-optimal offline policy on real cloud prices. We supply that reference. For uniform-size page caches with heterogeneous miss costs the offline dollar-optimum is exact in polynomial time via an integral interval linear program -- validated against brute force; variable sizes are NP-hard, so we extend the flow-based offline bound from the hit-ratio objective to dollars (cost-FOO), tight to about four percent. Against this reference we find: (i) a heterogeneity-regret law -- LRU's dollar-regret rises with miss-cost dispersion (Spearman 0.87) while cost-aware GreedyDual cuts it to roughly a tenth; (ii) a contention frontier -- GreedyDual's residual regret collapses to near zero exactly when the budget fits the expensive working set, and is the open slice otherwise; and (iii) a closed-form crossover s* = GET_fee/egress_rate (about 4 KB on S3, 330 B on GCS) that predicts which deployments need dollar-aware caching. On real memcache and CDN traces the price vector alone moves the workload across s*, shifting the regime as predicted. The artifact is a reproducible billing-faithful benchmark; heuristics and bounds it builds on are prior work, credited.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Madhulatha Mandarapu",
+   "Sandeep Kunkunuru"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2606.20539v2",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2606.20539v2",
+  "published_iso": "2026-06-18T17:51:45Z"
+ },
+ {
+  "title": "RippleKV: Cross-Layer KV Cache Allocation via Perturbation Propagation",
+  "title_norm": "ripplekv cross layer kv cache allocation via perturbation propagation",
+  "abstract": "Long-context LLM inference is bottlenecked by KV cache memory, yet distributing a limited cache budget across layers remains challenging. Existing methods rely on proxies such as layer depth, attention statistics, or representation change. These proxies do not measure how perturbations at each layer propagate to the output and may therefore cause sensitive layers to be underallocated while tolerant layers are overallocated. To address this issue, we propose RippleKV, which allocates cache across layers by estimating how perturbations to each layer's value cache affect the final predictive distribution. RippleKV independently injects norm-adaptive perturbations into each layer's value cache and measures the induced KL divergence at the model output over a small calibration set. Averaging these responses yields a sensitivity profile specific to the model that need not vary monotonically with depth. RippleKV then converts the sensitivity profile into layer budget multipliers by normalizing the sensitivity scores and applying an exponential mapping. A ratio parameter controls the allocation disparity between sensitive and tolerant layers, while a final normalization preserves the KV cache budget. Experiments on LongBench demonstrate that RippleKV achieves the highest average performance among the evaluated KV cache compression methods under matched cache budgets.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Dongjie Xu",
+   "Kai Qian",
+   " Julius",
+   "Weijie Shi",
+   "Yuxuan Sun",
+   "Minghua Tang",
+   "Fenglei Jin",
+   "Hanchi Dong",
+   "Jiajie Xu"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2608.08684v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2608.08684v1",
+  "published_iso": "2026-08-09T13:01:11Z"
+ },
+ {
+  "title": "Capital allocation and tail central moments for the multivariate normal mean-variance mixture distribution",
+  "title_norm": "capital allocation and tail central moments for the multivariate normal mean var",
+  "abstract": "Capital allocation is a procedure used to assess the risk contributions of individual risk components to the total risk of a portfolio. While the conditional tail expectation (CTE)-based capital allocation is arguably the most popular capital allocation method, its inability to reflect important tail behaviour of losses necessitates a more accurate approach. In this paper, we introduce a new capital allocation method based on the tail central moments (TCM), generalising the tail covariance allocation informed by the tail variance. We develop analytical expressions of the TCM as well as the TCM-based capital allocation for the class of normal mean-variance mixture distributions, which is widely used to model asymmetric and heavy-tailed data in finance and insurance. As demonstrated by a numerical analysis, the TCM-based capital allocation captures several significant patterns in the tail region of equity losses that remain undetected by the CTE, enhancing the understanding of the tail risk contributions of risk components.",
+  "year": 2026,
+  "venue": "arXiv",
+  "authors": [
+   "Enrique Calderín-Ojeda",
+   "Yuyu Chen",
+   "Soon Wei Tan"
+  ],
+  "citations": null,
+  "source": "arxiv",
+  "source_id": "2601.00568v1",
+  "doi": "",
+  "paper_url": "https://arxiv.org/abs/2601.00568v1",
+  "published_iso": "2026-01-02T05:05:36Z"
+ }
+]

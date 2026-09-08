@@ -1,0 +1,319 @@
+{
+  "aggregation": "each UID is averaged over repeats before aggregate and paired metrics",
+  "bootstrap": {
+    "samples": 100,
+    "seed": 42,
+    "unit": "matched UID"
+  },
+  "exclusions": {
+    "application_order": "validated raw run, then excluded UIDs, then matched repeats/methods and computed metrics",
+    "manifest_path": "/home/panzihang/src/prism_max/configs/strict_eval_exclusions.json",
+    "observed_by_task": {
+      "rte": [],
+      "sst2": [],
+      "subj": [],
+      "trec": []
+    },
+    "observed_count_by_task": {
+      "rte": 0,
+      "sst2": 0,
+      "subj": 0,
+      "trec": 0
+    },
+    "per_run": {
+      "trec/k010/contigkv/r1": {
+        "analysis_records": 32,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 32
+      },
+      "trec/k010/contigkv/r2": {
+        "analysis_records": 32,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 32
+      },
+      "trec/k010/impress/r1": {
+        "analysis_records": 32,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 32
+      },
+      "trec/k010/impress/r2": {
+        "analysis_records": 32,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 32
+      },
+      "trec/k010/promixed/r1": {
+        "analysis_records": 32,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 32
+      },
+      "trec/k010/promixed/r2": {
+        "analysis_records": 32,
+        "excluded_records": 0,
+        "excluded_uids": [],
+        "raw_records": 32
+      }
+    },
+    "purpose": "Exclude every evaluation UID used to calibrate the offline layer-sensitivity profile.",
+    "requested_by_task": {
+      "rte": [
+        "rte-0"
+      ],
+      "sst2": [
+        "sst2-0"
+      ],
+      "subj": [
+        "subj-0"
+      ],
+      "trec": [
+        "trec-0"
+      ]
+    },
+    "requested_count_by_task": {
+      "rte": 1,
+      "sst2": 1,
+      "subj": 1,
+      "trec": 1
+    }
+  },
+  "input": {
+    "kind": "explicit_runs"
+  },
+  "metric_definitions": {
+    "pareto": "non-dominated accuracy (higher) versus mean logits_ready_ms (lower) across budgets",
+    "prefetch_stall_ratio": "prefetch_wait_ms / logits_ready_ms within each run, then averaged over repeats per UID",
+    "ssd_mib_per_request": "(critical_ssd_read_bytes + selector_disk_source_bytes) / 2^20, request-time only"
+  },
+  "protocol_by_task": {
+    "trec": {
+      "accuracy_scoring": "label_continuation_loglikelihood",
+      "backend": "FlexGen Pcache KV_Division plus Qwen layerwise sparse attention",
+      "cache_type": "CKLFU",
+      "cache_update_in_ttft": true,
+      "cpu_cache_mb": 131.0,
+      "defer_cache_score_updates": false,
+      "evaluation_ready_includes_accuracy_scoring": true,
+      "generation_max_tokens": 1,
+      "gpu_cache_mb": 55.0,
+      "measurement": "ttft_ms/logits_ready_ms ends when first-token logits are ready; first_token_ready_ms additionally includes cache-score maintenance and first-token ID selection; latency_ms ends when all requested token IDs are ready; response_ready_ms additionally includes token decoding and excludes benchmark-only accuracy scoring; evaluation_ready_ms/accuracy_scores_ready_ms additionally includes complete-label scoring. latency_ms and response_ready_ms describe one token only when max_tokens=1.",
+      "model_compute_dtype": "bfloat16",
+      "model_path": "/data1/llm/Qwen/Qwen2.5-7B-Instruct",
+      "online_selection": true,
+      "pcache_storage_dtype": "float16",
+      "period_size": 8,
+      "prefetch_time_budget": 10000.0,
+      "response_ready_excludes_accuracy_scoring": true,
+      "response_ready_metric_valid_for_first_token": true,
+      "selector_index_bits": null,
+      "selector_index_dir": null,
+      "selector_index_group_size": null,
+      "selector_index_manifest_sha256": null,
+      "selector_index_preloaded_bytes": 0,
+      "similarity_alpha": 0.6,
+      "subperiod_size": 4,
+      "warmup_passes": 1,
+      "warmup_samples_per_task": 8
+    }
+  },
+  "schema_version": 1,
+  "scope": "re-prefill only; task-local analysis with no cross-task pooling",
+  "tasks": {
+    "trec": {
+      "budgets": {
+        "010": {
+          "methods": {
+            "contigkv": {
+              "accuracy": 0.53125,
+              "fairness_context": {
+                "actual_keep_ratio": 0.09959514170040486,
+                "selected_kv_mib": 26.90625
+              },
+              "logits_ready_mean_ms": 531.5202406272874,
+              "logits_ready_p95_ms": 592.3316369298846,
+              "prefetch_stall_ratio": 0.38471475261787297,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_3way_smoke_20260824_v2/trec/k010_contigkv_fp16_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_3way_smoke_20260824_v2/trec/k010_contigkv_fp16_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 9.63671875,
+                "selector": 19.296875,
+                "total": 28.93359375
+              },
+              "uids": 32
+            },
+            "impress": {
+              "accuracy": 0.5,
+              "fairness_context": {
+                "actual_keep_ratio": 0.13214285714285715,
+                "selected_kv_mib": 35.69921875
+              },
+              "logits_ready_mean_ms": 2269.4931109363097,
+              "logits_ready_p95_ms": 3870.7153738941997,
+              "prefetch_stall_ratio": 0.41254599439615813,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_3way_smoke_20260824_v2/trec/k010_impress_fp16_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_3way_smoke_20260824_v2/trec/k010_impress_fp16_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 0.910888671875,
+                "selector": 33.76953125,
+                "total": 34.680419921875
+              },
+              "uids": 32
+            },
+            "promixed": {
+              "accuracy": 0.625,
+              "fairness_context": {
+                "actual_keep_ratio": 0.09925625361480625,
+                "selected_kv_mib": 26.814697265625
+              },
+              "logits_ready_mean_ms": 487.9677749413531,
+              "logits_ready_p95_ms": 628.9531304500997,
+              "prefetch_stall_ratio": 0.07271379470994545,
+              "repeat_labels": [
+                "r1",
+                "r2"
+              ],
+              "repeats": 2,
+              "run_paths": [
+                "/home/panzihang/src/prism_max/results/prism_max_3way_smoke_20260824_v2/trec/k010_promixed_fp16_nodefer_r1",
+                "/home/panzihang/src/prism_max/results/prism_max_3way_smoke_20260824_v2/trec/k010_promixed_fp16_nodefer_r2"
+              ],
+              "ssd_mib_per_request": {
+                "critical": 1.02587890625,
+                "selector": 34.37255859375,
+                "total": 35.3984375
+              },
+              "uids": 32
+            }
+          },
+          "paired": {
+            "promixed_vs_contigkv": {
+              "accuracy_delta_pp": 9.375,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                -4.765625,
+                26.64062499999997
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_contigkv",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -43.552465685934294,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -66.55292553386971,
+                -16.973167175638086
+              ],
+              "prefetch_stall_delta_pp": -31.20009579079275,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -32.74878611600257,
+                -30.011035467584215
+              ],
+              "ssd_delta_mib_per_request": 6.46484375,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                4.460086059570313,
+                8.18089599609375
+              ],
+              "uids": 32
+            },
+            "promixed_vs_impress": {
+              "accuracy_delta_pp": 12.5,
+              "accuracy_delta_pp_paired_bootstrap_95ci": [
+                -4.765625,
+                29.76562499999997
+              ],
+              "aggregation": "per-UID repeat average before paired bootstrap",
+              "available": true,
+              "comparison": "promixed_vs_impress",
+              "direction": "ProMixed minus baseline",
+              "logits_ready_delta_ms": -1781.5253359949565,
+              "logits_ready_delta_ms_paired_bootstrap_95ci": [
+                -2153.7936278393317,
+                -1382.879537365989
+              ],
+              "prefetch_stall_delta_pp": -33.98321996862126,
+              "prefetch_stall_delta_pp_paired_bootstrap_95ci": [
+                -38.90657677826572,
+                -29.046728245767053
+              ],
+              "ssd_delta_mib_per_request": 0.718017578125,
+              "ssd_delta_mib_per_request_paired_bootstrap_95ci": [
+                -1.1383056640625,
+                2.4171844482421863
+              ],
+              "uids": 32
+            }
+          }
+        }
+      },
+      "pareto": {
+        "by_method": {
+          "contigkv": [
+            {
+              "accuracy": 0.53125,
+              "budget": "010",
+              "logits_ready_mean_ms": 531.5202406272874,
+              "method": "contigkv",
+              "pareto_optimal": true
+            }
+          ],
+          "impress": [
+            {
+              "accuracy": 0.5,
+              "budget": "010",
+              "logits_ready_mean_ms": 2269.4931109363097,
+              "method": "impress",
+              "pareto_optimal": true
+            }
+          ],
+          "promixed": [
+            {
+              "accuracy": 0.625,
+              "budget": "010",
+              "logits_ready_mean_ms": 487.9677749413531,
+              "method": "promixed",
+              "pareto_optimal": true
+            }
+          ]
+        },
+        "joint": [
+          {
+            "accuracy": 0.53125,
+            "budget": "010",
+            "logits_ready_mean_ms": 531.5202406272874,
+            "method": "contigkv",
+            "pareto_optimal": false
+          },
+          {
+            "accuracy": 0.5,
+            "budget": "010",
+            "logits_ready_mean_ms": 2269.4931109363097,
+            "method": "impress",
+            "pareto_optimal": false
+          },
+          {
+            "accuracy": 0.625,
+            "budget": "010",
+            "logits_ready_mean_ms": 487.9677749413531,
+            "method": "promixed",
+            "pareto_optimal": true
+          }
+        ]
+      }
+    }
+  }
+}

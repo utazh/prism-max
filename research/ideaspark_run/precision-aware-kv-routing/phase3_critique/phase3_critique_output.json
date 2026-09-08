@@ -1,0 +1,149 @@
+{
+  "gap_closure_reject_check": {
+    "entries": [
+      {
+        "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+        "main_pattern": "heterogeneous_decomposition",
+        "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+        "tactical_failure_mode_quoted": "The recurring failure is treating the partition criterion itself as the contribution while leaving its value unproven. Papers propose a sensitivity or redundancy discriminator — roundtrip distortion, weight magnitude, activation overlap, double-rounding, subspace projection — and reviewers immediately map it onto an established technique (PCA/SVD on activations, a layer-norm-equivalent rescaling, structured dropout, classical feature distillation), so the differentiated treatment reads as a relabeling rather than a new mechanism.",
+        "reject_lessons_evaluated": [
+          {
+            "lesson_quoted": "Presenting a sensitivity or redundancy proxy as the novelty invites the verdict that it rediscovers known mixed-precision or low-rank results unless it is sharply differentiated from the obvious prior criterion.",
+            "candidate_match": "borderline",
+            "reasoning": "The candidate makes independently addressable residual rungs and task-conditioned exact-byte allocation, but its stated deltas predate and do not sharply distinguish the directly competing SpectrumKV and MixKVQ criteria in the collision pool."
+          },
+          {
+            "lesson_quoted": "Omitting comparison against both the strongest uniform baseline and the obvious cheap alternative (SVD/PCA, structured dropout, a natively trained smaller model) leaves reviewers unable to tell whether the partition buys anything at all.",
+            "candidate_match": "no",
+            "reasoning": "The paired evaluation names uniform-format ProMixed as the uniform baseline and global-profile ByteLadder plus DynamicKV/Oaken-style policies as cheap alternatives at matched allocator bytes."
+          },
+          {
+            "lesson_quoted": "Validating a storage or throughput claim only on toy-scale models — where the compression bottleneck does not actually bite — undermines the entire motivation no matter how clean the method is.",
+            "candidate_match": "no",
+            "reasoning": "The proposed Qwen2.5-7B LongBench and Needle-in-a-Haystack study uses 5%, 10%, and 25% measured-KV ceilings, including regimes where the cache bottleneck is explicit."
+          },
+          {
+            "lesson_quoted": "A clever partition with no measured real-world deployment metric (no inference latency or memory speedup) reads as a proxy-only contribution and stalls at borderline.",
+            "candidate_match": "no",
+            "reasoning": "Core mechanism Step 9 requires actual KV allocation, conversion time, TTFT, decode throughput, and downstream outcomes rather than only KL or score proxies."
+          },
+          {
+            "lesson_quoted": "Skipping any analysis of why the heterogeneity exists — the data or value distribution that drives the partition — makes the technical novelty and the potential impact impossible to assess.",
+            "candidate_match": "borderline",
+            "reasoning": "The offline bank measures single-rung suffix-KL gains g_jlu and the allocator combines them with ProMixed utilities, but the candidate does not yet define an explicit distributional test showing distinct high-impact and redundant block populations or interaction effects."
+          },
+          {
+            "lesson_quoted": "Bolting together established components (distillation plus pruning plus calibration) without an error bound or artifact specific to the new setting reads as incremental even when the target application is timely and important.",
+            "candidate_match": "no",
+            "reasoning": "Independent residual extents, exact allocator-byte charging, deterministic precedence, and per-stage groupwise infinity-norm bounds are setting-specific artifacts, although their request-level fidelity composition remains incomplete."
+          }
+        ],
+        "verdict": "borderline"
+      },
+      {
+        "gap": "No retrieved frontier leaf closes the gap between offline model-level sensitivity and prompt-specific evidence strongly enough to preserve accuracy across task shifts while keeping selection overhead inside the serving deadline.",
+        "main_pattern": "adapt_via_conditioning",
+        "sub_pattern": "C03 (Adapt by Conditioning, Not Retraining)",
+        "tactical_failure_mode_quoted": "The recurring failure shape is adopting a conditioning recipe known to work in one domain and porting it to a new modality or task family without any theory for why the conditioning signal carries task-relevant structure there, then reporting only modest gains over strong baselines. The headline 'training-free,' 'zero-shot,' or 'held-out generalization' claim is undercut because the experimental setup quietly violates its own premise — evaluation data or near-duplicates leaked into the upstream or base-model pretraining corpus, the method needs idealized access (the exact base checkpoint), or the demonstrated scope is a single task with no recipe for finding the analog elsewhere.",
+        "reject_lessons_evaluated": [
+          {
+            "lesson_quoted": "Claiming 'fine-tuning-free' or 'zero-shot' while training splits of the evaluation tasks sit inside your upstream corpus makes the comparison unfair and collapses the generalization claim into in-distribution performance.",
+            "candidate_match": "no",
+            "reasoning": "The bank is built from training categories and the candidate explicitly holds out complete LongBench task categories for validation and evaluation, with no serving-time parameter update."
+          },
+          {
+            "lesson_quoted": "A conditioning trick shown on a single task, with no generic procedure for finding its analog on other tasks, reads as narrow and unsurprising however large the per-task gain.",
+            "candidate_match": "no",
+            "reasoning": "A canonical twelve-value prompt fingerprint, category-profile bank, and deterministic nearest-centroid composition are defined across multiple LongBench categories and additionally tested on Needle-in-a-Haystack."
+          },
+          {
+            "lesson_quoted": "Porting an established conditioning technique to a new modality without theory for why its similarity signal captures task-relevant structure, paired with only modest gains, reads as an under-theorized transfer that does not clear the bar.",
+            "candidate_match": "no",
+            "reasoning": "This is not a modality port, and the profile-permutation negative control plus oracle-category positive control directly tests whether the fingerprint-to-profile association, rather than generic conditioning, carries the downstream gain."
+          },
+          {
+            "lesson_quoted": "Omitting the obvious cheaper alternative under equal budget — a longer raw context, nearest-neighbor averaging — and comparing only against ablations of your own method leaves the new module's contribution unattributable.",
+            "candidate_match": "no",
+            "reasoning": "Global-profile ByteLadder and uniform-format ProMixed are named matched-byte alternatives that remove the prompt-conditioned profile association while retaining the codec or base scorer."
+          },
+          {
+            "lesson_quoted": "A method that works only under idealized access (the exact base model) and degrades sharply at realistic scale or under the dominant parameter-efficient setting fails the generality bar.",
+            "candidate_match": "no",
+            "reasoning": "The proposal targets a frozen deployable Qwen2.5-7B serving path and makes no unsupported cross-backbone generality claim or assumption of unavailable model internals beyond the existing ProMixed score rows."
+          },
+          {
+            "lesson_quoted": "A many-component conditioning system with shallow ablations, unclear problem formulation, and uncorrected mathematical details cannot justify which module earns the reported improvement.",
+            "candidate_match": "no",
+            "reasoning": "The candidate gives deterministic edge cases and dataflow, and its permutation, oracle-category, global-profile, and uniform-format comparisons isolate the conditioning association from the codec and ProMixed scores."
+          }
+        ],
+        "verdict": "clear"
+      }
+    ],
+    "verdict": "borderline",
+    "reasoning": "The heterogeneous-decomposition gap drives the aggregate: its lesson “Presenting a sensitivity or redundancy proxy as the novelty invites the verdict that it rediscovers known mixed-precision or low-rank results unless it is sharply differentiated from the obvious prior criterion.” is borderline against SpectrumKV/MixKVQ, and “Skipping any analysis of why the heterogeneity exists — the data or value distribution that drives the partition — makes the technical novelty and the potential impact impossible to assess.” remains only partially answered by single-rung KL tables. The conditioning gap is clear because whole task categories are held out and matched-budget controls isolate the profile association."
+  },
+  "recipe_application_check": {
+    "entries": [
+      {
+        "gap": "No retrieved paper tests whether all retained regions in one request must share the same representation and retention rule rather than treating that inherited method-wide uniformity as necessary.",
+        "sub_pattern": "C04 (Decompose for Differentiated Treatment)",
+        "tactical_pattern_quoted": "The concrete move: discriminate components by a magnitude-, sensitivity-, influence-, or redundancy-based criterion into a high-impact minority and a near-redundant bulk, then preserve, migrate, residually correct, or retain-at-full-precision the minority while aggressively quantizing, pruning, factorizing, or distilling the bulk. The load-bearing artifact is an error/sensitivity decomposition that bounds how the differentiated treatment recovers the original objective — that analysis, not the partition idea, is what separates the move from heuristic per-component tuning.",
+        "instantiation_in_core_mechanism": "Steps 2, 5, and 6 measure layer-by-rung suffix-KL gains, multiply them by ProMixed block utility, and promote only positive-value block rungs under exact bytes while mandatory recent/sink entries stay FP16; this performs differentiated treatment. However, the local s/2 quantizer bounds and single-promotion KL gains are not composed into a request-level fidelity/error decomposition or interaction check, so the C04 load-bearing analysis is only partial.",
+        "verdict": "borderline"
+      },
+      {
+        "gap": "No retrieved frontier leaf closes the gap between offline model-level sensitivity and prompt-specific evidence strongly enough to preserve accuracy across task shifts while keeping selection overhead inside the serving deadline.",
+        "sub_pattern": "C03 (Adapt by Conditioning, Not Retraining)",
+        "tactical_pattern_quoted": "Express a whole family of heterogeneous target tasks in one canonical conditioning schema — an instruction/prompt template, a reference-query example layout, a retrieved (state, outcome, action) tuple sequence, a relational graph, or transferred per-class statistics — and then run a single upstream phase (broad multi-task supervised tuning, meta-learning over a procedurally generated task distribution, or synthetic-data pretraining) that teaches one frozen model to PARSE that schema and compose a never-seen task's answer from its conditioning inputs at inference. The load-bearing artifacts are the unified format and the reference substrate the model draws on, not new task-specific parameters.",
+        "instantiation_in_core_mechanism": "Steps 2–5 create one twelve-value prompt fingerprint, a broad category-profile reference bank with centroids and variances, and a frozen nearest-profile composition that produces ghat_lu for unseen categories without task-specific parameter updates; Step 3 holds out entire categories and Step 10 supplies permutation and oracle controls.",
+        "verdict": "applied"
+      }
+    ],
+    "verdict": "borderline",
+    "reasoning": "C03 is applied through the canonical fingerprint and held-out category-profile substrate, but C04 is borderline because its specific differentiated-treatment operation is present while its load-bearing request-level error/sensitivity decomposition is not."
+  },
+  "anti_pattern_check": {
+    "composition_set": [
+      "heterogeneous_decomposition",
+      "adapt_via_conditioning"
+    ],
+    "matched_pattern_id": null,
+    "required_mitigation_quoted": null,
+    "mitigation_substantively_delivered": "n/a",
+    "reasoning": "The composition contains none of self_supervised_signal_engineering, structural_prior_encoding, or architectural_operator_substitution, so it matches none of the three reject-favored pairs."
+  },
+  "paper_pointed_threat": {
+    "threat_paper_id": "arxiv:2606.08635v1",
+    "threat_source": "collision_hits",
+    "threat_channel": "signature",
+    "subsumption_argument": "SpectrumKV directly demonstrates that binary KV transfer leaves an unused mixed-precision axis and assigns high-, medium-, and low-importance tokens FP16, INT8, and INT4 in a serving system. That result subsumes ByteLadder's broad premise that retained KV regions need not share one representation: if SpectrumKV's tier policy matches ByteLadder at equal allocator bytes and measured TTFT, the claimed benefit of prompt-conditioned residual promotion disappears; ByteLadder must therefore stand specifically on independently addressable successive-residual prefixes, exact-byte frontier packing, and held-out category profile transfer rather than on mixed precision itself.",
+    "addressable_via": "Add a differentiation_from_lit entry that contrasts SpectrumKV's per-token three-tier importance policy and deployment probe with ByteLadder's successive-residual block prefixes, exact-byte heap, and held-out-category profile-conditioned gains.",
+    "parametric_family_concern": null
+  },
+  "falsification_structure_check": {
+    "minimal_experiment_named": "yes",
+    "outcome_metric_named": "yes",
+    "load_bearing_variable": "the prompt-conditioned promotion-gain table ghat_lu(z)",
+    "negative_control_target": "outcome_metric",
+    "verdict": "sound",
+    "reasoning": "The paragraph specifies the Qwen2.5-7B held-out-category/NIAH comparison at three allocator-byte ceilings, predicts increased LongBench score and NIAH exact match, names one load-bearing table, and permutes its centroid association while holding the codec and ProMixed scores fixed to predict those downstream gains return toward baseline."
+  },
+  "verdict": "revise",
+  "verdict_layer": "soft_judgment",
+  "verdict_rationale": "gap_closure_reject_check.entries[0].reject_lessons_evaluated[0].lesson_quoted is borderline because the candidate does not yet distinguish its criterion from the collision-pool mixed-precision threats, and recipe_application_check.entries[0].verdict is borderline because C04's request-level error/sensitivity decomposition is missing despite local rung bounds. paper_pointed_threat.subsumption_argument identifies SpectrumKV as a direct competitor but not an exact-mechanism collision, and its threat is addressable through a precise literature delta; with no anti-pattern match and a sound falsification structure, these load-bearing but repairable issues require revision rather than abandonment.",
+  "revision_targets": [
+    {
+      "scope": "tactical",
+      "field": "core_mechanism",
+      "issue": "recipe_application_check.entries[0].verdict is borderline: C04 requires a load-bearing error/sensitivity decomposition, while the candidate has local s/2 rung bounds and empirical single-promotion KL gains but no request-level composition or interaction accounting.",
+      "fix_direction": "Add a conservative, auditable request-level fidelity accounting step that composes the existing per-rung bounds and single-promotion KL gains and explicitly tests or bounds non-additive cross-block interactions; preserve the codec, exact-byte allocator, experiment, outcome metrics, and both kill-switch fields."
+    },
+    {
+      "scope": "tactical",
+      "field": "differentiation_from_lit",
+      "issue": "paper_pointed_threat identifies arxiv:2606.08635v1 (SpectrumKV), which already establishes importance-conditioned FP16/INT8/INT4 KV treatment and therefore narrows the novelty surface.",
+      "fix_direction": "Append a SpectrumKV delta explaining that its per-token three-tier transfer policy and deployment-time probe do not provide independently addressable successive-residual block prefixes, held-out-category profile-conditioned promotion gains, or exact allocator-byte frontier packing."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+2026-08-25T00:00:16+08:00
+source_commit=5977cb39498ee002a719c7df1d006d1943d05ba3
+source_status=?? research/;
+method=impress
+selector_backend=fp16
+score_mode=nodefer
+plan=/home/panzihang/src/prism_max/configs/qwen25_k010_impress.json
+plan_sha256=83edd810f66d03990dd66ad48090ea4fae8846e870dd70e843a837d666cbabae
+bundle_dir=/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval_strict
+bundle_metadata=/home/panzihang/src/prism_max/data/paper_task_bundles_full_eval_strict/metadata.json
+bundle_metadata_sha256=bf70ce022f771b59bcc664d321b0787a5c8e1d50f761e6833d95c1c9160abdb5
+store_root=/home/panzihang/contiguous_fuxian_ssd/qwen25_7b_paper_seed42
+store_task_metadata=/home/panzihang/contiguous_fuxian_ssd/qwen25_7b_paper_seed42/trec/metadata.json
+store_task_metadata_sha256=066753fad4a2f0bec86cce656ca1d4423be90aba257687d9a9e1fe770f29a894
+kv_dir=/home/panzihang/contiguous_fuxian_ssd/paper4_online_impress_c64_gqa_unique_reordered_disjoint_v33
+kv_complete_marker=/home/panzihang/contiguous_fuxian_ssd/paper4_online_impress_c64_gqa_unique_reordered_disjoint_v33/.contiguous_fuxian_complete
+kv_complete_sha256=a1003c6848d18ce8248635b3ac459417b416ce1bd6c9b97b84750170cef05539
+impress_reorder_manifest=/home/panzihang/src/contiguous_fuxian/results/impress_reorder/qwen25_7b_paper4_disjoint_history32_35_v2.json
+impress_reorder_sha256=36c5e1ec62187f8916e04e7758e79c9a28cfe1c75cb8999739e6be15287542cf
+kv_complete_impress_reorder_sha256=36c5e1ec62187f8916e04e7758e79c9a28cfe1c75cb8999739e6be15287542cf
+adaptive_coverage=false
+samples=32
+warmup_passes=1
+warmup_samples=8
+gpu_cache_mb=55
+cpu_cache_mb=131
+SOURCE    TARGET FSTYPE OPTIONS
+/dev/sda4 /      ext4   rw,relatime

@@ -1,0 +1,19 @@
+{
+  "source": "/home/panzihang/src/prism_max",
+  "source_head": "61318220e7df80488292b54b00a87134a031f169",
+  "source_branch": "prism-max",
+  "source_status": "?? research/\n?? src/prism_gao/\n",
+  "source_refs": "refs/heads/fix/as-h2o-compact-kv d7e32be70c9d831f4dfdc909a79c0d536972137a\nrefs/heads/main 7c205167fe9474a5e7419b491376d95660537789\nrefs/heads/prism-max 61318220e7df80488292b54b00a87134a031f169\n",
+  "created_utc": "2026-09-08T07:36:28.432783+00:00",
+  "git_metadata_sha256": {
+    "config": "cfe7ba1238c9a78be7535d7c63bcaf5a4d5011d46b07c9b45d3bbf7d6c312dfe",
+    "HEAD": "c795cedfda7dbfc86bd3e3c8564255ba83224b91252cc8081d85d2deffd6afbd",
+    "index": "190d3beb67a43b35c93305093ada97f5a36f8a06a837d94a739659e62cbc6759"
+  },
+  "source_file_count": 4565,
+  "source_bytes": 1792998357,
+  "included_files": 4564,
+  "included_bytes": 1792998351,
+  "excluded_files": 1,
+  "excluded_bytes": 6
+}
