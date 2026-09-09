@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from contextlib import contextmanager
+from contextvars import ContextVar
+from numbers import Integral
 from typing import Sequence
 
 
 @dataclass(frozen=True)
 class PromixedSelectionDecision:
-    """A fixed-budget selection plus the safe cross-layer reuse horizon."""
+    """A fixed-budget selection plus the heuristic or explicitly fixed reuse horizon."""
 
     selected_blocks: tuple[int, ...]
     priority_blocks: tuple[int, ...]
@@ -18,6 +21,55 @@ class PromixedSelectionDecision:
     uncertainty: float
     period: int
     effective_coverage_fraction: float
+
+
+
+# Explicit run-scoped options used by audited_reprefill. The historical runner
+# is unchanged outside this context; no process-global function monkey-patch.
+_RUN_OPTIONS: ContextVar[dict | None] = ContextVar("promixed_run_options", default=None)
+_TRACE: ContextVar[list | None] = ContextVar("promixed_run_trace", default=None)
+
+
+@contextmanager
+def selection_experiment(*, fixed_period: int | None = 8,
+                         strategy: str = "legacy", coverage_enabled: bool = True,
+                         trace: list | None = None, preload_anchors_only: bool = False):
+    if fixed_period is not None and (isinstance(fixed_period, bool)
+            or not isinstance(fixed_period, Integral) or fixed_period not in {1, 2, 4, 8}):
+        raise ValueError("fixed_period must be None, 1, 2, 4, or 8")
+    if strategy not in {"legacy", "balanced", "mean", "normalized_mean", "max"}:
+        raise ValueError("unknown selection strategy")
+    if strategy != "legacy" and fixed_period is None:
+        raise ValueError("experimental selectors require a fixed period")
+    if not isinstance(coverage_enabled, bool):
+        raise ValueError("coverage_enabled must be boolean")
+    options_token = _RUN_OPTIONS.set(dict(fixed_period=fixed_period,
+        strategy=strategy, coverage_enabled=coverage_enabled,
+        preload_anchors_only=preload_anchors_only))
+    trace_token = _TRACE.set(trace)
+    try:
+        yield
+    finally:
+        _TRACE.reset(trace_token)
+        _RUN_OPTIONS.reset(options_token)
+
+
+def current_selection_experiment() -> dict | None:
+    options = _RUN_OPTIONS.get()
+    return dict(options) if options is not None else None
+
+
+def _observe(decision, rows, keep_blocks, strategy, coverage_blocks):
+    trace = _TRACE.get()
+    if trace is not None:
+        from .group_coverage import coverage_of
+        retained, relative = coverage_of(rows, decision.selected_blocks, keep_blocks=keep_blocks)
+        trace.append({"invocation": len(trace), "keep_blocks": keep_blocks,
+            "strategy": strategy, "period": decision.period,
+            "selected_blocks": list(decision.selected_blocks),
+            "group_retained_mass": retained, "group_relative_to_topk": relative,
+            "reserved_coverage_blocks": coverage_blocks, "score_rows": rows})
+    return decision
 
 
 def _validate_score_rows(
@@ -112,6 +164,9 @@ def select_promixed_gqa_blocks(
     utility_max_weight: float = 0.55,
     utility_mean_weight: float = 0.35,
     utility_vote_weight: float = 0.10,
+    fixed_period: int | None = None,
+    coverage_enabled: bool = True,
+    selection_strategy: str = "legacy",
 ) -> PromixedSelectionDecision:
     """Select exact-budget blocks without averaging away a minority GQA group.
 
@@ -124,6 +179,21 @@ def select_promixed_gqa_blocks(
     rows = _validate_score_rows(block_scores)
     block_count = len(rows[0])
     head_count = len(rows)
+    options = _RUN_OPTIONS.get()
+    if options is not None:
+        fixed_period = options["fixed_period"]
+        coverage_enabled = options["coverage_enabled"]
+        selection_strategy = options["strategy"]
+    if isinstance(keep_blocks, bool) or not isinstance(keep_blocks, Integral):
+        raise ValueError("ProMixed keep_blocks must be an integer")
+    if fixed_period is not None and (isinstance(fixed_period, bool)
+            or not isinstance(fixed_period, Integral) or fixed_period not in {1, 2, 4, 8}
+            or fixed_period > max_period):
+        raise ValueError("fixed_period must be 1, 2, 4, or 8 and <= max_period")
+    if selection_strategy not in {"legacy", "balanced", "mean", "normalized_mean", "max"}:
+        raise ValueError("unknown selection strategy")
+    if selection_strategy != "legacy" and fixed_period is None:
+        raise ValueError("experimental selectors require a fixed period")
     keep_blocks = int(keep_blocks)
     if not 1 <= keep_blocks <= block_count:
         raise ValueError(
@@ -178,6 +248,18 @@ def select_promixed_gqa_blocks(
         p4_threshold=p4_threshold,
     )
 
+    if fixed_period is not None:
+        period = int(fixed_period)
+    if selection_strategy != "legacy":
+        from .group_coverage import select_group_blocks
+        result = select_group_blocks(rows, keep_blocks=keep_blocks, strategy=selection_strategy)
+        decision = PromixedSelectionDecision(
+            selected_blocks=tuple(sorted(result.priority_blocks)),
+            priority_blocks=result.priority_blocks, agreement=agreement,
+            boundary_margin=boundary_margin, uncertainty=uncertainty,
+            period=period, effective_coverage_fraction=0.0)
+        return _observe(decision, rows, keep_blocks, selection_strategy, 0)
+
     totals = [max(sum(row), 1e-12) for row in rows]
     normalized = [
         [float(value) / total for value in row]
@@ -209,6 +291,11 @@ def select_promixed_gqa_blocks(
             math.ceil(keep_blocks * effective_coverage_fraction),
         ),
     )
+    # Preserve historical coverage_fraction=0 semantics. A SEPARATE explicit
+    # switch is needed for a genuine no-round-robin-coverage ablation.
+    if not coverage_enabled:
+        coverage_target = 0
+        effective_coverage_fraction = 0.0
     selected: set[int] = set()
     depth = 0
     while len(selected) < coverage_target and depth < block_count:
@@ -230,7 +317,7 @@ def select_promixed_gqa_blocks(
     priority = tuple(
         sorted(selected, key=lambda block: (-utilities[block], block))
     )
-    return PromixedSelectionDecision(
+    decision = PromixedSelectionDecision(
         selected_blocks=tuple(sorted(selected)),
         priority_blocks=priority,
         agreement=agreement,
@@ -239,3 +326,4 @@ def select_promixed_gqa_blocks(
         period=period,
         effective_coverage_fraction=effective_coverage_fraction,
     )
+    return _observe(decision, rows, keep_blocks, selection_strategy, coverage_target)

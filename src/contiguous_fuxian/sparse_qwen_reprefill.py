@@ -114,7 +114,7 @@ def _write_prefix_tensor(path: Path, tensor) -> None:
 
     import torch
 
-    token_major = tensor.detach().permute(0, 2, 1, 3).contiguous().view(torch.uint8).cpu()
+    token_major = tensor.detach().to(torch.bfloat16).permute(0, 2, 1, 3).contiguous().view(torch.uint8).cpu()
     temporary = path.with_suffix(path.suffix + ".tmp")
     with temporary.open("wb") as handle:
         handle.write(token_major.numpy().tobytes())

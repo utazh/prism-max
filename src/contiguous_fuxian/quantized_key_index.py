@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import dataclass
+from numbers import Integral
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -20,8 +21,10 @@ def pack_signed_int4(values: Any) -> Any:
     import numpy as np
 
     array = np.asarray(values)
-    if array.ndim < 1 or array.shape[-1] % 2:
+    if array.ndim < 1 or array.shape[-1] == 0 or array.shape[-1] % 2:
         raise ValueError("signed INT4 values require a non-empty even last dimension")
+    if array.dtype.kind not in "iu":
+        raise ValueError("signed INT4 values must be integer codes")
     if np.any(array < -INT4_LEVELS) or np.any(array > INT4_LEVELS):
         raise ValueError("signed INT4 values must be in [-7, 7]")
     encoded = array.astype(np.int8, copy=False).astype(np.uint8) & 0x0F
@@ -35,7 +38,13 @@ def unpack_signed_int4(codes: Any, *, width: int) -> Any:
 
     import numpy as np
 
-    packed = np.asarray(codes, dtype=np.uint8)
+    packed = np.asarray(codes)
+    if (packed.ndim < 1 or packed.dtype.kind not in "iu"
+            or np.any(packed < 0) or np.any(packed > 255)):
+        raise ValueError("INT4 packed codes must be integer bytes in [0, 255]")
+    if isinstance(width, bool) or not isinstance(width, Integral):
+        raise ValueError("INT4 width must be an integer")
+    packed = packed.astype(np.uint8, copy=False)
     if width <= 0 or width % 2 or packed.shape[-1] * 2 != width:
         raise ValueError("INT4 width must be positive, even, and match the codes")
     unpacked = np.empty((*packed.shape[:-1], width), dtype=np.int8)
@@ -60,6 +69,8 @@ def quantize_symmetric_int4(
     if not np.isfinite(array).all():
         raise ValueError("selector keys must be finite")
     head_dim = int(array.shape[-1])
+    if group_size is not None and (isinstance(group_size, bool) or not isinstance(group_size, Integral)):
+        raise ValueError("INT4 group size must be an integer")
     normalized_group_size = head_dim if group_size is None else int(group_size)
     if normalized_group_size <= 0 or head_dim % normalized_group_size:
         raise ValueError(
@@ -71,6 +82,8 @@ def quantize_symmetric_int4(
         normalized_group_size,
     )
     scales = np.max(np.abs(grouped), axis=-1) / INT4_LEVELS
+    if np.any(scales > np.finfo(np.float16).max):
+        raise ValueError("INT4 scales exceed finite FP16 range")
     safe_scales = np.where(scales > 0, scales, 1.0)
     quantized = np.rint(grouped / safe_scales[..., None])
     quantized = np.clip(quantized, -INT4_LEVELS, INT4_LEVELS).astype(np.int8)
@@ -94,6 +107,10 @@ def dequantize_int4_numpy(
 
     unpacked = unpack_signed_int4(codes, width=head_dim).astype(np.float32)
     scale_array = np.asarray(scales, dtype=np.float16)
+    if not np.isfinite(scale_array).all() or np.any(scale_array < 0):
+        raise ValueError("INT4 scales must be finite and non-negative")
+    if group_size is not None and (isinstance(group_size, bool) or not isinstance(group_size, Integral)):
+        raise ValueError("INT4 group size must be an integer")
     normalized_group_size = head_dim if group_size is None else int(group_size)
     if normalized_group_size <= 0 or head_dim % normalized_group_size:
         raise ValueError(
@@ -125,6 +142,13 @@ class QuantizedKeyIndex:
     """Validated reader for a disk-backed symmetric INT4 selector index."""
 
     def __init__(self, root: str | Path) -> None:
+        from .promixed import current_selection_experiment
+        options = current_selection_experiment()
+        self._preload_step = (
+            int(options["fixed_period"])
+            if options and options.get("preload_anchors_only") and options["fixed_period"]
+            else 1
+        )
         self.root = Path(root).resolve()
         manifest_path = self.root / "manifest.json"
         if not manifest_path.is_file():
@@ -188,11 +212,16 @@ class QuantizedKeyIndex:
     def task_is_preloaded(self, task: str) -> bool:
         entry = self.tasks.get(task)
         return entry is not None and all(
-            (task, layer) in self._cpu_cache for layer in range(entry.layers)
+            (task, layer) in self._cpu_cache for layer in range(0, entry.layers, self._preload_step)
         )
 
+    def preloaded_layer_ids(self, task: str) -> tuple[int, ...]:
+        """Required resident selector layers (all layers outside fixed-run scope)."""
+        entry = self.tasks[task]
+        return tuple(range(0, entry.layers, self._preload_step))
+
     def preload_task(self, task: str) -> int:
-        """Load one task's compressed index into reusable host tensors."""
+        """Preload all layers, or only declared fixed-period anchors in audited runs."""
 
         import numpy as np
         import torch
@@ -201,7 +230,7 @@ class QuantizedKeyIndex:
         if entry is None:
             raise KeyError(f"selector index does not contain task {task!r}")
         loaded_bytes = 0
-        for layer in range(entry.layers):
+        for layer in range(0, entry.layers, self._preload_step):
             cache_key = (task, layer)
             if cache_key in self._cpu_cache:
                 continue
@@ -214,6 +243,10 @@ class QuantizedKeyIndex:
                 entry.kv_heads,
                 entry.head_dim // entry.group_size,
             )
+            if not np.isfinite(scales).all() or np.any(scales < 0):
+                raise ValueError("selector index contains non-finite or negative scales")
+            if np.any((codes & 0x0F) == 8) or np.any((codes >> 4) == 8):
+                raise ValueError("symmetric [-7, 7] selector index contains reserved -8 code")
             codes_tensor = torch.from_numpy(codes)
             scales_tensor = torch.from_numpy(scales)
             if torch.cuda.is_available():
@@ -290,6 +323,10 @@ class QuantizedKeyIndex:
         import torch
 
         entry = self.tasks[task]
+        if not 0 <= layer < entry.layers:
+            raise ValueError("selector layer is outside the task")
+        if self._preload_step > 1 and layer % self._preload_step:
+            raise RuntimeError("fixed-period run requested a non-anchor selector layer")
         cache_key = (task, layer)
         cached = self._cpu_cache.get(cache_key)
         if cached is None:
@@ -302,6 +339,10 @@ class QuantizedKeyIndex:
                 entry.kv_heads,
                 entry.head_dim // entry.group_size,
             )
+            if not np.isfinite(scales).all() or np.any(scales < 0):
+                raise ValueError("selector index contains non-finite or negative scales")
+            if np.any((codes & 0x0F) == 8) or np.any((codes >> 4) == 8):
+                raise ValueError("symmetric [-7, 7] selector index contains reserved -8 code")
             codes_tensor = torch.from_numpy(codes)
             scales_tensor = torch.from_numpy(scales)
             compressed_bytes = (
